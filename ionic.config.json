@@ -1,0 +1,8 @@
+{
+  "name": "Bots RPG",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "3fb6cd5f"
+}
