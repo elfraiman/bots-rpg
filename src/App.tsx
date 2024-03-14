@@ -1,10 +1,10 @@
-import React from 'react';
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonApp, setupIonicReact } from '@ionic/react';
+import { IonApp, IonButton, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import React from 'react';
+import { Redirect, Route } from 'react-router';
+import * as Realm from "realm-web";
 
-import { Route, Redirect } from 'react-router';
-
-import { playCircle, radio, library, search, diamond, medal, home } from 'ionicons/icons';
+import { barbell, diamond, home, medal, search } from 'ionicons/icons';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -24,64 +24,109 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
-import './theme/variables.css';
 import Home from './pages/Home';
+import Train from './pages/Train/Train';
+import './theme/variables.css';
+import BattleTrain from './pages/BattleTrain/BattleTrain';
+
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Redirect exact path="/" to="/home" />
-          {/*
-          Use the render method to reduce the number of renders your component will have due to a route change.
+// Create a component that displays the given user's details
+const UserDetail = ({ user }: { user: Realm.User }) => {
+  return (
+    <div>
+      <h1>Logged in with anonymous id: {user.id}</h1>
+    </div>
+  );
+};
 
-          Use the component prop when your component depends on the RouterComponentProps passed in automatically.
-        */}
-          <Route path="/home" render={() => <Home />} exact={true} />
-          <Route path="/radio" render={() => <Home />} exact={true} />
-          <Route path="/library" render={() => <Home />} exact={true} />
-          <Route path="/search" render={() => <Home />} exact={true} />
-          <Route path="/search" render={() => <Home />} exact={true} />
-          <Route path="/search" render={() => <Home />} exact={true} />
-          <Route path="/search" render={() => <Home />} exact={true} />
-          <Route path="/search" render={() => <Home />} exact={true} />
-        </IonRouterOutlet>
+// Create a component that lets an anonymous user log in
+type LoginProps = {
+  setUser: (user: Realm.User) => void;
+};
 
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="home" href="/home">
-            <IonIcon icon={home} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
 
-          <IonTabButton tab="radio" href="/radio">
-            <IonIcon icon={radio} />
-            <IonLabel>Train</IonLabel>
-          </IonTabButton>
+const Login = ({ setUser }: LoginProps) => {
+  
+  const loginAnonymous = async () => {
+    const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
+    localStorage.setItem('userId', user.id);
+    setUser(user);
+  };
 
-          <IonTabButton tab="library" href="/library">
-            <IonIcon icon={medal} />
-            <IonLabel>Fight</IonLabel>
-          </IonTabButton>
 
-          <IonTabButton tab="search" href="/search">
-            <IonIcon icon={diamond} />
-            <IonLabel>Shop</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="search" href="/search">
-            <IonIcon icon={search} />
-            <IonLabel>Search</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="search" href="/search">
-            <IonIcon icon={search} />
-            <IonLabel>Search</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+  return <IonButton onClick={loginAnonymous}>Log In</IonButton>;
+};
+
+
+// Add your App ID
+const app = new Realm.App({ id: 'application-0-vgvqx' });
+
+const App: React.FC = () => {
+  // Keep the logged in Realm user in local state. This lets the app re-render
+  // whenever the current user changes (e.g. logs in or logs out).
+  const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
+
+
+
+  return (
+    <IonApp>
+         {user ? (
+                <IonReactRouter>
+                <IonTabs>
+                  <IonRouterOutlet>
+                    <Redirect exact path="/" to="/home" />
+                    {/*
+                  Use the render method to reduce the number of renders your component will have due to a route change.
+        
+                  Use the component prop when your component depends on the RouterComponentProps passed in automatically.
+                */}
+                    <Route path="/home" render={() => <Home />} exact={true} />
+                    <Route path="/train" render={() => <Train />} exact={true} />
+                    <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
+                    <Route path="/search" render={() => <Home />} exact={true} />
+                    <Route path="/search" render={() => <Home />} exact={true} />
+                    <Route path="/search" render={() => <Home />} exact={true} />
+                    <Route path="/search" render={() => <Home />} exact={true} />
+                    <Route path="/search" render={() => <Home />} exact={true} />
+                  </IonRouterOutlet>
+        
+                  <IonTabBar slot="bottom">
+                    <IonTabButton tab="home" href="/home">
+                      <IonIcon icon={home} />
+                      <IonLabel>Home</IonLabel>
+                    </IonTabButton>
+        
+                    <IonTabButton tab="radio" href="/train">
+                      <IonIcon icon={barbell} />
+                      <IonLabel>Train</IonLabel>
+                    </IonTabButton>
+        
+                    <IonTabButton tab="library" href="/library">
+                      <IonIcon icon={medal} />
+                      <IonLabel>Fight</IonLabel>
+                    </IonTabButton>
+        
+                    <IonTabButton tab="search" href="/search">
+                      <IonIcon icon={diamond} />
+                      <IonLabel>Shop</IonLabel>
+                    </IonTabButton>
+                    <IonTabButton tab="search" href="/search">
+                      <IonIcon icon={search} />
+                      <IonLabel>Search</IonLabel>
+                    </IonTabButton>
+                    <IonTabButton tab="search" href="/search">
+                      <IonIcon icon={search} />
+                      <IonLabel>Search</IonLabel>
+                    </IonTabButton>
+                  </IonTabBar>
+                </IonTabs>
+              </IonReactRouter>
+         ) : <Login setUser={setUser} />}
+
+    </IonApp>
+  )
+};
 
 export default App;

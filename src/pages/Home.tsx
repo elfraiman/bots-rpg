@@ -24,7 +24,7 @@ const Home: React.FC = () => {
 
 
   return (
-    <IonPage id="home-page">
+
       <>
         <IonMenu contentId="main-content">
           <IonHeader>
@@ -67,7 +67,6 @@ const Home: React.FC = () => {
           </IonContent>
         </IonPage>
       </>
-    </IonPage>
   );
 };
 
