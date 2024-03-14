@@ -24,7 +24,6 @@ const Home: React.FC = () => {
 
 
   return (
-
       <>
         <IonMenu contentId="main-content">
           <IonHeader>
