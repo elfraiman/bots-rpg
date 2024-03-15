@@ -25,7 +25,7 @@ import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
 import Home from './pages/Home';
-import Train from './pages/Train/Train';
+import Train from './pages/Train/TrainingRoom';
 import './theme/variables.css';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 

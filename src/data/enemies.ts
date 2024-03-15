@@ -1,9 +1,10 @@
 
 import * as Realm from "realm-web";
-import { enemy } from "../types/schemas";
+import { Ienemy } from "../types/schemas";
 
 
-const enemies: enemy[] = [
+
+const enemies: Ienemy[] = [
     {
         _id: 0,
         level: 1,
@@ -11,7 +12,7 @@ const enemies: enemy[] = [
         dex: 1,
         con: 1,
         int: 1,
-        maxHealth: 100,
+        maxHealth: 20,
         equipment: {
             mainHand: {
                 maxDamage: 5,
@@ -42,7 +43,7 @@ const enemies: enemy[] = [
         name: "Shadow Stalker",
         description: "A swift and elusive enemy, the Shadow Stalker thrives in the darkness. Its attacks are quick and can catch any unprepared bot off guard, testing both reflexes and strategy."
     }
-    
+
 ];
 
 export const getEnemies = () => enemies;

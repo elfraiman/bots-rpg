@@ -1,0 +1,16 @@
+/* In your CSS file */
+.banner {
+    position: absolute;
+    width: 100%;
+    left:0;
+    top: 0;
+        background-color: rgba(183, 0, 255, 0.4); /* White with 50% opacity */
+  }
+
+  .text-overlay {
+    padding: 10px; /* Adjust padding as needed */
+    z-index: 100;
+    width: 100%;
+    position: relative;
+    font-weight: 500;
+  }

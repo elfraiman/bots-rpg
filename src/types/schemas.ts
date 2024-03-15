@@ -1,6 +1,6 @@
 import Realm from "realm-web";
 
-export type enemy = {
+export type Ienemy = {
   _id: number;
   con: number;
   description: string;
@@ -58,7 +58,7 @@ export const enemy_equipment_mainHandSchema = {
   },
 };
 
-export type player = {
+export type Iplayer = {
   _id: string;
   con: number;
   dex: number;

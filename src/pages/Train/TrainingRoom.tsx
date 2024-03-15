@@ -2,6 +2,7 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonImg,
   IonMenu,
   IonMenuButton,
   IonPage,
@@ -12,11 +13,10 @@ import {
 } from '@ionic/react';
 import { useState } from 'react';
 import * as Realm from "realm-web";
-import { enemy } from '../../types/schemas';
-import './Train.css';
-
+import './TrainingRoom.css';
 import EnemyCard from '../../components/EnemyCard';
 import { getEnemies } from '../../data/enemies';
+import { Ienemy } from '../../types/schemas';
 
 
 // Add your App ID
@@ -24,7 +24,7 @@ const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const Train: React.FC = () => {
   const [data, setData] = useState<any>([]);
-  const [enemies, setEnemies] = useState<enemy[]>([]); // [1
+  const [enemies, setEnemies] = useState<Ienemy[]>([]); // [1
   const mongodb = app?.currentUser?.mongoClient("mongodb-atlas");
 
   const fetchPlayer = async () => {
@@ -77,19 +77,18 @@ const Train: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonText>
-            <div>
-              <p><strong>Training room</strong></p>
-            </div>
+          <IonImg src="resources/images/TrainingRoom.webp" alt="Training room" className="banner" />
 
-            <div>
+          <IonText>
+            <div className="text-overlay">
+              <p><strong>Training room</strong></p>
               <p>
                 Welcome to the training room. Here you can practice your skills and level up your bot.
               </p>
             </div>
           </IonText>
 
-          {enemies?.map((enemy: enemy) => (
+          {enemies?.map((enemy: Ienemy) => (
             <EnemyCard enemy={enemy} key={enemy._id} />
           ))}
         </IonContent>
