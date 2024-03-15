@@ -1,14 +1,13 @@
-/* In your CSS file */
 .banner {
-    position: absolute;
+    position: relative;
     width: 100%;
+    padding: 0;
     left:0;
     top: 0;
-        background-color: rgba(183, 0, 255, 0.4); /* White with 50% opacity */
   }
 
   .text-overlay {
-    padding: 10px; /* Adjust padding as needed */
+    padding: 10px; 
     z-index: 100;
     width: 100%;
     position: relative;

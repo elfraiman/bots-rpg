@@ -1,9 +1,8 @@
-import react from 'react';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonButton, IonRouterLink } from "@ionic/react"
-import { enemy } from '../types/schemas';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonRouterLink, IonRow } from "@ionic/react";
+import { Ienemy } from '../types/schemas';
 
 interface IEnemyCardProps {
-    enemy: enemy;
+    enemy: Ienemy;
 }
 
 const EnemyCard = ({ enemy }: IEnemyCardProps) => {
@@ -17,8 +16,32 @@ const EnemyCard = ({ enemy }: IEnemyCardProps) => {
 
             <IonCardContent>
                 {enemy.description}
-            </IonCardContent>
 
+
+            </IonCardContent>
+            <IonGrid className="ion-padding">
+                <IonRow>
+                    <IonCol>
+                        Health: <span style={{ fontWeight: 900, color: 'green' }}>{enemy.maxHealth}</span>
+                    </IonCol>
+                </IonRow>
+                <IonRow>
+                    <IonCol>
+                        STR: {enemy.str}
+                    </IonCol>
+                    <IonCol>
+                        DEX: {enemy.dex}
+                    </IonCol>
+                    <IonCol>
+                        CON: {enemy.con}
+                    </IonCol>
+                    <IonCol>
+                        INT: {enemy.int}
+                    </IonCol>
+                </IonRow>
+
+
+            </IonGrid>
             <IonButton fill='clear'>
                 <IonRouterLink routerLink={`/train/${enemy._id}`}>Fight</IonRouterLink>
             </IonButton>

@@ -1,10 +1,10 @@
-import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonText, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import { getEnemy } from "../../data/enemies";
 import usePlayerHook from "../../hooks/GetPlayerHook";
 import { Ienemy, Iplayer } from "../../types/schemas";
-
+import './BattleTrain.css';
 
 interface IFightResult {
   hitChance: number;
@@ -17,10 +17,20 @@ interface IFightResult {
 
 // Example of an inline style for demonstration
 const style = {
-  attackerName: { fontWeight: 'bold', color: 'blue' },
-  defenderName: { fontWeight: 'bold', color: 'red' },
+  fightNarrative: { color: '#99cc00', marginBottom: 16 },
+  playerName: { fontWeight: 'bold', color: '#00e1ff', marginRight: 1 },
+  defenderName: { fontWeight: 'bold', color: '#ffff00', marginRight: 1 },
   weaponName: { fontStyle: 'italic' },
-  damage: { fontWeight: 'bold' }
+  playerDamage: { color: 'white' },
+  enemyDamage: { fontWeight: 100, color: 'grey' },
+  miss: { color: 'red' },
+  goodShape: { color: '#33ff00' },
+  reasonableShape: { color: '#99cc00' },
+  notGoodShape: { color: '#bbaa00' },
+  badShape: { color: '#ee6600' },
+  barelyAlive: { color: '#ff0000' },
+  dead: { color: '#ff0000' },
+  playerHealth: { color: 'black', backgroundColor: '#4c4c4c' }
 };
 
 
@@ -49,6 +59,41 @@ const BattleTrain = () => {
     setPlayerHealth(player?.maxHealth || 100);
     setFightNarrative([]);
   });
+
+  const returnEnemyShape = (enemy: Ienemy) => {
+    const health = enemyHealth;
+    let enemyNameStyled = <span style={style.defenderName}>{enemy.name}</span>;
+
+    if (health > 0.80 * enemy.maxHealth) {
+      return <span style={style.goodShape}> {enemyNameStyled}  is in good shape.</span>
+    } else if (health > 0.65 * enemy.maxHealth) {
+      return <span style={style.reasonableShape}> {enemyNameStyled}  is in reasonable shape.</span>
+    } else if (health > 0.40 * enemy.maxHealth) {
+      return <span style={style.badShape}> {enemyNameStyled}  is in bad shape.</span>
+    } else if (health > 0.20 * enemy.maxHealth) {
+      return <span style={style.barelyAlive}> {enemyNameStyled} is barely alive.</span>
+    }
+    else {
+      console.log("Health is below 15%");
+    }
+
+  }
+
+  const returnPercentageColor = (health: number) => {
+    const percentage = health * player.maxHealth / 100;
+    if (percentage > 80) {
+      return style.goodShape;
+    } else if (percentage > 65) {
+      return style.reasonableShape;
+    } else if (percentage > 40) {
+      return style.notGoodShape;
+    } else if (percentage > 20) {
+      return style.badShape;
+    } else {
+      return style.barelyAlive;
+    }
+
+  }
 
   const attack = (attacker: Iplayer | Ienemy, defender: Iplayer | Ienemy, isPlayerAttack: boolean) => {
     if (!attacker || !defender) {
@@ -79,7 +124,6 @@ const BattleTrain = () => {
     });
   };
 
-
   const applyFightResults = ({ hitChance, maxDamage, minDamage, attacker, defender, isPlayerAttack }: IFightResult) => {
     const randomNumber = Math.random();
 
@@ -87,12 +131,27 @@ const BattleTrain = () => {
       const damageDealt = Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
 
       const hitMessage = (
-        <div>
-          <span style={style.attackerName}>{attacker.name}</span> hits
-           <span style={style.defenderName}> {defender.name} </span>
-           with its <span style={style.weaponName}>{attacker.equipment?.mainHand?.name} </span>.
+        <div style={style.fightNarrative}>
+          <span style={isPlayerAttack ? style.playerName : style.defenderName}>
+            {attacker.name}
+          </span> hits
+          <span style={!isPlayerAttack ? style.playerName : style.defenderName}> {defender.name}
+          </span> with its
+          <span style={style.weaponName}> {attacker.equipment?.mainHand?.name}.
+          </span>
           <br />
-          (<span style={style.damage}>{damageDealt} damage</span>)
+          <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>
+            ({damageDealt} damage)
+          </span>
+          <br />
+          <span>
+            {isPlayerAttack ? returnEnemyShape(enemy) :
+              <span style={style.playerHealth}>damage report: {playerHealth}/{player?.maxHealth}  <span style={returnPercentageColor(playerHealth)}>
+                {playerHealth * player.maxHealth / 100} % left
+              </span>
+              </span>
+            }
+          </span>
         </div>
       );
 
@@ -105,14 +164,17 @@ const BattleTrain = () => {
       }
     } else {
       const missMessage = (
-        <div>
-          <span style={style.attackerName}>{attacker.name}</span> misses.
+        <div style={style.fightNarrative}>
+          <span style={isPlayerAttack ? style.playerName : style.defenderName}>{attacker.name} </span>
+          <span>missed
+            <span style={!isPlayerAttack ? style.playerName : style.defenderName}> {defender.name}
+            </span>
+          </span>
         </div>
       );
       setFightNarrative(prevNarrative => [...prevNarrative, missMessage]);
     }
   };
-
 
   const startFight = () => {
     if (enemy) {
@@ -137,7 +199,10 @@ const BattleTrain = () => {
       if (playerHealth <= 0 || enemyHealth <= 0) {
         clearInterval(intervalIdRef.current as NodeJS.Timeout);
         setBattleActive(false);
-        const winnerMessage = playerHealth <= 0 ? `${enemy.name} wins!` : `${player.name} wins!`;
+        const winnerMessage = playerHealth <= 0 ?
+          <span>{enemy.name} wins!</span>
+          :
+          <span>{player.name} wins!</span>;
         setFightNarrative(prev => [...prev, winnerMessage]);
       }
 
@@ -154,6 +219,7 @@ const BattleTrain = () => {
 
     return () => {
       if (intervalIdRef.current) clearInterval(intervalIdRef.current);
+
     };
   }, [battleActive, player, enemy, playerHealth, enemyHealth]);
 
@@ -165,13 +231,14 @@ const BattleTrain = () => {
           <IonTitle>Fighting {enemy?.name}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding">
-        <IonButton onClick={startFight}>Attack</IonButton>
-        <div>Player Health: {playerHealth}</div>
-        <div>Enemy Health: {enemyHealth}</div>
-        {fightNarrative.map((line, index) => (
-          <div key={index}>{line}</div>
-        ))}
+      <IonContent>
+        <IonImg src={`resources/images/EnemyId-${enemy?._id}.webp`} alt="Enemy" className="banner" />
+        <IonButton onClick={startFight} style={{ width: '100%' }}>Attack</IonButton>
+        <div className="ion-padding fight-narrative">
+          {fightNarrative.map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+        </div>
       </IonContent>
     </IonPage>
   );
