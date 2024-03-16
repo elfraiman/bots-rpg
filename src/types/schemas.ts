@@ -1,11 +1,11 @@
 import Realm from "realm-web";
 
-export type Ienemy = {
+export type IEnemy = {
   _id: number;
   con: number;
   description: string;
   dex: number;
-  equipment?: enemy_equipment;
+  equipment?: IEnemy_equipment;
   int: number;
   level: number;
   maxHealth: number;
@@ -13,14 +13,14 @@ export type Ienemy = {
   str: number;
 };
 
-export const enemySchema = {
-  name: 'enemy',
+export const IEnemySchema = {
+  name: 'IEnemy',
   properties: {
     _id: 'int',
     con: 'int',
     description: 'string',
     dex: 'int',
-    equipment: 'enemy_equipment',
+    equipment: 'IEnemy_equipment',
     int: 'int',
     level: 'int',
     maxHealth: 'int',
@@ -30,26 +30,26 @@ export const enemySchema = {
   primaryKey: '_id',
 };
 
-export type enemy_equipment = {
-  mainHand?: enemy_equipment_mainHand;
+export type IEnemy_equipment = {
+  mainHand?: IEnemy_equipment_mainHand;
 };
 
-export const enemy_equipmentSchema = {
-  name: 'enemy_equipment',
+export const IEnemy_equipmentSchema = {
+  name: 'IEnemy_equipment',
   embedded: true,
   properties: {
-    mainHand: 'enemy_equipment_mainHand',
+    mainHand: 'IEnemy_equipment_mainHand',
   },
 };
 
-export type enemy_equipment_mainHand = {
+export type IEnemy_equipment_mainHand = {
   maxDamage?: number;
   minDamage?: number;
   name?: string;
 };
 
-export const enemy_equipment_mainHandSchema = {
-  name: 'enemy_equipment_mainHand',
+export const IEnemy_equipment_mainHandSchema = {
+  name: 'IEnemy_equipment_mainHand',
   embedded: true,
   properties: {
     maxDamage: 'int?',
@@ -58,11 +58,11 @@ export const enemy_equipment_mainHandSchema = {
   },
 };
 
-export type Iplayer = {
+export type IPlayer = {
   _id: string;
   con: number;
   dex: number;
-  equipment?: player_equipment;
+  equipment?: IPlayer_equipment;
   experience: number;
   gold: number;
   int: number;
@@ -72,13 +72,13 @@ export type Iplayer = {
   str: number;
 };
 
-export const playerSchema = {
-  name: 'player',
+export const IPlayerSchema = {
+  name: 'IPlayer',
   properties: {
     _id: 'string',
     con: 'int',
     dex: 'int',
-    equipment: 'player_equipment',
+    equipment: 'IPlayer_equipment',
     experience: 'int',
     gold: 'int',
     int: 'int',
@@ -90,33 +90,69 @@ export const playerSchema = {
   primaryKey: '_id',
 };
 
-export type player_equipment = {
-  mainHand?: player_equipment_mainHand;
+export type IPlayer_equipment = {
+  mainHand?: IPlayer_equipment_mainHand;
 };
 
-export const player_equipmentSchema = {
-  name: 'player_equipment',
+export const IPlayer_equipmentSchema = {
+  name: 'IPlayer_equipment',
   embedded: true,
   properties: {
-    mainHand: 'player_equipment_mainHand',
+    mainHand: 'IPlayer_equipment_mainHand',
   },
 };
 
-export type player_equipment_mainHand = {
+export type IPlayer_equipment_mainHand = {
   id?: Realm.BSON.ObjectId;
   maxDamage?: number;
   minDamage?: number;
   name?: string;
 };
 
-export const player_equipment_mainHandSchema = {
-  name: 'player_equipment_mainHand',
+export const IPlayer_equipment_mainHandSchema = {
+  name: 'IPlayer_equipment_mainHand',
   embedded: true,
   properties: {
     id: 'objectId?',
     maxDamage: 'int?',
     minDamage: 'int?',
     name: 'string?',
+  },
+};
+
+export type IWeapon = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  maxDamage: number;
+  minDamage: number;
+  name: string;
+  requirements?: IWeapon_requirements;
+};
+
+export const IWeaponSchema = {
+  name: 'IWeapon',
+  properties: {
+    _id: 'objectId',
+    cost: 'int',
+    maxDamage: 'int',
+    minDamage: 'int',
+    name: 'string',
+    requirements: 'IWeapon_requirements',
+  },
+  primaryKey: '_id',
+};
+
+export type IWeapon_requirements = {
+  dex: number;
+  str: number;
+};
+
+export const IWeapon_requirementsSchema = {
+  name: 'IWeapon_requirements',
+  embedded: true,
+  properties: {
+    dex: 'int',
+    str: 'int',
   },
 };
 
@@ -149,43 +185,5 @@ export const quests_rewardsSchema = {
   properties: {
     experience: 'int?',
     gold: 'int?',
-  },
-};
-
-export type weapon = {
-  _id?: Realm.BSON.ObjectId;
-  maxDamage: number;
-  minDamage: number;
-  name: string;
-  requirements?: weapon_requirements;
-};
-
-export const weaponSchema = {
-  name: 'weapon',
-  properties: {
-    _id: 'objectId?',
-    maxDamage: 'int',
-    minDamage: 'int',
-    name: 'string',
-    requirements: 'weapon_requirements',
-  },
-  primaryKey: '_id',
-};
-
-export type weapon_requirements = {
-  con?: number;
-  dex?: number;
-  int?: number;
-  str?: number;
-};
-
-export const weapon_requirementsSchema = {
-  name: 'weapon_requirements',
-  embedded: true,
-  properties: {
-    con: 'int?',
-    dex: 'int?',
-    int: 'int?',
-    str: 'int?',
   },
 };

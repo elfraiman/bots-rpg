@@ -1,17 +1,17 @@
-import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonText, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import { getEnemy } from "../../data/enemies";
-import usePlayerHook from "../../hooks/GetPlayerHook";
-import { Ienemy, Iplayer } from "../../types/schemas";
+import usePlayerHook from "../../hooks/UsePlayerHook";
+import { IEnemy, IPlayer } from "../../types/schemas";
 import './BattleTrain.css';
 
 interface IFightResult {
   hitChance: number;
   maxDamage: number;
   minDamage: number;
-  attacker: Iplayer | Ienemy;
-  defender: Iplayer | Ienemy;
+  attacker: IPlayer | IEnemy;
+  defender: IPlayer | IEnemy;
   isPlayerAttack: boolean;
 }
 
@@ -35,8 +35,8 @@ const style = {
 
 
 const BattleTrain = () => {
-  const player: Iplayer = usePlayerHook(); // Assuming usePlayerHook returns player with health
-  const [enemy, setEnemy] = useState<Ienemy>(); // Initialized to an empty object, populated upon view enter
+  const player: IPlayer = usePlayerHook(); // Assuming usePlayerHook returns player with health
+  const [enemy, setEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(player?.maxHealth || 100);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
@@ -60,7 +60,7 @@ const BattleTrain = () => {
     setFightNarrative([]);
   });
 
-  const returnEnemyShape = (enemy: Ienemy) => {
+  const returnEnemyShape = (enemy: IEnemy) => {
     const health = enemyHealth;
     let enemyNameStyled = <span style={style.defenderName}>{enemy.name}</span>;
 
@@ -95,7 +95,7 @@ const BattleTrain = () => {
 
   }
 
-  const attack = (attacker: Iplayer | Ienemy, defender: Iplayer | Ienemy, isPlayerAttack: boolean) => {
+  const attack = (attacker: IPlayer | IEnemy, defender: IPlayer | IEnemy, isPlayerAttack: boolean) => {
     if (!attacker || !defender) {
       setFightNarrative(prev => [...prev, <div>Player or enemy is missing.</div>]);
       return;
@@ -232,7 +232,7 @@ const BattleTrain = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonImg src={`resources/images/EnemyId-${enemy?._id}.webp`} alt="Enemy" className="banner" />
+        <IonImg src={`resources/images/EnemyId-${enemy?._id}.webp`} alt="Enemy" className="room-banner" />
         <IonButton onClick={startFight} style={{ width: '100%' }}>Attack</IonButton>
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (

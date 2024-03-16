@@ -1,10 +1,10 @@
 
 import * as Realm from "realm-web";
-import { Ienemy } from "../types/schemas";
+import { IEnemy } from "../types/schemas";
 
 
 
-const enemies: Ienemy[] = [
+const enemies: IEnemy[] = [
     {
         _id: 0,
         level: 1,

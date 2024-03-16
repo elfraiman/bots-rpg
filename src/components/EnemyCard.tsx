@@ -1,8 +1,8 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonRouterLink, IonRow } from "@ionic/react";
-import { Ienemy } from '../types/schemas';
+import { IEnemy } from '../types/schemas';
 
 interface IEnemyCardProps {
-    enemy: Ienemy;
+    enemy: IEnemy;
 }
 
 const EnemyCard = ({ enemy }: IEnemyCardProps) => {

@@ -16,7 +16,7 @@ import * as Realm from "realm-web";
 import './TrainingRoom.css';
 import EnemyCard from '../../components/EnemyCard';
 import { getEnemies } from '../../data/enemies';
-import { Ienemy } from '../../types/schemas';
+import { IEnemy } from '../../types/schemas';
 import React from 'react';
 
 // Add your App ID
@@ -24,7 +24,7 @@ const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const Train: React.FC = () => {
   const [data, setData] = useState<any>([]);
-  const [enemies, setEnemies] = useState<Ienemy[]>([]); // [1
+  const [enemies, setEnemies] = useState<IEnemy[]>([]); // [1
   const mongodb = app?.currentUser?.mongoClient("mongodb-atlas");
 
   const fetchPlayer = async () => {
@@ -87,15 +87,15 @@ const Train: React.FC = () => {
                 Welcome to the training room. Here you can practice your skills and level up your bot.
               </p>
             </div>
-        </IonText>
+          </IonText>
 
-        {enemies?.map((enemy: Ienemy) => (
-          <EnemyCard enemy={enemy} key={enemy._id} />
-        ))}
+          {enemies?.map((enemy: IEnemy) => (
+            <EnemyCard enemy={enemy} key={enemy._id} />
+          ))}
 
-          </IonContent>
-          </IonPage>
-      </React.Fragment>
+        </IonContent>
+      </IonPage>
+    </React.Fragment>
   );
 };
 

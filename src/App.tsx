@@ -28,6 +28,7 @@ import Home from './pages/Home';
 import Train from './pages/Train/TrainingRoom';
 import './theme/variables.css';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
+import Shop from './pages/Shop/Shop';
 
 
 setupIonicReact();
@@ -85,7 +86,7 @@ const App: React.FC = () => {
                     <Route path="/home" render={() => <Home />} exact={true} />
                     <Route path="/train" render={() => <Train />} exact={true} />
                     <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
-                    <Route path="/search" render={() => <Home />} exact={true} />
+                    <Route path="/shop" render={() => <Shop />} exact={true} />
                     <Route path="/search" render={() => <Home />} exact={true} />
                     <Route path="/search" render={() => <Home />} exact={true} />
                     <Route path="/search" render={() => <Home />} exact={true} />
@@ -108,7 +109,7 @@ const App: React.FC = () => {
                       <IonLabel>Fight</IonLabel>
                     </IonTabButton>
         
-                    <IonTabButton tab="search" href="/search">
+                    <IonTabButton tab="shop" href="/shop">
                       <IonIcon icon={diamond} />
                       <IonLabel>Shop</IonLabel>
                     </IonTabButton>

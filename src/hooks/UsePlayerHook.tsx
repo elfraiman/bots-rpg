@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import * as Realm from "realm-web";
-import { player } from '../types/schemas'; // Assuming you've renamed the import to avoid naming conflict
+import { IPlayer } from '../types/schemas'; // Assuming you've renamed the import to avoid naming conflict
 
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const usePlayerHook = () => {
-    const [playerData, setPlayerData] = useState<player | null>(null);
+    const [playerData, setPlayerData] = useState<IPlayer | null>(null);
 
     useEffect(() => {
         const fetchPlayer = async () => {
@@ -16,7 +16,7 @@ const usePlayerHook = () => {
             }
 
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const players = mongodb.db("bots_rpg").collection<player>("players");
+            const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
             const userId = app.currentUser.id;
 
             if (!userId) {
