@@ -6,9 +6,15 @@ const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const usePlayerHook = () => {
     const [playerData, setPlayerData] = useState<IPlayer | null>(null);
-
+    
+   
     useEffect(() => {
+
         const fetchPlayer = async () => {
+            if (playerData) {
+                return playerData;
+            }
+        
             // Ensure there's a logged-in user
             if (!app.currentUser) {
                 console.error("No current user found");
