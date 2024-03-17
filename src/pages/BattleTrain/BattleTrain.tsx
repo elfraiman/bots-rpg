@@ -79,6 +79,7 @@ const BattleTrain = () => {
   }
 
   const returnPercentageColor = (health: number) => {
+    if(!player) return;
     const percentage = health * player.maxHealth / 100;
     if (percentage > 80) {
       return style.goodShape;
