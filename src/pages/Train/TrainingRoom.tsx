@@ -16,7 +16,7 @@ import * as Realm from "realm-web";
 import './TrainingRoom.css';
 import EnemyCard from '../../components/EnemyCard';
 import { getEnemies } from '../../data/enemies';
-import { IEnemy } from '../../types/schemas';
+import { IEnemy } from '../../types/types';
 import React from 'react';
 
 // Add your App ID

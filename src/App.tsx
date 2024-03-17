@@ -1,6 +1,6 @@
 import { IonApp, IonButton, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router';
 import * as Realm from "realm-web";
 
@@ -24,13 +24,12 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
+import { PlayerProvider } from './context/PlayerContext';
+import BattleTrain from './pages/BattleTrain/BattleTrain';
 import Home from './pages/Home';
+import Shop from './pages/Shop/Shop';
 import Train from './pages/Train/TrainingRoom';
 import './theme/variables.css';
-import BattleTrain from './pages/BattleTrain/BattleTrain';
-import Shop from './pages/Shop/Shop';
-import { PlayerProvider, usePlayer } from './context/PlayerContext';
-import usePlayerHook from './hooks/UsePlayerHook';
 
 
 setupIonicReact();
@@ -51,14 +50,8 @@ type LoginProps = {
 
 
 const Login = ({ setUser }: LoginProps) => {
-  const { player, setPlayer } = usePlayer();
-  const getPlayerFromDB = usePlayerHook();
-
   const loginAnonymous = async () => {
     const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
-    localStorage.setItem('userId', user.id);
-
-    setPlayer(getPlayerFromDB); // Assuming `setPlayer` updates the context state
     setUser(user);
   };
 

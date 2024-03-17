@@ -1,6 +1,6 @@
 
 import * as Realm from "realm-web";
-import { IEnemy } from "../types/schemas";
+import { IEnemy } from "../types/types";
 
 
 

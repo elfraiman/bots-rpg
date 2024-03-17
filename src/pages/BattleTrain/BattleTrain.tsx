@@ -1,9 +1,9 @@
 import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
+import { PlayerContext } from "../../context/PlayerContext";
 import { getEnemy } from "../../data/enemies";
-import usePlayerHook from "../../hooks/UsePlayerHook";
-import { IEnemy, IPlayer } from "../../types/schemas";
+import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
 
 interface IFightResult {
@@ -35,7 +35,7 @@ const style = {
 
 
 const BattleTrain = () => {
-  const player: IPlayer = usePlayerHook(); // Assuming usePlayerHook returns player with health
+  const {player, setPlayer} = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
   const [enemy, setEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(player?.maxHealth || 100);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);

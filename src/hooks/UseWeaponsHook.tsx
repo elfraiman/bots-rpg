@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as Realm from "realm-web";
-import { IWeapon } from '../types/schemas'; // Assuming you've renamed the import to avoid naming conflict
+import { IWeapon } from '../types/types'; // Assuming you've renamed the import to avoid naming conflict
 
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 

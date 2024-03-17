@@ -1,6 +1,6 @@
 import React from 'react';
 import { IonAlert, IonButton } from '@ionic/react';
-import { IWeapon } from '../types/schemas';
+import { IWeapon } from '../types/types';
 
 
 interface IPurchaseGearAlertProps {

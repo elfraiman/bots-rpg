@@ -1,17 +1,16 @@
-import React, { useContext, useState } from 'react';
-import { IonAlert, IonBadge, IonButton, IonCol, IonGrid, IonItem, IonLabel, IonModal, IonRow, IonThumbnail } from "@ionic/react";
-import { IPlayer, IWeapon } from "../types/schemas";
-import UsePurchaseItem from '../hooks/PurchaseItem';
-import { PlayerContext, PlayerProvider, usePlayer } from '../context/PlayerContext';
+import { IonBadge, IonButton, IonCol, IonGrid, IonItem, IonModal, IonRow, IonThumbnail } from "@ionic/react";
+import { useContext, useState } from 'react';
+import { PlayerContext, PlayerProvider } from '../context/PlayerContext';
+import { IPlayer, IWeapon } from "../types/types";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
   initialPlayer: IPlayer;
 }
 
-const InnerWeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
+const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
-  const { player, setPlayer } = useContext(PlayerContext);
+  const { player, setPlayer, updatePlayerData } = useContext(PlayerContext);
 
 
   if (!weapon.requirements) {
@@ -19,27 +18,32 @@ const InnerWeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
     return;
   }
 
+  const checkRequirements = () => {
+    const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements.str && player.dex >= weapon.requirements.dex;
+
+    return meetsRequirements;
+  }
+
 
   const purchaseItem = async (item: IWeapon) => {
     console.log(player, 'player', initialPlayer);
-    
-    if (player) {
-      const updatedPlayer = await UsePurchaseItem({ item, player });
-      if (updatedPlayer) {
-        setPlayer(updatedPlayer); // This now correctly handles the updated player object
-      } else {
-        // Handle the case where the purchase operation failed or didn't return a player
-        console.error("Failed to update player or player data was not returned.");
+    if (player && player.gold >= item.cost && item.requirements && player.str >= item?.requirements.str && player.dex >= item.requirements.dex) {
+      try {
+        await updatePlayerData({ ...player, gold: player.gold - item.cost, equipment: { mainHand: item } });
+
+      } catch (e) {
+        console.error(e)
       }
+
       setShowModal(false);
     } else {
-      setPlayer(initialPlayer)
+      console.error("Player does not meet the requirements to purchase this item");
     }
   };
 
   return (
     <>
-      {weapon ? (
+      {weapon && player ? (
         <>
           <IonItem onClick={() => setShowModal(true)}>
             <IonThumbnail slot="start">
@@ -74,7 +78,7 @@ const InnerWeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
                   <p>Cost: {weapon.cost} Gold</p>
                   <p>Damage: {weapon.minDamage}-{weapon.maxDamage}</p>
                   <p>Requirements: DEX {weapon?.requirements?.dex}, STR {weapon?.requirements?.str}</p>
-                  <IonButton onClick={() => purchaseItem(weapon)}>Confirm Purchase</IonButton>
+                  <IonButton disabled={!checkRequirements()} onClick={() => purchaseItem(weapon)}>Confirm Purchase</IonButton>
                   <IonButton onClick={() => setShowModal(false)}>Cancel</IonButton>
                 </IonCol>
               </IonRow>
@@ -86,13 +90,5 @@ const InnerWeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
     </>
   );
 };
-
-const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
-  return (
-    <PlayerProvider>
-      <InnerWeaponCard weapon={weapon} initialPlayer={initialPlayer} />
-    </PlayerProvider>
-  );
-}
 
 export default WeaponCard;
