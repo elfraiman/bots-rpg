@@ -1,6 +1,6 @@
 import { IonApp, IonButton, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Redirect, Route } from 'react-router';
 import * as Realm from "realm-web";
 
@@ -29,6 +29,8 @@ import Train from './pages/Train/TrainingRoom';
 import './theme/variables.css';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 import Shop from './pages/Shop/Shop';
+import { PlayerProvider, usePlayer } from './context/PlayerContext';
+import usePlayerHook from './hooks/UsePlayerHook';
 
 
 setupIonicReact();
@@ -49,18 +51,20 @@ type LoginProps = {
 
 
 const Login = ({ setUser }: LoginProps) => {
-  
+  const { player, setPlayer } = usePlayer();
+  const getPlayerFromDB = usePlayerHook();
+
   const loginAnonymous = async () => {
     const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
     localStorage.setItem('userId', user.id);
+
+    setPlayer(getPlayerFromDB); // Assuming `setPlayer` updates the context state
     setUser(user);
   };
 
 
   return <IonButton onClick={loginAnonymous}>Log In</IonButton>;
 };
-
-
 // Add your App ID
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
@@ -72,61 +76,63 @@ const App: React.FC = () => {
 
 
   return (
-    <IonApp>
-         {user ? (
-                <IonReactRouter>
-                <IonTabs>
-                  <IonRouterOutlet>
-                    <Redirect exact path="/" to="/home" />
-                    {/*
+    <PlayerProvider>
+      <IonApp>
+        {user ? (
+          <IonReactRouter>
+            <IonTabs>
+              <IonRouterOutlet>
+                <Redirect exact path="/" to="/home" />
+                {/*
                   Use the render method to reduce the number of renders your component will have due to a route change.
         
                   Use the component prop when your component depends on the RouterComponentProps passed in automatically.
                 */}
-                    <Route path="/home" render={() => <Home />} exact={true} />
-                    <Route path="/train" render={() => <Train />} exact={true} />
-                    <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
-                    <Route path="/shop" render={() => <Shop />} exact={true} />
-                    <Route path="/search" render={() => <Home />} exact={true} />
-                    <Route path="/search" render={() => <Home />} exact={true} />
-                    <Route path="/search" render={() => <Home />} exact={true} />
-                    <Route path="/search" render={() => <Home />} exact={true} />
-                  </IonRouterOutlet>
-        
-                  <IonTabBar slot="bottom">
-                    <IonTabButton tab="home" href="/home">
-                      <IonIcon icon={home} />
-                      <IonLabel>Home</IonLabel>
-                    </IonTabButton>
-        
-                    <IonTabButton tab="radio" href="/train">
-                      <IonIcon icon={barbell} />
-                      <IonLabel>Train</IonLabel>
-                    </IonTabButton>
-        
-                    <IonTabButton tab="library" href="/library">
-                      <IonIcon icon={medal} />
-                      <IonLabel>Fight</IonLabel>
-                    </IonTabButton>
-        
-                    <IonTabButton tab="shop" href="/shop">
-                      <IonIcon icon={diamond} />
-                      <IonLabel>Shop</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="search" href="/search">
-                      <IonIcon icon={search} />
-                      <IonLabel>Search</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="search" href="/search">
-                      <IonIcon icon={search} />
-                      <IonLabel>Search</IonLabel>
-                    </IonTabButton>
-                  </IonTabBar>
-                </IonTabs>
-              </IonReactRouter>
-         ) : <Login setUser={setUser} />}
+                <Route path="/home" render={() => <Home />} exact={true} />
+                <Route path="/train" render={() => <Train />} exact={true} />
+                <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
+                <Route path="/shop" render={() => <Shop />} exact={true} />
+                <Route path="/search" render={() => <Home />} exact={true} />
+                <Route path="/search" render={() => <Home />} exact={true} />
+                <Route path="/search" render={() => <Home />} exact={true} />
+                <Route path="/search" render={() => <Home />} exact={true} />
+              </IonRouterOutlet>
 
-    </IonApp>
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="home" href="/home">
+                  <IonIcon icon={home} />
+                  <IonLabel>Home</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="radio" href="/train">
+                  <IonIcon icon={barbell} />
+                  <IonLabel>Train</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="library" href="/library">
+                  <IonIcon icon={medal} />
+                  <IonLabel>Fight</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="shop" href="/shop">
+                  <IonIcon icon={diamond} />
+                  <IonLabel>Shop</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="search" href="/search">
+                  <IonIcon icon={search} />
+                  <IonLabel>Search</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="search" href="/search">
+                  <IonIcon icon={search} />
+                  <IonLabel>Search</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            </IonTabs>
+          </IonReactRouter>
+        ) : <Login setUser={setUser} />}
+
+      </IonApp>
+    </PlayerProvider>
   )
 };
 

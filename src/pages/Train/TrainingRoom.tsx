@@ -20,7 +20,8 @@ import { IEnemy } from '../../types/schemas';
 import React from 'react';
 
 // Add your App ID
-const app = new Realm.App({ id: 'application-0-vgvqx' });
+
+const app = Realm.App.getApp('application-0-vgvqx'); // replace this with your App ID
 
 const Train: React.FC = () => {
   const [data, setData] = useState<any>([]);

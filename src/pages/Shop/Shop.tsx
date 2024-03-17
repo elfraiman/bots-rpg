@@ -1,17 +1,23 @@
 import { IonAccordion, IonAccordionGroup, IonBadge, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonPage, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-import useWeaponsHook from '../../hooks/UseWeaponsHook.tsx';
+import useWeaponsHook from '../../hooks/UseWeaponsHook';
 import { IWeapon } from '../../types/schemas';
 import './Shop.css';
-import WeaponCard from '../../components/WeaponCard.js';
-import usePlayerHook from '../../hooks/UsePlayerHook.js';
+import WeaponCard from '../../components/WeaponCard';
+import usePlayerHook from '../../hooks/UsePlayerHook';
+import { PlayerProvider } from '../../context/PlayerContext';
 
 
-const Shop = () => {
+const ShopInner = () => {
   const weapons = useWeaponsHook();
   const player = usePlayerHook();
   const [weaponsData, setWeaponsData] = useState<IWeapon[]>([]);
 
+  const collection = db.collection('inventory');
+  const changeStream = collection.watch();
+  changeStream.on('change', next => {
+    // process next document
+  });
 
   useEffect(() => {
     if (weapons) {
@@ -20,7 +26,6 @@ const Shop = () => {
 
     console.log(weapons);
   }, [weapons]);
-
 
 
 
@@ -40,7 +45,7 @@ const Shop = () => {
           <IonContent className="ion-padding">
             <IonText>
               <p>Welcome to <strong>the Shop</strong></p>
-              <div style={{paddingBottom: 16}}>
+              <div style={{ paddingBottom: 16 }}>
                 Gold: <span style={{ color: 'gold' }}>{player.gold}</span> Str: {player.str} Dex: {player.dex}
               </div>
             </IonText>
@@ -55,7 +60,7 @@ const Shop = () => {
                     <IonList lines='full'>
                       {weaponsData.map((weapon: IWeapon, index: number) => { // Add type annotations for weapon and index
                         return (
-                          <WeaponCard weapon={weapon} player={player} key={index} />
+                          <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
                         );
                       })}
                     </IonList>
@@ -103,5 +108,14 @@ const Shop = () => {
     </React.Fragment>
   )
 }
+
+const Shop = () => {
+
+  return (
+    <PlayerProvider>
+      <ShopInner />
+    </PlayerProvider>
+  );
+};
 
 export default Shop;

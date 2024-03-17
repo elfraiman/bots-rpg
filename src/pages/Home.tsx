@@ -7,22 +7,11 @@ import {
   IonPage,
   IonText,
   IonTitle,
-  IonToolbar,
-  useIonViewWillEnter
+  IonToolbar
 } from '@ionic/react';
-import { useState } from 'react';
-import { Message, getMessages } from '../data/messages';
 import './Home.css';
 
 const Home: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
-  });
-
-
   return (
       <>
         <IonMenu contentId="main-content">
