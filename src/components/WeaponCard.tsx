@@ -70,7 +70,7 @@ const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
           </IonItem>
 
           <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
-            <img alt={`A ${weapon.name} with beautiful details`} src={`../../resources/images/weapons/${weapon._id}.webp`} style={{ width: '100%' }} />
+            <img alt={`A ${weapon.name} with beautiful details`} src={`../resources/images/weapons/${weapon._id}.webp`} style={{ width: '100%' }} />
             <IonGrid>
               <IonRow>
                 <IonCol>
