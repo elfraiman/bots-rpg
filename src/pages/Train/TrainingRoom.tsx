@@ -78,8 +78,8 @@ const Train: React.FC = () => {
             <IonTitle>Training room</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="ion-padding">
-          <IonImg src="resources/images/TrainingRoom.webp" alt="Training room" className="banner" />
+        <IonContent className="ion-padding training-bg">
+       
 
           <IonText>
             <div className="text-overlay">
@@ -91,7 +91,7 @@ const Train: React.FC = () => {
           </IonText>
 
           {enemies?.map((enemy: IEnemy) => (
-            <EnemyCard enemy={enemy} key={enemy._id} />
+            <EnemyCard enemy={enemy} key={enemy._id}  />
           ))}
 
         </IonContent>

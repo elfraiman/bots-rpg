@@ -24,96 +24,93 @@ const Shop = () => {
 
   return (
     <React.Fragment>
-      <IonPage id="main-content">
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonMenuButton></IonMenuButton>
-            </IonButtons>
-            <IonTitle>Shop</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+      {player ? (
+        <IonPage id="main-content" className="content">
+          <IonHeader  >
+            <IonToolbar >
+              <IonTitle>Shop</IonTitle>
+              <span className="ion-padding">
+                Gold: <span style={{ color: 'gold' }}>{player.gold}</span> Str: {player.str} Dex: {player.dex}
+              </span>
+            </IonToolbar>
+          </IonHeader>
 
-        {player ? (
-          <IonContent className="ion-padding">
-            <IonImg src="resources/images/Shop.webp" alt="Futuristic looking shop with weapons on the wall and armors on display" className="banner" />
-            <IonText>
-            <div className="text-overlay">
-              <h2><strong>The shop</strong></h2>
-              <p>
-                Welcome to the training room. Here you can practice your skills and level up your bot.
-              </p>
-            </div>
-          </IonText>
-            <IonCard className="ion-padding">
-              <IonCardTitle></IonCardTitle>
-              <IonCardSubtitle>
-                <div style={{ paddingBottom: 16 }}>
-                  Gold: <span style={{ color: 'gold' }}>{player.gold}</span> Str: {player.str} Dex: {player.dex}
-                </div></IonCardSubtitle>
+          {player ? (
+            <IonContent className="ion-padding shop-bg">
+              <IonText>
+                <div className="text-overlay">
+                  <h2><strong>The shop</strong></h2>
+                  <p>
+                    Welcome to the training room. Here you can practice your skills and level up your bot.
+                  </p>
+                </div>
+              </IonText>
 
-              <IonCardContent>
+              <IonCard className="card-fade">
+                <IonCardContent>
 
-                {weaponsData && player ? (
-                  <IonAccordionGroup>
+                  {weaponsData && player ? (
+                    <IonAccordionGroup>
 
-                    <IonAccordion value="first">
-                      <IonItem slot="header" color="light">
-                        <IonLabel>Weapons</IonLabel>
-                      </IonItem>
-                      <div slot="content">
-                        <IonList lines='full'>
-                          {weaponsData.map((weapon: IWeapon, index: number) => { // Add type annotations for weapon and index
-                            return (
-                              <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
-                            );
-                          })}
-                        </IonList>
-                      </div>
-                    </IonAccordion>
-                    <IonAccordion value="second">
-                      <IonItem slot="header" color="light">
-                        <IonLabel>Armor</IonLabel>
-                      </IonItem>
-                      <div className="ion-padding" slot="content">
-                        Second Content
-                      </div>
-                    </IonAccordion>
-                    <IonAccordion value="third">
-                      <IonItem slot="header" color="light">
-                        <IonLabel>Boots</IonLabel>
-                      </IonItem>
-                      <div className="ion-padding" slot="content">
-                        Third Content
-                      </div>
-                    </IonAccordion>
-                    <IonAccordion value="fourth">
-                      <IonItem slot="header" color="light">
-                        <IonLabel>Gloves</IonLabel>
-                      </IonItem>
-                      <div className="ion-padding" slot="content">
-                        Third Content
-                      </div>
-                    </IonAccordion>
-                    <IonAccordion value="fifth">
-                      <IonItem slot="header" color="light">
-                        <IonLabel>Helmets</IonLabel>
-                      </IonItem>
-                      <div className="ion-padding" slot="content">
-                        Third Content
-                      </div>
-                    </IonAccordion>
-                  </IonAccordionGroup>
-                ) : <p>Loading...</p>}
+                      <IonAccordion value="first">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Weapons</IonLabel>
+                        </IonItem>
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {weaponsData.map((weapon: IWeapon, index: number) => { // Add type annotations for weapon and index
+                              return (
+                                <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
+                              );
+                            })}
+                          </IonList>
+                        </div>
+                      </IonAccordion>
+                      <IonAccordion value="second">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Armor</IonLabel>
+                        </IonItem>
+                        <div className="ion-padding" slot="content">
+                          Second Content
+                        </div>
+                      </IonAccordion>
+                      <IonAccordion value="third">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Boots</IonLabel>
+                        </IonItem>
+                        <div className="ion-padding" slot="content">
+                          Third Content
+                        </div>
+                      </IonAccordion>
+                      <IonAccordion value="fourth">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Gloves</IonLabel>
+                        </IonItem>
+                        <div className="ion-padding" slot="content">
+                          Third Content
+                        </div>
+                      </IonAccordion>
+                      <IonAccordion value="fifth">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Helmets</IonLabel>
+                        </IonItem>
+                        <div className="ion-padding" slot="content">
+                          Third Content
+                        </div>
+                      </IonAccordion>
+                    </IonAccordionGroup>
+                  ) : <p>Loading...</p>}
 
-              </IonCardContent>
-            </IonCard>
+                </IonCardContent>
+              </IonCard>
 
 
-          </IonContent>
-        ) : <p>Loading...</p>}
+            </IonContent>
+          ) : <p>Loading...</p>}
 
-      </IonPage>
+        </IonPage>
+      ) : <p>Loading...</p>}
+
     </React.Fragment>
   )
 }

@@ -8,7 +8,7 @@ interface IEnemyCardProps {
 const EnemyCard = ({ enemy }: IEnemyCardProps) => {
 
     return (
-        <IonCard>
+        <IonCard className="card-fade">
             <IonCardHeader>
                 <IonCardTitle>{enemy.name}</IonCardTitle>
                 <IonCardSubtitle>Level: {enemy.level}</IonCardSubtitle>
