@@ -47,7 +47,7 @@ const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
         <>
           <IonItem onClick={() => setShowModal(true)}>
             <IonThumbnail slot="start">
-              <img alt={`A ${weapon.name} with beautiful details`} src={`../../resources/images/weapons/${weapon._id}.webp`} />
+              <img alt={`A ${weapon.name} with beautiful details`} src={`/resources/images/weapons/${weapon._id}.webp`} />
             </IonThumbnail>
             <IonGrid>
               <IonRow>
