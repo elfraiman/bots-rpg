@@ -66,6 +66,8 @@ const Shop = () => {
                           </IonList>
                         </div>
                       </IonAccordion>
+
+                      
                       <IonAccordion value="second">
                         <IonItem slot="header" color="light">
                           <IonLabel>Armor</IonLabel>

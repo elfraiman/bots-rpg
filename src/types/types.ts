@@ -1,5 +1,4 @@
 import Realm from "realm-web";
-
 export type IEnemy = {
   _id: number;
   con: number;
@@ -66,6 +65,7 @@ export type IPlayer = {
   experience: number;
   gold: number;
   int: number;
+  inventory: Realm.List<IPlayer_inventory>;
   level: number;
   maxHealth: number;
   name: string;
@@ -82,6 +82,7 @@ export const IPlayerSchema = {
     experience: 'int',
     gold: 'int',
     int: 'int',
+    inventory: 'IPlayer_inventory[]',
     level: 'int',
     maxHealth: 'int',
     name: 'string',
@@ -118,6 +119,15 @@ export const IPlayer_equipment_mainHandSchema = {
     minDamage: 'int?',
     name: 'string?',
   },
+};
+
+export type IPlayer_inventory = {
+};
+
+export const IPlayer_inventorySchema = {
+  name: 'IPlayer_inventory',
+  embedded: true,
+  properties: {},
 };
 
 export type IWeapon = {

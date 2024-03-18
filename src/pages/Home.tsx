@@ -1,4 +1,6 @@
 import {
+  IonAccordion,
+  IonAccordionGroup,
   IonButtons,
   IonCard,
   IonCardContent,
@@ -7,6 +9,9 @@ import {
   IonContent,
   IonHeader,
   IonImg,
+  IonItem,
+  IonLabel,
+  IonList,
   IonMenu,
   IonMenuButton,
   IonPage,
@@ -18,6 +23,8 @@ import './Home.css';
 import { useContext } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import BotOutline from '../../resources/images/BotOutline.webp';
+import WeaponCard from '../components/WeaponCard';
+import { IWeapon } from '../types/types';
 
 
 const styles = {
@@ -27,6 +34,8 @@ const styles = {
 
 const Home: React.FC = () => {
   const { player } = useContext(PlayerContext);
+
+  console.log(player, 'player')
 
   return (
     <>
@@ -69,7 +78,25 @@ const Home: React.FC = () => {
 
                 </div>
               </IonCardContent>
+              <IonAccordionGroup>
+                <IonAccordion value="first">
+                  <IonItem slot="header" color="light">
+                    <IonLabel>Weapons</IonLabel>
+                  </IonItem>
+                  <div slot="content">
+                    <IonList lines='full'>
+                      {player?.inventory?.map((weapon: IWeapon, index: number) => {
+                        return (
+                          <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
+                        );
+                      })}
+
+                    </IonList>
+                  </div>
+                </IonAccordion>
+              </IonAccordionGroup>
             </IonCard>
+
           ) : <>Loading...</>}
         </IonContent>
       </IonPage>
