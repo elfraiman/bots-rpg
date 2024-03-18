@@ -26,7 +26,7 @@
   height: 35px;
   z-index: 100;
   top: 155px;
-  right: 100px;
+  left: 210px;
 }
 
 .armor-block {
@@ -35,8 +35,7 @@
   height: 60px;
   z-index: 100;
   top: 80px;
-  right: 46%;
-  left: auto;
+  left: 143px;
 }
 
 .helmet-block {
@@ -45,8 +44,7 @@
   height: 35px;
   z-index: 100;
   top: 20px;
-  right: 46%;
-  left: auto;
+  left: 145px;
 }
 .right-boot-block {
   position: absolute;
@@ -54,7 +52,7 @@
   height: 30px;
   z-index: 100;
   top: 270px;
-  right: 105px;;
+  left: 190px;
 }
 .left-boot-block {
   position: absolute;
