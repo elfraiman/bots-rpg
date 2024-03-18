@@ -7,3 +7,7 @@ ion-menu::part(backdrop) {
   
     box-shadow: 4px 0px 16px rgba(255, 0, 255, 0.18);
   }
+
+  .home-bg {
+    --background: url('/resources/images/Home.webp') no-repeat center center / cover;
+}
