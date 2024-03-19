@@ -1,10 +1,10 @@
-import { IonAccordion, IonAccordionGroup, IonBadge, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonPage, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
+import WeaponCard from '../../components/WeaponCard';
+import { PlayerContext } from '../../context/PlayerContext';
 import useWeaponsHook from '../../hooks/UseWeaponsHook';
 import { IWeapon } from '../../types/types';
 import './Shop.css';
-import WeaponCard from '../../components/WeaponCard';
-import { PlayerContext, PlayerProvider } from '../../context/PlayerContext';
 
 
 const Shop = () => {
@@ -28,7 +28,7 @@ const Shop = () => {
         <IonPage id="main-content" className="content">
           <IonHeader  >
             <IonToolbar >
-              <IonTitle>Shop</IonTitle>
+              <IonTitle slot="">Shop</IonTitle>
               <span className="ion-padding">
                 Gold: <span style={{ color: 'gold' }}>{player.gold}</span> Str: {player.str} Dex: {player.dex}
               </span>

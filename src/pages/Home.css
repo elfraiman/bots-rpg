@@ -11,3 +11,66 @@ ion-menu::part(backdrop) {
   .home-bg {
     --background: url('/resources/images/Home.webp') no-repeat center center / cover;
 }
+
+.left-arm-block {
+  position: absolute;
+  width: 25px;
+  height: 35px;
+  background-color: rgba(0, 255, 30, 0.23);
+  border: 1px solid greenyellow;
+  z-index: 100;
+  top: 155px;
+  left: 85px;
+}
+
+.right-arm-block {
+  position: absolute;
+  width: 25px;
+  height: 35px;
+  z-index: 100;
+  top: 155px;
+  left: 205px;
+}
+
+.armor-block {
+  position: absolute;
+  width: 40px;
+  height: 60px;
+  z-index: 100;
+  top: 80px;
+  left: 138px;
+}
+
+.helmet-block {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  z-index: 100;
+  top: 15px;
+  left: 140px;
+}
+.right-boot-block {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  z-index: 100;
+  top: 270px;
+  left: 190px;
+}
+.left-boot-block {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  z-index: 100;
+  top: 270px;
+  left: 95px;;
+}
+
+.bot-card-content {
+  position: relative;
+  width: 100%;
+}
+
+.bot-outline-img {
+  width: 280px;
+}

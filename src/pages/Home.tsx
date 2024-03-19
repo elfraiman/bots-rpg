@@ -15,16 +15,15 @@ import {
   IonMenu,
   IonMenuButton,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar
 } from '@ionic/react';
-import './Home.css';
 import { useContext } from 'react';
-import { PlayerContext } from '../context/PlayerContext';
 import BotOutline from '../../resources/images/BotOutline.webp';
 import WeaponCard from '../components/WeaponCard';
+import { PlayerContext } from '../context/PlayerContext';
 import { IWeapon } from '../types/types';
+import './Home.css';
 
 
 const styles = {
@@ -56,6 +55,7 @@ const Home: React.FC = () => {
             <IonTitle>Home</IonTitle>
           </IonToolbar>
         </IonHeader>
+
         <IonContent className="ion-padding home-bg">
           {player ? (
             <IonCard className="ion-padding card-fade ion-bot-card">

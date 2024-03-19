@@ -1,7 +1,9 @@
 import { IonBadge, IonButton, IonCol, IonGrid, IonItem, IonModal, IonRow, IonThumbnail } from "@ionic/react";
 import { useContext, useState } from 'react';
-import { PlayerContext, PlayerProvider } from '../context/PlayerContext';
+import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from "../types/types";
+import './WeaponCard.css';
+import WeaponModal from "./WeaponModal";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -19,9 +21,10 @@ const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
   }
 
   const checkRequirements = () => {
-    const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements.str && player.dex >= weapon.requirements.dex;
+      const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements?.str && player.dex >= weapon?.requirements.dex;
 
-    return meetsRequirements;
+      return !!meetsRequirements;
+  
   }
 
 
@@ -47,7 +50,7 @@ const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
         <>
           <IonItem onClick={() => setShowModal(true)}>
             <IonThumbnail slot="start">
-              <img alt={`A ${weapon.name} with beautiful details`} src={`/resources/images/weapons/${weapon._id}.webp`} />
+              <img alt={`A ${weapon.name} with beautiful details`} src={`/resources/images/weapons/weapon-${weapon.imgId}.webp`} />
             </IonThumbnail>
             <IonGrid>
               <IonRow>
@@ -69,21 +72,7 @@ const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
             </IonGrid>
           </IonItem>
 
-          <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
-            <img alt={`A ${weapon.name} with beautiful details`} src={`/resources/images/weapons/${weapon._id}.webp`} style={{ width: '100%' }} />
-            <IonGrid>
-              <IonRow>
-                <IonCol>
-                  <h2>{weapon.name}</h2>
-                  <p>Cost: {weapon.cost} Gold</p>
-                  <p>Damage: {weapon.minDamage}-{weapon.maxDamage}</p>
-                  <p>Requirements: DEX {weapon?.requirements?.dex}, STR {weapon?.requirements?.str}</p>
-                  <IonButton disabled={!checkRequirements()} onClick={() => purchaseItem(weapon)}>Confirm Purchase</IonButton>
-                  <IonButton onClick={() => setShowModal(false)}>Cancel</IonButton>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </IonModal>
+          <WeaponModal isForSale={true} canPurchase={checkRequirements()} purchaseItem={purchaseItem}  showModal={showModal} setShowModal={setShowModal} weapon={weapon}/>
         </>
       ) : <>Loading..</>}
 

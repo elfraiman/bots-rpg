@@ -1,4 +1,4 @@
-import { IonApp, IonButton, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
+import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import React from 'react';
 import { Redirect, Route } from 'react-router';
@@ -27,6 +27,7 @@ import '@ionic/react/css/text-transformation.css';
 import { PlayerProvider } from './context/PlayerContext';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 import Home from './pages/Home';
+import Login from './pages/Login/Login';
 import Shop from './pages/Shop/Shop';
 import Train from './pages/Train/TrainingRoom';
 import './theme/variables.css';
@@ -34,30 +35,9 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-// Create a component that displays the given user's details
-const UserDetail = ({ user }: { user: Realm.User }) => {
-  return (
-    <div>
-      <h1>Logged in with anonymous id: {user.id}</h1>
-    </div>
-  );
-};
-
-// Create a component that lets an anonymous user log in
-type LoginProps = {
-  setUser: (user: Realm.User) => void;
-};
 
 
-const Login = ({ setUser }: LoginProps) => {
-  const loginAnonymous = async () => {
-    const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
-    setUser(user);
-  };
 
-
-  return <IonButton onClick={loginAnonymous}>Log In</IonButton>;
-};
 // Add your App ID
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
@@ -122,8 +102,7 @@ const App: React.FC = () => {
               </IonTabBar>
             </IonTabs>
           </IonReactRouter>
-        ) : <Login setUser={setUser} />}
-
+        ) : <Login /> }
       </IonApp>
     </PlayerProvider>
   )

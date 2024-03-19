@@ -1,0 +1,12 @@
+.login-bg {
+    --background: url("/resources/images/LoginBG.webp") no-repeat center center / cover;
+    position: relative;
+}
+
+.login-card {
+    margin-top: 300px;
+}
+
+.register-btn {
+    margin-top: 26px;
+}

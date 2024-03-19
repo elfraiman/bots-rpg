@@ -1,4 +1,5 @@
 import Realm from "realm-web";
+
 export type IEnemy = {
   _id: number;
   con: number;
@@ -92,32 +93,14 @@ export const IPlayerSchema = {
 };
 
 export type IPlayer_equipment = {
-  mainHand?: IPlayer_equipment_mainHand;
+  mainHand?: IWeapon;
 };
 
 export const IPlayer_equipmentSchema = {
   name: 'IPlayer_equipment',
   embedded: true,
   properties: {
-    mainHand: 'IPlayer_equipment_mainHand',
-  },
-};
-
-export type IPlayer_equipment_mainHand = {
-  id?: Realm.BSON.ObjectId;
-  maxDamage?: number;
-  minDamage?: number;
-  name?: string;
-};
-
-export const IPlayer_equipment_mainHandSchema = {
-  name: 'IPlayer_equipment_mainHand',
-  embedded: true,
-  properties: {
-    id: 'objectId?',
-    maxDamage: 'int?',
-    minDamage: 'int?',
-    name: 'string?',
+    mainHand: 'weapon',
   },
 };
 
@@ -131,19 +114,25 @@ export const IPlayer_inventorySchema = {
 };
 
 export type IWeapon = {
-  _id: Realm.BSON.ObjectId;
+  _id: number;
   cost: number;
+  description: string;
+  grade: string;
+  imgId: number;
   maxDamage: number;
   minDamage: number;
   name: string;
-  requirements?: IWeapon_requirements;
+  requirements: IWeapon_requirements;
 };
 
 export const IWeaponSchema = {
   name: 'IWeapon',
   properties: {
-    _id: 'objectId',
+    _id: 'int',
     cost: 'int',
+    description: 'string',
+    grade: 'string',
+    imgId: 'int',
     maxDamage: 'int',
     minDamage: 'int',
     name: 'string',
@@ -153,7 +142,9 @@ export const IWeaponSchema = {
 };
 
 export type IWeapon_requirements = {
+  con: number;
   dex: number;
+  int: number;
   str: number;
 };
 
@@ -161,8 +152,10 @@ export const IWeapon_requirementsSchema = {
   name: 'IWeapon_requirements',
   embedded: true,
   properties: {
-    dex: 'int',
-    str: 'int',
+    con: 'int?',
+    dex: 'int?',
+    int: 'int?',
+    str: 'int?',
   },
 };
 
@@ -195,5 +188,49 @@ export const quests_rewardsSchema = {
   properties: {
     experience: 'int?',
     gold: 'int?',
+  },
+};
+
+export type weapon = {
+  _id?: Realm.BSON.ObjectId;
+  cost?: number;
+  description?: string;
+  imgId?: number;
+  maxDamage?: number;
+  minDamage?: number;
+  name?: string;
+  requirements?: weapon_requirements;
+};
+
+export const weaponSchema = {
+  name: 'weapon',
+  embedded: true,
+  properties: {
+    _id: 'objectId?',
+    cost: 'int?',
+    description: 'string?',
+    imgId: 'int?',
+    maxDamage: 'int?',
+    minDamage: 'int?',
+    name: 'string?',
+    requirements: 'weapon_requirements',
+  },
+};
+
+export type weapon_requirements = {
+  con?: number;
+  dex?: number;
+  int?: number;
+  str?: number;
+};
+
+export const weapon_requirementsSchema = {
+  name: 'weapon_requirements',
+  embedded: true,
+  properties: {
+    con: 'int?',
+    dex: 'int?',
+    int: 'int?',
+    str: 'int?',
   },
 };
