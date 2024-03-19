@@ -87,7 +87,7 @@ const Home: React.FC = () => {
                     <IonList lines='full'>
                       {player?.inventory?.map((weapon: IWeapon, index: number) => {
                         return (
-                          <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
+                          <WeaponCard weapon={weapon} initialPlayer={player} key={index}  />
                         );
                       })}
 

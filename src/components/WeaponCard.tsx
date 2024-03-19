@@ -1,5 +1,5 @@
 import { IonBadge, IonButton, IonCol, IonGrid, IonItem, IonModal, IonRow, IonThumbnail } from "@ionic/react";
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from "../types/types";
 import './WeaponCard.css';
@@ -8,11 +8,18 @@ import WeaponModal from "./WeaponModal";
 interface IWeaponCardProps {
   weapon: IWeapon;
   initialPlayer: IPlayer;
+  isForSale?: boolean;
 }
 
-const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
+const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, setPlayer, updatePlayerData } = useContext(PlayerContext);
+  const [presentingElement, setPresentingElement] = useState<HTMLElement | null>(null);
+  const page = useRef(null);
+
+  useEffect(() => {
+    setPresentingElement(page.current);
+  }, []);
 
 
   if (!weapon.requirements) {
@@ -72,7 +79,7 @@ const WeaponCard = ({ weapon, initialPlayer }: IWeaponCardProps) => {
             </IonGrid>
           </IonItem>
 
-          <WeaponModal isForSale={true} canPurchase={checkRequirements()} purchaseItem={purchaseItem}  showModal={showModal} setShowModal={setShowModal} weapon={weapon}/>
+          <WeaponModal presentingElement={presentingElement} isForSale={isForSale ?? false} canPurchase={checkRequirements()} purchaseItem={purchaseItem}  showModal={showModal} setShowModal={setShowModal} weapon={weapon}/>
         </>
       ) : <>Loading..</>}
 
