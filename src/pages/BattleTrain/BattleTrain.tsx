@@ -340,6 +340,7 @@ const BattleTrain = () => {
         maxHit: 0,
         misses: 0,
         totalDamage: 0,
+        dodges: 0,
       });
     }
   }
