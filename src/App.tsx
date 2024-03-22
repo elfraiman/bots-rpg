@@ -1,4 +1,4 @@
-import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
+import { IonApp, IonCard, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import React from 'react';
 import { Redirect, Route } from 'react-router';
@@ -65,6 +65,7 @@ const App: React.FC = () => {
                 <Route path="/search" render={() => <Home />} exact={true} />
               </IonRouterOutlet>
 
+              
               <IonTabBar slot="bottom">
                 <IonTabButton tab="home" href="/home">
                   <IonIcon icon={home} />
@@ -95,6 +96,7 @@ const App: React.FC = () => {
                 </IonTabButton>
               </IonTabBar>
             </IonTabs>
+
           </IonReactRouter>
         ) : <Login /> }
       </IonApp>

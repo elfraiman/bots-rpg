@@ -42,11 +42,12 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const xpToNextLevel = getXpForNextLevel({level: player?.level ?? 0,});
-      console.log(xpToNextLevel, 'xp to next', player?.level, 'level')
       
+      // Handle leveling up.
       if (player && xpToNextLevel <= player?.experience ) {
         updates['level'] = player?.level + 1;
         updates['experience'] = 0;
+        updates['attributePoints'] = player.attributePoints + 5;
       }
 
       console.log(xpToNextLevel, 'xp to next level within the player context');

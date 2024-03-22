@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonPage, IonRow, IonText, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import { PlayerContext } from "../../context/PlayerContext";
@@ -47,7 +47,14 @@ const BattleTrain = () => {
   const turnRef = useRef<boolean>(true); // true indicates it's the player's turn, false for the enemy's turn
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const match = useRouteMatch<{ id: string }>();
-
+  const [battleStats, setBattleStats] = useState({
+    attempts: 0,
+    hits: 0,
+    maxHit: 0,
+    misses: 0,
+    dodges: 0,
+    totalDamage: 0,
+  });
 
   const getEnemy = async () => {
     const params: any = await match.params;
@@ -152,6 +159,7 @@ const BattleTrain = () => {
       if (isPlayerAttack) {
         newEnemyHealth = Math.max(enemyHealth - damageDealt, 0);
         setEnemyHealth(newEnemyHealth);
+
       } else {
         newPlayerHealth = Math.max(playerHealth - damageDealt, 0);
         setPlayerHealth(newPlayerHealth);
@@ -186,6 +194,18 @@ const BattleTrain = () => {
       setFightNarrative(prevNarrative => [...prevNarrative, hitMessage]);
 
 
+      if (isPlayerAttack) {
+
+        // Add to log
+        setBattleStats(prevStats => ({
+          ...prevStats,
+          attempts: prevStats.attempts + 1,
+          hits: prevStats.hits + 1,
+          maxHit: Math.max(prevStats.maxHit, damageDealt),
+          totalDamage: prevStats.totalDamage + damageDealt,
+        }));
+      }
+
     } else {
       const missMessage = (
         <div style={style.fightNarrative}>
@@ -197,6 +217,22 @@ const BattleTrain = () => {
         </div>
       );
       setFightNarrative(prevNarrative => [...prevNarrative, missMessage]);
+
+      // Add to log
+      //
+      if (isPlayerAttack) {
+        setBattleStats(prevStats => ({
+          ...prevStats,
+          attempts: prevStats.attempts + 1,
+          misses: prevStats.misses + 1,
+        }));
+      } else {
+        // player dodged
+        setBattleStats(prevStats => ({
+          ...prevStats,
+          dodges: prevStats.dodges + 1,
+        }));
+      }
     }
   };
 
@@ -229,8 +265,6 @@ const BattleTrain = () => {
         } else {
           fightEnd(true, enemy, player);
         }
-
-   
       }
 
       // Toggle the turn for the next interval
@@ -243,22 +277,71 @@ const BattleTrain = () => {
 
     if (playerWin) {
       console.log('Player Wins!');
-      const goldReward = getGoldReward({enemy: enemy, playerLevel: player.level});
-      const xpToNextLevel = getXpForNextLevel({level: player.level, baseXp: player.experience});
-      const xpReward = getXpReward({enemyLevel: enemy.level, enemyType: enemy.type, playerLevel: player.level})
+      const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
+      const xpToNextLevel = getXpForNextLevel({ level: player.level, baseXp: player.experience });
+      const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type, playerLevel: player.level })
 
 
-      updatePlayerData({...player, gold: player.gold += goldReward, experience: player.experience += xpReward})
+      updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
 
 
       console.log(goldReward, 'gold', xpToNextLevel, 'to next level', xpReward, 'xp reward')
 
-    const winnerMessage = <span>{player?.name} wins!</span>;
-    setFightNarrative(prev => [...prev, winnerMessage]);
+      // Add new message and reset health
+      //
+      const averageDamage = battleStats.hits > 0 ? Math.round(battleStats.totalDamage / battleStats.hits) : 0;
+      const hitRate = battleStats.attempts > 0 ? Math.round((battleStats.hits / battleStats.attempts) * 100) : 0;
+      console.log(battleStats)
+      const winnerMessage = (
+        <div>
+          <IonGrid>
+            <IonRow>
+              <IonCol>Attempts</IonCol>
+              <IonCol>{battleStats.attempts}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Hit Rate</IonCol>
+              <IonCol>{hitRate}%</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Max Hit</IonCol>
+              <IonCol>{battleStats.maxHit}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Misses</IonCol>
+              <IonCol>{battleStats.misses}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Dodges</IonCol>
+              <IonCol>{battleStats.dodges}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Average Damage</IonCol>
+              <IonCol>{averageDamage}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Total Damage</IonCol>
+              <IonCol>{battleStats.totalDamage}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Winner</IonCol>
+              <IonCol><span style={{ color: playerWin ? style.playerName.color : style.enemyName.color, fontWeight: 'bold' }}>{playerWin ? player.name : enemy.name}</span></IonCol>
+            </IonRow>
+          </IonGrid>
+        </div>
+      );
+      setFightNarrative(prev => [...prev, winnerMessage]);
+      setPlayerHealth(player.maxHealth);
+      setEnemyHealth(enemy.maxHealth);
+      setBattleStats({
+        attempts: 0,
+        hits: 0,
+        maxHit: 0,
+        misses: 0,
+        totalDamage: 0,
+      });
     }
-
-
   }
 
   // interval effect

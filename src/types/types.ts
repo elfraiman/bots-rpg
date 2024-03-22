@@ -59,6 +59,7 @@ export type IPlayer = {
   maxHealth: number;
   name: string;
   str: number;
+  attributePoints: number;
 };
 
 
