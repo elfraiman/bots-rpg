@@ -37,7 +37,6 @@ setupIonicReact();
 
 
 
-
 // Add your App ID
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
@@ -56,11 +55,6 @@ const App: React.FC = () => {
             <IonTabs>
               <IonRouterOutlet>
                 <Redirect exact path="/" to="/home" />
-                {/*
-                  Use the render method to reduce the number of renders your component will have due to a route change.
-        
-                  Use the component prop when your component depends on the RouterComponentProps passed in automatically.
-                */}
                 <Route path="/home" render={() => <Home />} exact={true} />
                 <Route path="/train" render={() => <Train />} exact={true} />
                 <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
