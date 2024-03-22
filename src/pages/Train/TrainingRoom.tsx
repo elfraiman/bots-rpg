@@ -18,7 +18,7 @@ import getEnemies from '../../functions/GetEnemies';
 
 
 const Train: React.FC = () => {
-  const [enemies, setEnemies] = useState<IEnemy[]>([]); // [1
+  const [enemies, setEnemies] = useState<IEnemy[] | IEnemy>([]); // [1
 
 
   const getEnemyList = async () => {
@@ -67,8 +67,8 @@ const Train: React.FC = () => {
             </div>
           </IonText>
 
-          {enemies?.map((enemy: IEnemy) => (
-            <EnemyCard enemy={enemy} key={enemy._id} />
+          {enemies?.map((enemy: IEnemy, index: number) => (
+            <EnemyCard enemy={enemy} key={index} />
           ))}
 
         </IonContent>
