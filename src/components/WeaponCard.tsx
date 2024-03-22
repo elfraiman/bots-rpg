@@ -1,4 +1,4 @@
-import { IonBadge, IonButton, IonCol, IonGrid, IonItem, IonModal, IonRow, IonThumbnail } from "@ionic/react";
+import { IonBadge, IonCol, IonGrid, IonItem, IonRow, IonThumbnail } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from "../types/types";

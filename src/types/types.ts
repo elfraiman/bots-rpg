@@ -1,7 +1,9 @@
-import Realm from "realm-web";
+import * as Realm from "realm-web";
+
+
 
 export type IEnemy = {
-  _id: number;
+  _id: Realm.BSON.ObjectID;
   con: number;
   description: string;
   dex: number;
@@ -11,23 +13,9 @@ export type IEnemy = {
   maxHealth: number;
   name: string;
   str: number;
-};
-
-export const IEnemySchema = {
-  name: 'IEnemy',
-  properties: {
-    _id: 'int',
-    con: 'int',
-    description: 'string',
-    dex: 'int',
-    equipment: 'IEnemy_equipment',
-    int: 'int',
-    level: 'int',
-    maxHealth: 'int',
-    name: 'string',
-    str: 'int',
-  },
-  primaryKey: '_id',
+  type: 'standard' | 'elite' | 'boss';
+  location: string;
+  imgId: number;
 };
 
 export type IEnemy_equipment = {
@@ -73,24 +61,6 @@ export type IPlayer = {
   str: number;
 };
 
-export const IPlayerSchema = {
-  name: 'IPlayer',
-  properties: {
-    _id: 'string',
-    con: 'int',
-    dex: 'int',
-    equipment: 'IPlayer_equipment',
-    experience: 'int',
-    gold: 'int',
-    int: 'int',
-    inventory: 'IPlayer_inventory[]',
-    level: 'int',
-    maxHealth: 'int',
-    name: 'string',
-    str: 'int',
-  },
-  primaryKey: '_id',
-};
 
 export type IPlayer_equipment = {
   mainHand?: IWeapon;

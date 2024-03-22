@@ -1,7 +1,7 @@
 import { IonModal, IonGrid, IonRow, IonCol, IonButton, IonImg, IonButtons } from "@ionic/react";
 import { IWeapon } from "../types/types";
 import './WeaponModal.css';
-import UseWeaponColor from "../hooks/UseWeaponColor";
+import getWeaponColor from "../functions/GetWeaponColor";
 
 interface IWeaponModalProps {
   showModal: boolean;
@@ -21,7 +21,7 @@ const WeaponModal = ({ showModal, weapon, presentingElement, isForSale, canPurch
       <div className="weapon-modal-title">
         Weapon
       </div>
-      <div className="weapon-name-title" style={{ color: UseWeaponColor(weapon.grade) }}>
+      <div className="weapon-name-title" style={{ color: getWeaponColor(weapon.grade) }}>
         {weapon.name}
       </div>
 
@@ -34,7 +34,7 @@ const WeaponModal = ({ showModal, weapon, presentingElement, isForSale, canPurch
 
           <IonCol style={{ marginLeft: 26 }}>
             <IonRow>
-              <span style={{ color: UseWeaponColor(weapon.grade), fontSize: 12 }}>
+              <span style={{ color: getWeaponColor(weapon.grade), fontSize: 12 }}>
                 {weapon?.grade?.toUpperCase()}
               </span>
             </IonRow>

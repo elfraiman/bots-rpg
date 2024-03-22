@@ -6,7 +6,7 @@ import { IWeapon } from "../types/types"
 
 
 
-const UseWeaponColor = (weaponGrade: string) => {
+const getWeaponColor = (weaponGrade: string) => {
 
     switch (weaponGrade) {
         case 'common':
@@ -23,4 +23,4 @@ const UseWeaponColor = (weaponGrade: string) => {
 
 }
 
-export default UseWeaponColor;
+export default getWeaponColor;

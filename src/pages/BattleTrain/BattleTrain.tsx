@@ -2,9 +2,12 @@ import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonTitle, IonToolbar
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import { PlayerContext } from "../../context/PlayerContext";
-import { getEnemy } from "../../data/enemies";
 import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
+import getEnemies from "../../functions/GetEnemies";
+import getGoldReward from "../../functions/GetGoldReward";
+import getXpForNextLevel from "../../functions/GetXpForNextLevel";
+import getXpReward from "../../functions/GetXpReward";
 
 interface IFightResult {
   hitChance: number;
@@ -35,7 +38,7 @@ const style = {
 
 
 const BattleTrain = () => {
-  const { player } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
+  const { player, setPlayer, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
   const [enemy, setEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(player?.maxHealth || 100);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
@@ -45,15 +48,26 @@ const BattleTrain = () => {
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const match = useRouteMatch<{ id: string }>();
 
+
+  const getEnemy = async () => {
+    const params: any = await match.params;
+
+    const monsterId = params.id;
+
+    if (monsterId) {
+      const enemyData = await getEnemies({ monsterId: monsterId }) as IEnemy;
+
+      if (enemyData) {
+        setEnemy(enemyData);
+        setEnemyHealth(enemyData?.maxHealth); // Setting enemy's health based on the loaded enemy data
+      }
+    }
+
+  }
+
   useIonViewWillEnter(() => {
     console.log("[TRAINING_BATTLE]: View will enter")
-    const params: any = match.params;
-    const enemyData = getEnemy(Number(params.id));
-
-    if (enemyData) {
-      setEnemy(enemyData);
-      setEnemyHealth(enemyData?.maxHealth); // Setting enemy's health based on the loaded enemy data
-    }
+    getEnemy();
 
     // Reset player health to maxHealth when player or enemy changes
     setPlayerHealth(player?.maxHealth || 100);
@@ -71,7 +85,7 @@ const BattleTrain = () => {
       return <span style={style.badShape}> {enemyNameStyled}  is in bad shape.</span>
     } else if (health > 0.20 * enemy.maxHealth) {
       return <span style={style.barelyAlive}> {enemyNameStyled} is barely alive.</span>
-    }else if (health > 0.01 * enemy.maxHealth) {
+    } else if (health > 0.01 * enemy.maxHealth) {
       return <span style={style.barelyAlive}> {enemyNameStyled} is barely hanging on.</span>
     } else {
       return <span style={style.barelyAlive}> {enemyNameStyled} is dead!</span>
@@ -79,7 +93,7 @@ const BattleTrain = () => {
   }
 
   const returnPercentageColor = (health: number) => {
-    if(!player) return;
+    if (!player) return;
     const percentage = health * player.maxHealth / 100;
     if (percentage > 80) {
       return style.goodShape;
@@ -129,12 +143,12 @@ const BattleTrain = () => {
 
     const randomNumber = Math.random();
 
-  
+
     if (randomNumber <= hitChance) {
       const damageDealt = Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
       let newPlayerHealth = playerHealth;
       let newEnemyHealth = enemyHealth;
-    
+
       if (isPlayerAttack) {
         newEnemyHealth = Math.max(enemyHealth - damageDealt, 0);
         setEnemyHealth(newEnemyHealth);
@@ -142,7 +156,7 @@ const BattleTrain = () => {
         newPlayerHealth = Math.max(playerHealth - damageDealt, 0);
         setPlayerHealth(newPlayerHealth);
       }
-    
+
 
       const hitMessage = (
         <div style={style.fightNarrative}>
@@ -171,7 +185,7 @@ const BattleTrain = () => {
 
       setFightNarrative(prevNarrative => [...prevNarrative, hitMessage]);
 
-   
+
     } else {
       const missMessage = (
         <div style={style.fightNarrative}>
@@ -209,17 +223,43 @@ const BattleTrain = () => {
       if (playerHealth <= 0 || enemyHealth <= 0) {
         clearInterval(intervalIdRef.current as NodeJS.Timeout);
         setBattleActive(false);
-        const winnerMessage = playerHealth <= 0 ?
-          <span>{enemy.name} wins!</span>
-          :
-          <span>{player.name} wins!</span>;
-        setFightNarrative(prev => [...prev, winnerMessage]);
+
+        if (playerHealth <= 0) {
+          fightEnd(false, enemy, player);
+        } else {
+          fightEnd(true, enemy, player);
+        }
+
+   
       }
 
       // Toggle the turn for the next interval
       turnRef.current = !turnRef.current;
     }
   };
+
+  const fightEnd = (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
+    console.log('fight end')
+
+    if (playerWin) {
+      console.log('Player Wins!');
+      const goldReward = getGoldReward({enemy: enemy, playerLevel: player.level});
+      const xpToNextLevel = getXpForNextLevel({level: player.level, baseXp: player.experience});
+      const xpReward = getXpReward({enemyLevel: enemy.level, enemyType: enemy.type, playerLevel: player.level})
+
+
+      updatePlayerData({...player, gold: player.gold += goldReward, experience: player.experience += xpReward})
+
+
+
+      console.log(goldReward, 'gold', xpToNextLevel, 'to next level', xpReward, 'xp reward')
+
+    const winnerMessage = <span>{player?.name} wins!</span>;
+    setFightNarrative(prev => [...prev, winnerMessage]);
+    }
+
+
+  }
 
   // interval effect
   useEffect(() => {
@@ -234,7 +274,7 @@ const BattleTrain = () => {
 
 
   useIonViewDidLeave(() => {
-    if ( player && enemy) {
+    if (player && enemy) {
       setPlayerHealth(player?.maxHealth);
       setEnemyHealth(enemy?.maxHealth);
     }
@@ -248,7 +288,7 @@ const BattleTrain = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonImg src={`resources/images/enemies/EnemyId-${enemy?._id}.webp`} alt="Enemy" className="room-banner" />
+        <IonImg src={`resources/images/enemies/EnemyId-${enemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
         <IonButton onClick={startFight} style={{ width: '100%' }}>Attack</IonButton>
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (

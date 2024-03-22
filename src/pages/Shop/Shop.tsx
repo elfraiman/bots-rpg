@@ -60,14 +60,12 @@ const Shop = () => {
                           <IonList lines='full'>
                             {weaponsData.map((weapon: IWeapon, index: number) => { // Add type annotations for weapon and index
                               return (
-                                <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
+                                <WeaponCard weapon={weapon} initialPlayer={player} key={index} isForSale={true} />
                               );
                             })}
                           </IonList>
                         </div>
                       </IonAccordion>
-
-                      
                       <IonAccordion value="second">
                         <IonItem slot="header" color="light">
                           <IonLabel>Armor</IonLabel>
@@ -102,7 +100,6 @@ const Shop = () => {
                       </IonAccordion>
                     </IonAccordionGroup>
                   ) : <p>Loading...</p>}
-
                 </IonCardContent>
               </IonCard>
 

@@ -2,7 +2,6 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonImg,
   IonMenu,
   IonMenuButton,
   IonPage,
@@ -11,51 +10,29 @@ import {
   IonToolbar,
   useIonViewWillEnter
 } from '@ionic/react';
-import { useState } from 'react';
-import * as Realm from "realm-web";
-import './TrainingRoom.css';
+import React, { useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
-import { getEnemies } from '../../data/enemies';
 import { IEnemy } from '../../types/types';
-import React from 'react';
+import './TrainingRoom.css';
+import getEnemies from '../../functions/GetEnemies';
 
-// Add your App ID
-
-const app = Realm.App.getApp('application-0-vgvqx'); // replace this with your App ID
 
 const Train: React.FC = () => {
-  const [data, setData] = useState<any>([]);
   const [enemies, setEnemies] = useState<IEnemy[]>([]); // [1
-  const mongodb = app?.currentUser?.mongoClient("mongodb-atlas");
 
-  const fetchPlayer = async () => {
-    const userId = localStorage.getItem('userId');
-    const players = mongodb?.db("bots_rpg").collection("players");
 
-    if (!userId) {
-      console.error("No user id found");
-      return;
+  const getEnemyList = async () => {
+    const enemies = await getEnemies({ location: 'training-room' });
+    if (enemies) {
+      setEnemies(enemies);
     }
+ 
+  }
 
-    if (players) {
-      try {
-        console.log(userId, 'userId')
-        const results = await players.findOne({ _id: userId }); // Adjust the query as needed
-        setData(results);
-
-        console.log(results, 'result');
-
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-      }
-    }
-  };
 
   useIonViewWillEnter(() => {
     console.log("Welcome to the training room");
-    fetchPlayer();
-    const enemies = getEnemies();
-    setEnemies(enemies);
+    getEnemyList();
   });
 
   return (
@@ -79,7 +56,7 @@ const Train: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding training-bg">
-       
+
 
           <IonText>
             <div className="text-overlay">
@@ -91,7 +68,7 @@ const Train: React.FC = () => {
           </IonText>
 
           {enemies?.map((enemy: IEnemy) => (
-            <EnemyCard enemy={enemy} key={enemy._id}  />
+            <EnemyCard enemy={enemy} key={enemy._id} />
           ))}
 
         </IonContent>
