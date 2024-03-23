@@ -49,7 +49,7 @@ const Home: React.FC = () => {
     if (player && player?.attributePoints > 0) {
       const updatedPlayer = {
         ...player,
-        [statName]: player[statName] + 1,
+        [statName]: Number(player[statName]) + 1,
         attributePoints: player.attributePoints - 1, // Assuming you have attributePoints in your IPlayer interface
       };
       // Call context method or set local state here
@@ -77,7 +77,7 @@ const Home: React.FC = () => {
         <IonContent className="ion-padding">Side menu</IonContent>
       </IonMenu>
       <IonPage id="main-content">
-        
+
       <Header title='Home'/>
 
         <IonContent className="ion-padding home-bg">

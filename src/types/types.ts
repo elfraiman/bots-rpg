@@ -48,18 +48,18 @@ export const IEnemy_equipment_mainHandSchema = {
 
 export type IPlayer = {
   _id: string;
+  attributePoints: number;
   con: number;
   dex: number;
   equipment?: IPlayer_equipment;
   experience: number;
   gold: number;
   int: number;
-  inventory: Realm.List<IPlayer_inventory>;
+  inventory: IWeapon[];
   level: number;
   maxHealth: number;
   name: string;
   str: number;
-  attributePoints: number;
 };
 
 

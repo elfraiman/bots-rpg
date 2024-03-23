@@ -14,12 +14,13 @@ import React, { useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
 import { IEnemy } from '../../types/types';
 import './TrainingRoom.css';
-import { getEnemies } from '../../functions/GetEnemies';
+
 import Header from '../../components/Header';
+import { getEnemies } from '../../functions/GetEnemies';
 
 
 const Train: React.FC = () => {
-  const [enemies, setEnemies] = useState<IEnemy[] | IEnemy>([]); // [1
+  const [enemies, setEnemies] = useState<IEnemy[]>([]); // [1
 
 
   const getEnemyList = async () => {

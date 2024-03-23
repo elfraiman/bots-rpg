@@ -8,7 +8,7 @@ interface IGetEnemiesProps {
 
 const app = Realm.App.getApp('application-0-vgvqx');
 
-export const getEnemies = async ({ location, monsterId }: IGetEnemiesProps): Promise<IEnemy[] | IEnemy | undefined> => {
+export const getEnemies = async ({ location }: IGetEnemiesProps): Promise<IEnemy[] | undefined> => {
   if (!app.currentUser) {
     console.error("No current user found. Ensure you're logged in to Realm.");
     return;
@@ -18,12 +18,7 @@ export const getEnemies = async ({ location, monsterId }: IGetEnemiesProps): Pro
   const enemiesCollection = mongodb.db("bots_rpg").collection<IEnemy>("enemies");
 
   try {
-    if (monsterId !== undefined) {
-      // Use findOne() for _id queries as it's more efficient for single document retrieval
-      const enemy = await enemiesCollection.findOne({ _id: new Realm.BSON.ObjectId(monsterId) });
-      console.log("Querying with _id:", monsterId);
-      return enemy ?? undefined;
-    } else if (location) {
+    if (location) {
       // Use find() for location queries to get all matching documents
       const enemiesResult = await enemiesCollection.find({ location });
       console.log("Querying with location:", location);

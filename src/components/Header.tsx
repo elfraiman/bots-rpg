@@ -51,7 +51,7 @@ const Header = ({ title }: IHeaderProps) => {
 
                     <IonRow>
                         <IonCol>
-                            <IonCardSubtitle>XP: {player?.experience.toLocaleString()} / {xpToNextLevel.toLocaleString()}  ({Math.round(player?.experience / xpToNextLevel * 100)}%)</IonCardSubtitle>
+                            <IonCardSubtitle>XP: {player?.experience.toLocaleString()} / {xpToNextLevel.toLocaleString()}  ({Math.round(player?.experience ?? 0 / xpToNextLevel * 100)}%)</IonCardSubtitle>
                         </IonCol>
                     </IonRow>
                 </IonGrid>
