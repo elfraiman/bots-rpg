@@ -14,7 +14,8 @@ import React, { useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
 import { IEnemy } from '../../types/types';
 import './TrainingRoom.css';
-import getEnemies from '../../functions/GetEnemies';
+import { getEnemies } from '../../functions/GetEnemies';
+import Header from '../../components/Header';
 
 
 const Train: React.FC = () => {
@@ -26,7 +27,7 @@ const Train: React.FC = () => {
     if (enemies) {
       setEnemies(enemies);
     }
- 
+
   }
 
 
@@ -47,14 +48,7 @@ const Train: React.FC = () => {
       </IonMenu>
 
       <IonPage id="main-content">
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonMenuButton></IonMenuButton>
-            </IonButtons>
-            <IonTitle>Training room</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <Header title='Training room' />
         <IonContent className="ion-padding training-bg">
 
 
