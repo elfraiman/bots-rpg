@@ -50,8 +50,9 @@ const App: React.FC = () => {
   return (
     <PlayerProvider>
       <IonApp>
-        {user ? (
-          <IonReactRouter>
+        <IonReactRouter>
+          {user ? (
+
             <IonTabs>
               <IonRouterOutlet>
                 <Redirect exact path="/" to="/home" />
@@ -65,7 +66,7 @@ const App: React.FC = () => {
                 <Route path="/search" render={() => <Home />} exact={true} />
               </IonRouterOutlet>
 
-              
+
               <IonTabBar slot="bottom">
                 <IonTabButton tab="home" href="/home">
                   <IonIcon icon={home} />
@@ -97,8 +98,9 @@ const App: React.FC = () => {
               </IonTabBar>
             </IonTabs>
 
-          </IonReactRouter>
-        ) : <Login /> }
+
+          ) : <Login />}
+        </IonReactRouter>
       </IonApp>
     </PlayerProvider>
   )

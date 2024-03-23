@@ -5,6 +5,7 @@ import { PlayerContext } from '../../context/PlayerContext';
 import useWeaponsHook from '../../hooks/UseWeaponsHook';
 import { IWeapon } from '../../types/types';
 import './Shop.css';
+import Header from '../../components/Header';
 
 
 const Shop = () => {
@@ -26,15 +27,7 @@ const Shop = () => {
     <React.Fragment>
       {player ? (
         <IonPage id="main-content" className="content">
-          <IonHeader  >
-            <IonToolbar >
-              <IonTitle slot="">Shop</IonTitle>
-              <span className="ion-padding">
-                Gold: <span style={{ color: 'gold' }}>{player.gold}</span> Str: {player.str} Dex: {player.dex}
-              </span>
-            </IonToolbar>
-          </IonHeader>
-
+          <Header title="shop" />
           {player ? (
             <IonContent className="ion-padding shop-bg">
               <IonText>

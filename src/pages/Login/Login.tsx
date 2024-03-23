@@ -37,7 +37,7 @@ const LoginPage = () => {
                 const user: Realm.User = await app.logIn(Realm.Credentials.emailPassword(email, password));
 
                 if (user) {
-                    history?.push('/shop')
+                    history?.push('/home')
                 }
             } catch (error) {
                 console.error("Error registering new user:", error);
@@ -49,7 +49,7 @@ const LoginPage = () => {
 
                 if (user) {
                     console.log('user')
-                    history.push('/shop'); // Refresh or redirect upon successful login
+                    history.push('/home'); // Refresh or redirect upon successful login
                 }
             } catch (error) {
                 console.error("Error logging in:", error);

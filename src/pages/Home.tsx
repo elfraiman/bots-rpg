@@ -32,6 +32,7 @@ import { IPlayer, IWeapon } from '../types/types';
 import './Home.css';
 import React from 'react';
 import { add } from 'ionicons/icons';
+import Header from '../components/Header';
 
 
 
@@ -48,7 +49,7 @@ const Home: React.FC = () => {
     if (player && player?.attributePoints > 0) {
       const updatedPlayer = {
         ...player,
-        [statName]: player[statName] + 1,
+        [statName]: Number(player[statName]) + 1,
         attributePoints: player.attributePoints - 1, // Assuming you have attributePoints in your IPlayer interface
       };
       // Call context method or set local state here
@@ -58,7 +59,7 @@ const Home: React.FC = () => {
 
 
   useEffect(() => {
-    if(player && player?.attributePoints > 0 ) {
+    if (player && player?.attributePoints > 0) {
       setPlayerHasPoints(true);
     } else {
       setPlayerHasPoints(false);
@@ -76,14 +77,8 @@ const Home: React.FC = () => {
         <IonContent className="ion-padding">Side menu</IonContent>
       </IonMenu>
       <IonPage id="main-content">
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonMenuButton></IonMenuButton>
-            </IonButtons>
-            <IonTitle>Home</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+
+      <Header title='Home'/>
 
         <IonContent className="ion-padding home-bg">
           {player ? (
@@ -128,7 +123,7 @@ const Home: React.FC = () => {
 
               <IonCard className="ion-padding card-fade">
                 <IonCardTitle>Stats</IonCardTitle>
-                <IonCardSubtitle>Level: {player?.level} |  Attribute Points: <span style={{color: player?.attributePoints > 0 ? 'green' : 'gray'}}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
+                <IonCardSubtitle>Level: {player?.level} |  Attribute Points: <span style={{ color: player?.attributePoints > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
                 <IonCardContent>
                   <IonGrid>
                     <IonRow>

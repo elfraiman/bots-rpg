@@ -4,10 +4,12 @@ import { useRouteMatch } from "react-router";
 import { PlayerContext } from "../../context/PlayerContext";
 import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
-import getEnemies from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import getXpForNextLevel from "../../functions/GetXpForNextLevel";
 import getXpReward from "../../functions/GetXpReward";
+import { getSingleEnemy } from "../../functions/GetEnemies";
+import Header from "../../components/Header";
+import getWeaponColor from "../../functions/GetWeaponColor";
 
 interface IFightResult {
   hitChance: number;
@@ -56,13 +58,18 @@ const BattleTrain = () => {
     totalDamage: 0,
   });
 
+
+  // Ref for scrolling
+  const narrativeEndRef = useRef(null);
+
+
   const getEnemy = async () => {
     const params: any = await match.params;
 
     const monsterId = params.id;
 
     if (monsterId) {
-      const enemyData = await getEnemies({ monsterId: monsterId }) as IEnemy;
+      const enemyData = await getSingleEnemy({ monsterId: monsterId });
 
       if (enemyData) {
         setEnemy(enemyData);
@@ -173,7 +180,7 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={style.weaponName}> {attacker.equipment?.mainHand?.name}.
+          <span style={{...style.weaponName, color: getWeaponColor(player?.equipment?.mainHand?.grade ?? 'common')}}> {attacker.equipment?.mainHand?.name}.
           </span>
           <br />
           <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>
@@ -282,6 +289,7 @@ const BattleTrain = () => {
       const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type, playerLevel: player.level })
 
 
+
       updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
 
@@ -328,6 +336,14 @@ const BattleTrain = () => {
               <IonCol>Winner</IonCol>
               <IonCol><span style={{ color: playerWin ? style.playerName.color : style.enemyName.color, fontWeight: 'bold' }}>{playerWin ? player.name : enemy.name}</span></IonCol>
             </IonRow>
+            <IonRow>
+              <IonCol>Gold reward</IonCol>
+              <IonCol><span style={{ color: 'gold' }}>{goldReward}</span></IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Gained XP</IonCol>
+              <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
+            </IonRow>
           </IonGrid>
         </div>
       );
@@ -357,6 +373,11 @@ const BattleTrain = () => {
   }, [battleActive, player, enemy, playerHealth, enemyHealth]);
 
 
+  // Automatically scroll to the latest narrative entry
+  useEffect(() => {
+    (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
+  }, [fightNarrative]);
+
   useIonViewDidLeave(() => {
     if (player && enemy) {
       setPlayerHealth(player?.maxHealth);
@@ -364,21 +385,30 @@ const BattleTrain = () => {
     }
   })
 
+
+
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle><span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{enemy?.name}</span></IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title='Training' />
+
+      <IonToolbar>
+        <IonTitle> <span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{enemy?.name}</span></IonTitle>
+      </IonToolbar>
+
       <IonContent>
         <IonImg src={`resources/images/enemies/EnemyId-${enemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
-        <IonButton onClick={startFight} style={{ width: '100%' }}>Attack</IonButton>
+
+
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (
             <div key={index}>{line}</div>
           ))}
+          {!battleActive ? (<IonButton onClick={startFight} style={{ width: '100%' }}>Fight</IonButton>) : (<></>)}
+          {/* Invisible element at the end of your narratives */}
+
+          <div ref={narrativeEndRef} />
         </div>
+
       </IonContent>
     </IonPage>
   );
