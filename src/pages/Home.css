@@ -55,7 +55,7 @@ ion-menu::part(backdrop) {
   height: 30px;
   z-index: 100;
   top: 270px;
-  left: 190px;
+  left: 185px;
 }
 .left-boot-block {
   position: absolute;
@@ -63,7 +63,7 @@ ion-menu::part(backdrop) {
   height: 30px;
   z-index: 100;
   top: 270px;
-  left: 95px;;
+  left: 90px;;
 }
 
 .bot-card-content {

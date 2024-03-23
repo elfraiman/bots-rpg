@@ -1,4 +1,4 @@
-import { IonBadge, IonCardSubtitle, IonCol, IonGrid, IonItem, IonRow, IonThumbnail } from "@ionic/react";
+import { IonBadge, IonCardSubtitle, IonCol, IonGrid, IonImg, IonItem, IonRow, IonThumbnail } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from "../types/types";
@@ -56,35 +56,55 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
     <>
       {weapon && player ? (
         <>
-          <IonItem onClick={() => setShowModal(true)}>
-            <IonThumbnail slot="start">
-              <img alt={`A ${weapon.name} with beautiful details`} src={`/resources/images/weapons/weapon-${weapon.imgId}.webp`} />
-            </IonThumbnail>
-            <IonGrid >
-              <IonRow >
-                <IonCol>
-                  <IonBadge color={player?.gold > weapon.cost ? "success" : "danger"}>{weapon.cost} Gold</IonBadge>
+          <div onClick={() => setShowModal(true)} style={{padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)'}}>
+            <IonGrid style={{ width: '100%', padding: 0 }}>
+              <IonRow style={{width: '100%'}}>
+                {/* Image Column */}
+                <IonCol size="3" style={{ padding: 0 }}>
+                  <IonImg
+                    style={{ width: '100%', height: 'auto' }}
+                    src={`/resources/images/weapons/weapon-${weapon.imgId}.webp`}
+                    alt={`A ${weapon.name} with beautiful details`} />
                 </IonCol>
-                <IonCol>
-                  <span style={{color: getWeaponColor(weapon.grade), fontSize: 14}}>{weapon.name}</span>
-                </IonCol>
-              </IonRow>
 
-              <IonRow>
-                <IonCol>
-                <span style={{fontSize: 12}}>Damage: </span>
-                <IonCardSubtitle>{weapon.minDamage}-{weapon.maxDamage}</IonCardSubtitle>
+                {/* Gold Column */}
+                <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ color: getWeaponColor(weapon.grade), fontSize: '14px', marginBottom: 6 }}>
+                    {weapon.name}
+                  </div>
+
+                  <span style={{}}>
+                    Price:  <span style={{ color: 'gold' }}> {weapon.cost.toLocaleString()} G</span>
+                  </span>
+
+
                 </IonCol>
-                <IonCol>
-                  <span style={{fontSize: 12}}>Stats required:</span> 
-                  <IonCardSubtitle style={{fontSize: 12}}>
-                    DEX: <span style={{ color: player?.dex >= weapon?.requirements?.dex ? 'green' : 'red' }}>{weapon.requirements?.dex}</span> STR: <span style={{ color: player?.str >= weapon?.requirements?.str ? 'green' : 'red' }}>{weapon.requirements?.str}</span>
+
+                {/* Requirements Column */}
+                <IonCol size="5" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                  <div style={{ fontSize: '14px', color: 'white' }}>
+                    Damage: {weapon.minDamage}-{weapon.maxDamage}
+                  </div>
+                  <span style={{ fontSize: '12px' }}>
+                    Stats required:
+                  </span>
+
+                  <IonCardSubtitle style={{ fontSize: '12px' }}>
+                    DEX: <span style={{ color: player?.dex >= weapon.requirements.dex ? 'green' : 'red', marginRight: 6 }}>
+                      {weapon.requirements.dex}
+                    </span>
+
+                    STR: <span style={{ color: player?.str >= weapon.requirements.str ? 'green' : 'red', }}>
+                      {weapon.requirements.str}
+                    </span>
                   </IonCardSubtitle>
                 </IonCol>
               </IonRow>
-
             </IonGrid>
-          </IonItem>
+          </div>
+
+
+
 
           <WeaponModal presentingElement={presentingElement} isForSale={isForSale ?? false} canPurchase={checkRequirements()} purchaseItem={purchaseItem} showModal={showModal} setShowModal={setShowModal} weapon={weapon} />
         </>

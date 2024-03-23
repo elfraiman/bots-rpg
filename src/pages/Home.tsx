@@ -2,7 +2,6 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonButton,
-  IonButtons,
   IonCard,
   IonCardContent,
   IonCardSubtitle,
@@ -17,24 +16,22 @@ import {
   IonLabel,
   IonList,
   IonMenu,
-  IonMenuButton,
   IonPage,
+  IonPopover,
   IonRow,
   IonText,
+  IonThumbnail,
   IonTitle,
   IonToolbar
 } from '@ionic/react';
-import { useContext, useEffect, useState } from 'react';
+import { add } from 'ionicons/icons';
+import React, { useContext, useEffect, useState } from 'react';
 import BotOutline from '../../resources/images/BotOutline.webp';
+import Header from '../components/Header';
 import WeaponCard from '../components/WeaponCard';
 import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from '../types/types';
 import './Home.css';
-import React from 'react';
-import { add } from 'ionicons/icons';
-import Header from '../components/Header';
-
-
 
 const styles = {
   notEquipped: { backgroundColor: 'rgba(214, 214, 214, 0.467)', border: '1px solid white' },
@@ -57,7 +54,6 @@ const Home: React.FC = () => {
     }
   };
 
-
   useEffect(() => {
     if (player && player?.attributePoints > 0) {
       setPlayerHasPoints(true);
@@ -78,7 +74,7 @@ const Home: React.FC = () => {
       </IonMenu>
       <IonPage id="main-content">
 
-      <Header title='Home'/>
+        <Header title='Home' />
 
         <IonContent className="ion-padding home-bg">
           {player ? (
@@ -88,9 +84,34 @@ const Home: React.FC = () => {
                 <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
                 <IonCardContent className="bot-card-content">
                   <IonImg src={BotOutline} className="bot-outline-img" />
-                  <div className="left-arm-block" style={player.equipment?.mainHand ? styles.equipped : styles.notEquipped}>
-                  </div>
-                  <div className="right-arm-block" style={player.equipment?.mainHand ? styles.equipped : styles.notEquipped}>
+                  <IonButton fill="clear" id="click-trigger" className="left-arm-block" style={player.equipment?.mainHand ? styles.equipped : styles.notEquipped}>
+                    <IonPopover alignment='center' trigger="click-trigger" triggerAction="click">
+                      <IonContent>
+                        <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                          <IonCol size="8" className="ion-padding">
+                            <IonText>
+                              {player?.equipment?.mainHand?.name}
+                            </IonText>
+                            <IonCardSubtitle>
+                              {player?.equipment?.mainHand?.grade}
+                            </IonCardSubtitle>
+                            <IonText>
+                              {player?.equipment?.mainHand?.minDamage} - {player?.equipment?.mainHand?.maxDamage}
+                            </IonText>
+                          </IonCol>
+                          <IonCol size="4" style={{ padding: 0 }}>
+                            <div style={{ display: 'flex' }}>
+                              <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.mainHand?.name} with beautiful details`} src={`/resources/images/weapons/weapon-${player?.equipment?.mainHand?.imgId}.webp`} />
+                              </IonThumbnail>
+                            </div>
+                          </IonCol>
+                        </IonRow>
+                      </IonContent>
+                    </IonPopover>
+
+                  </IonButton>
+                  <div className="right-arm-block" style={styles.notEquipped}>
                   </div>
                   <div className="armor-block" style={styles.notEquipped}>
                   </div>
@@ -127,7 +148,6 @@ const Home: React.FC = () => {
                 <IonCardContent>
                   <IonGrid>
                     <IonRow>
-
                       <IonCol>
                         <IonText>STR: {player?.str}</IonText>
                       </IonCol>
@@ -164,7 +184,6 @@ const Home: React.FC = () => {
                           <IonIcon icon={add} />
                         </IonButton>
                       </IonCol>
-
                     </IonRow>
                     {/* Add more rows and columns for additional stats as needed */}
                   </IonGrid>

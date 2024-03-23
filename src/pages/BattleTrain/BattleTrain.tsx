@@ -1,15 +1,14 @@
-import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonPage, IonRow, IonText, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
+import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
+import { getSingleEnemy } from "../../functions/GetEnemies";
+import getGoldReward from "../../functions/GetGoldReward";
+import getWeaponColor from "../../functions/GetWeaponColor";
+import getXpReward from "../../functions/GetXpReward";
 import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
-import getGoldReward from "../../functions/GetGoldReward";
-import getXpForNextLevel from "../../functions/GetXpForNextLevel";
-import getXpReward from "../../functions/GetXpReward";
-import { getSingleEnemy } from "../../functions/GetEnemies";
-import Header from "../../components/Header";
-import getWeaponColor from "../../functions/GetWeaponColor";
 
 interface IFightResult {
   hitChance: number;
@@ -131,7 +130,7 @@ const BattleTrain = () => {
 
     const baseHitChance = 0.7;
     const dexDifference = attacker.dex - defender.dex;
-    const dexModifier = 0.01;
+    const dexModifier = 0.01; // Incase something affects dex
     const hitChance = baseHitChance + (dexDifference * dexModifier) + 0.05;
     const strModifierForMinDamage = 0.2;
     const baseDamageIncrease = 1;
@@ -180,7 +179,7 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={{...style.weaponName, color: getWeaponColor(player?.equipment?.mainHand?.grade ?? 'common')}}> {attacker.equipment?.mainHand?.name}.
+          <span style={{ ...style.weaponName, color: getWeaponColor(player?.equipment?.mainHand?.grade ?? 'common') }}> {attacker.equipment?.mainHand?.name}.
           </span>
           <br />
           <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>
@@ -285,16 +284,10 @@ const BattleTrain = () => {
     if (playerWin) {
       console.log('Player Wins!');
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
-      const xpToNextLevel = getXpForNextLevel({ level: player.level, baseXp: player.experience });
       const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type, playerLevel: player.level })
-
-
 
       updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
-
-
-      console.log(goldReward, 'gold', xpToNextLevel, 'to next level', xpReward, 'xp reward')
 
       // Add new message and reset health
       //
