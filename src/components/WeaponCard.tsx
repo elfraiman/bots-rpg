@@ -1,9 +1,10 @@
-import { IonBadge, IonCol, IonGrid, IonItem, IonRow, IonThumbnail } from "@ionic/react";
+import { IonBadge, IonCardSubtitle, IonCol, IonGrid, IonItem, IonRow, IonThumbnail } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from "../types/types";
 import './WeaponCard.css';
 import WeaponModal from "./WeaponModal";
+import getWeaponColor from "../functions/GetWeaponColor";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -28,10 +29,10 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
   }
 
   const checkRequirements = () => {
-      const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements?.str && player.dex >= weapon?.requirements.dex;
+    const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements?.str && player.dex >= weapon?.requirements.dex;
 
-      return !!meetsRequirements;
-  
+    return !!meetsRequirements;
+
   }
 
 
@@ -59,27 +60,33 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
             <IonThumbnail slot="start">
               <img alt={`A ${weapon.name} with beautiful details`} src={`/resources/images/weapons/weapon-${weapon.imgId}.webp`} />
             </IonThumbnail>
-            <IonGrid>
-              <IonRow>
+            <IonGrid >
+              <IonRow >
                 <IonCol>
-                  <IonBadge color={player?.gold > weapon.cost ? "primary" : "danger"}>{weapon.cost} Gold</IonBadge>
+                  <IonBadge color={player?.gold > weapon.cost ? "success" : "danger"}>{weapon.cost} Gold</IonBadge>
                 </IonCol>
                 <IonCol>
-                  {weapon.name}
-                </IonCol>
-              </IonRow>
-              <IonRow>
-                <IonCol>
-                  Damage: {weapon.minDamage}-{weapon.maxDamage}
-                </IonCol>
-                <IonCol>
-                  DEX <span style={{ color: player?.dex >= weapon?.requirements?.dex ? 'green' : 'red' }}>{weapon.requirements?.dex}</span> STR <span style={{ color: player?.str >= weapon?.requirements?.str ? 'green' : 'red' }}>{weapon.requirements?.str}</span>
+                  <span style={{color: getWeaponColor(weapon.grade), fontSize: 14}}>{weapon.name}</span>
                 </IonCol>
               </IonRow>
+
+              <IonRow>
+                <IonCol>
+                <span style={{fontSize: 12}}>Damage: </span>
+                <IonCardSubtitle>{weapon.minDamage}-{weapon.maxDamage}</IonCardSubtitle>
+                </IonCol>
+                <IonCol>
+                  <span style={{fontSize: 12}}>Stats required:</span> 
+                  <IonCardSubtitle style={{fontSize: 12}}>
+                    DEX: <span style={{ color: player?.dex >= weapon?.requirements?.dex ? 'green' : 'red' }}>{weapon.requirements?.dex}</span> STR: <span style={{ color: player?.str >= weapon?.requirements?.str ? 'green' : 'red' }}>{weapon.requirements?.str}</span>
+                  </IonCardSubtitle>
+                </IonCol>
+              </IonRow>
+
             </IonGrid>
           </IonItem>
 
-          <WeaponModal presentingElement={presentingElement} isForSale={isForSale ?? false} canPurchase={checkRequirements()} purchaseItem={purchaseItem}  showModal={showModal} setShowModal={setShowModal} weapon={weapon}/>
+          <WeaponModal presentingElement={presentingElement} isForSale={isForSale ?? false} canPurchase={checkRequirements()} purchaseItem={purchaseItem} showModal={showModal} setShowModal={setShowModal} weapon={weapon} />
         </>
       ) : <>Loading..</>}
 

@@ -17,7 +17,7 @@ const getWeaponColor = (weaponGrade: string) => {
             return '#0070FF';
         case 'epic':
             return '#A335EE';
-        case 'Legendary':
+        case 'legendary':
             return '#FF8000';
     }
 
