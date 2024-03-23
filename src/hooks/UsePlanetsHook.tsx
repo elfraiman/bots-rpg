@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import * as Realm from "realm-web";
-import { IWeapon } from '../types/types'; // Assuming you've renamed the import to avoid naming conflict
+import { IPlanet } from '../types/types'; // Assuming you've renamed the import to avoid naming conflict
 
-const app = Realm.App.getApp('application-0-vgvqx');
+const app =  Realm.App.getApp('application-0-vgvqx');
 
-const useWeaponsHook = () => {
-    const [weaponsData, setWeaponsData] = useState<IWeapon[]>([]);
+const usePlanetsHook = () => {
+    const [planetsData, setPlanetsData] = useState<IPlanet[]>([]);
 
     useEffect(() => {
         const fetchWeapons = async () => {
@@ -16,25 +16,25 @@ const useWeaponsHook = () => {
             }
 
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const weapons = mongodb.db("bots_rpg").collection<IWeapon>("weapons");
+            const planets = mongodb.db("bots_rpg").collection<IPlanet>("planets");
 
-            if (!weapons) {
+            if (!planets) {
                 console.error("No weapons found");
                 return;
             }
 
             try {
-                const weaponsResult = await weapons.find({}); // Or just use userId if it's a string
-                setWeaponsData(weaponsResult);
+                const planetsResult = await planets.find({}); // Or just use userId if it's a string
+                setPlanetsData(planetsResult);
             } catch (err) {
-                console.error("Failed to weapons data:", err);
+                console.error("Failed to planets data:", err);
             }
         };
 
         fetchWeapons();
     }, []); // Empty dependency array means this effect runs once on mount
 
-    return weaponsData;
+    return planetsData;
 }
 
-export default useWeaponsHook;
+export default usePlanetsHook;
