@@ -64,17 +64,8 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <IonMenu contentId="main-content">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Menu Content</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">Side menu</IonContent>
-      </IonMenu>
       <IonPage id="main-content">
-
-        <Header title='Home' />
+        <Header />
 
         <IonContent className="ion-padding home-bg">
           {player ? (
@@ -133,7 +124,7 @@ const Home: React.FC = () => {
                       <IonList lines='full'>
                         {player?.inventory?.map((weapon: IWeapon, index: number) => {
                           return (
-                            <WeaponCard weapon={weapon} initialPlayer={player} key={index} />
+                            <WeaponCard weapon={weapon} initialPlayer={player} key={index} isForSale={false} />
                           );
                         })}
                       </IonList>

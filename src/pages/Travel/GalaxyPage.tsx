@@ -14,7 +14,7 @@ const GalaxyPage = () => {
   return (
     <>
       <IonPage id="main-content" className="content">
-        <Header title="Travel" />
+        <Header />
         <IonContent>
           <IonList>
             {planets?.map((planet, index) => {

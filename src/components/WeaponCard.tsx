@@ -1,10 +1,10 @@
-import { IonBadge, IonCardSubtitle, IonCol, IonGrid, IonImg, IonItem, IonRow, IonThumbnail } from "@ionic/react";
-import { useContext, useEffect, useRef, useState } from 'react';
+import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
+import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
+import getWeaponColor from "../functions/GetWeaponColor";
 import { IPlayer, IWeapon } from "../types/types";
 import './WeaponCard.css';
 import WeaponModal from "./WeaponModal";
-import getWeaponColor from "../functions/GetWeaponColor";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -15,12 +15,7 @@ interface IWeaponCardProps {
 const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, setPlayer, updatePlayerData } = useContext(PlayerContext);
-  const [presentingElement, setPresentingElement] = useState<HTMLElement | null>(null);
-  const page = useRef(null);
 
-  useEffect(() => {
-    setPresentingElement(page.current);
-  }, []);
 
 
   if (!weapon.requirements) {
@@ -28,13 +23,17 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
     return;
   }
 
-  const checkRequirements = () => {
-    const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements?.str && player.dex >= weapon?.requirements.dex;
+  const checkRequirements = (forPurchase: boolean) => {
+    if (forPurchase) {
+      const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements?.str && player.dex >= weapon?.requirements.dex;
+      return !!meetsRequirements;
+    } else {
+      const requirementsToEquip = player && player.str >= weapon.requirements.str && player.dex >= weapon.requirements.dex
+        && player.con >= weapon.requirements.con && player.int >= weapon.requirements.int;
 
-    return !!meetsRequirements;
-
+      return !!requirementsToEquip;
+    }
   }
-
 
   const purchaseItem = async (item: IWeapon) => {
     console.log(player, 'player', initialPlayer);
@@ -51,14 +50,55 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
       console.error("Player does not meet the requirements to purchase this item");
     }
   };
+  const equipItem = async (item: IWeapon) => {
+    // Check if there is an existing weapon in the main hand
+    const currentMainHand = player?.equipment?.mainHand;
+
+    if (player && checkRequirements(false)) {
+      try {
+        // Prepare the new state for the player
+        let updatedPlayer: IPlayer = {
+          ...player,
+          equipment: {
+            ...player.equipment,
+            mainHand: item, // Equip the new weapon
+          },
+          // Filter out the new weapon from the inventory if it was there, and keep the rest.
+          inventory: player.inventory.filter(invItem => invItem._id !== item._id),
+        };
+
+        // If there was a weapon in the main hand, move it to the inventory
+        if (currentMainHand) {
+          // Ensure that the weapon being moved to the inventory is not the same as the one being equipped
+          if (currentMainHand._id !== item._id) {
+            updatedPlayer.inventory.push(currentMainHand);
+          }
+        }
+
+        // Call the function to update the player data
+        await updatePlayerData(updatedPlayer);
+
+        // Optionally, you can have a success message or log here
+      } catch (e) {
+        console.error(e);
+        // Optionally, handle the error (e.g., show an error message to the user)
+      }
+    } else {
+      console.error("Player does not meet the requirements to equip this item");
+      // Optionally, handle the error (e.g., show an error message to the user)
+    }
+  };
+
+
+  // ... your existing return statement in the WeaponCard component
 
   return (
     <>
       {weapon && player ? (
         <>
-          <div onClick={() => setShowModal(true)} style={{padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)'}}>
+          <div onClick={() => setShowModal(true)} style={{ padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
             <IonGrid style={{ width: '100%', padding: 0 }}>
-              <IonRow style={{width: '100%'}}>
+              <IonRow style={{ width: '100%' }}>
                 {/* Image Column */}
                 <IonCol size="3" style={{ padding: 0 }}>
                   <IonImg
@@ -105,8 +145,14 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
 
 
 
-
-          <WeaponModal presentingElement={presentingElement} isForSale={isForSale ?? false} canPurchase={checkRequirements()} purchaseItem={purchaseItem} showModal={showModal} setShowModal={setShowModal} weapon={weapon} />
+          <WeaponModal
+            equipItem={equipItem}
+            isForSale={isForSale ?? false}
+            canPurchase={checkRequirements(isForSale ?? false)}
+            purchaseItem={purchaseItem}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            weapon={weapon} />
         </>
       ) : <>Loading..</>}
 
