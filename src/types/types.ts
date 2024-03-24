@@ -10,7 +10,6 @@ export type IEnemy = {
   equipment?: IEnemy_equipment;
   int: number;
   level: number;
-  maxHealth: number;
   name: string;
   str: number;
   type: 'standard' | 'elite' | 'boss';
@@ -66,7 +65,6 @@ export type IPlayer = {
   int: number;
   inventory: IWeapon[];
   level: number;
-  maxHealth: number;
   name: string;
   str: number;
   location: string;

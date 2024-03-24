@@ -29,7 +29,7 @@ import BattleTrain from './pages/BattleTrain/BattleTrain';
 import Home from './pages/Home';
 import Login from './pages/Login/Login';
 import Shop from './pages/Shop/Shop';
-import Train from './pages/Train/TrainingRoom';
+import ExplorePage from './pages/Train/ExplorePage';
 import './theme/variables.css';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 
@@ -58,8 +58,8 @@ const App: React.FC = () => {
               <IonRouterOutlet>
                 <Redirect exact path="/" to="/home" />
                 <Route path="/home" render={() => <Home />} exact={true} />
-                <Route path="/train" render={() => <Train />} exact={true} />
-                <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
+                <Route path="/explore" render={() => <ExplorePage />} exact={true} />
+                <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
                 <Route path="/shop" render={() => <Shop />} exact={true} />
                 <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
                 <Route path="/search" render={() => <Home />} exact={true} />
@@ -74,9 +74,9 @@ const App: React.FC = () => {
                   <IonLabel>Home</IonLabel>
                 </IonTabButton>
 
-                <IonTabButton tab="radio" href="/train">
+                <IonTabButton tab="radio" href="/explore">
                   <IonIcon icon={barbell} />
-                  <IonLabel>Train</IonLabel>
+                  <IonLabel>Explore</IonLabel>
                 </IonTabButton>
 
                 <IonTabButton tab="library" href="/library">
