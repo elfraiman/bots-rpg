@@ -24,7 +24,7 @@ const Train: React.FC = () => {
 
 
   const getEnemyList = async () => {
-    const enemies = await getEnemies({ location: 'training-room' });
+    const enemies = await getEnemies({ location: 'earth' });
     if (enemies) {
       setEnemies(enemies);
     }

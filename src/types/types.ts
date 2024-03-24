@@ -18,6 +18,15 @@ export type IEnemy = {
   imgId: number;
 };
 
+
+
+export type IPlanet = {
+  _id: Realm.BSON.ObjectId;
+  description: string;
+  imgId: number;
+  name: string;
+};
+
 export type IEnemy_equipment = {
   mainHand?: IEnemy_equipment_mainHand;
 };
@@ -60,6 +69,7 @@ export type IPlayer = {
   maxHealth: number;
   name: string;
   str: number;
+  location: string;
 };
 
 

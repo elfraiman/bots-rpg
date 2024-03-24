@@ -4,7 +4,7 @@ import React from 'react';
 import { Redirect, Route } from 'react-router';
 import * as Realm from "realm-web";
 
-import { barbell, diamond, home, medal, search } from 'ionicons/icons';
+import { barbell, diamond, home, medal, planetOutline, search } from 'ionicons/icons';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -31,6 +31,7 @@ import Login from './pages/Login/Login';
 import Shop from './pages/Shop/Shop';
 import Train from './pages/Train/TrainingRoom';
 import './theme/variables.css';
+import GalaxyPage from './pages/Travel/GalaxyPage';
 
 
 setupIonicReact();
@@ -60,7 +61,7 @@ const App: React.FC = () => {
                 <Route path="/train" render={() => <Train />} exact={true} />
                 <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
                 <Route path="/shop" render={() => <Shop />} exact={true} />
-                <Route path="/search" render={() => <Home />} exact={true} />
+                <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
                 <Route path="/search" render={() => <Home />} exact={true} />
                 <Route path="/search" render={() => <Home />} exact={true} />
                 <Route path="/search" render={() => <Home />} exact={true} />
@@ -87,9 +88,9 @@ const App: React.FC = () => {
                   <IonIcon icon={diamond} />
                   <IonLabel>Shop</IonLabel>
                 </IonTabButton>
-                <IonTabButton tab="search" href="/search">
-                  <IonIcon icon={search} />
-                  <IonLabel>Search</IonLabel>
+                <IonTabButton tab="travel" href="/travel">
+                  <IonIcon icon={planetOutline} />
+                  <IonLabel>Galaxy</IonLabel>
                 </IonTabButton>
                 <IonTabButton tab="search" href="/search">
                   <IonIcon icon={search} />
