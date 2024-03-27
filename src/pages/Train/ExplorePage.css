@@ -1,10 +1,6 @@
-.training-bg {
-  --background: url("/resources/images/TrainingRoom.webp") no-repeat center center / cover;
-}
+
 .text-overlay {
-  padding: 10px;
-  z-index: 100;
-  width: 100%;
-  position: relative;
-  font-weight: 500;
+  z-index: 100 !important;
+  /* other styles if necessary */
+  padding: 16px;
 }

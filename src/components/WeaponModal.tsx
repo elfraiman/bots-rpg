@@ -10,11 +10,12 @@ interface IWeaponModalProps {
   canPurchase: boolean;
   purchaseItem: (weapon: IWeapon) => void;
   equipItem: (weapon: IWeapon) => void;
+  saleItem: (weapon: IWeapon) => void;
   setShowModal: (boolean: boolean) => void;
 }
 
 
-const WeaponModal = ({ showModal, weapon,  isForSale, equipItem, canPurchase, purchaseItem, setShowModal }: IWeaponModalProps) => {
+const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, purchaseItem, setShowModal, saleItem }: IWeaponModalProps) => {
 
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
@@ -68,16 +69,16 @@ const WeaponModal = ({ showModal, weapon,  isForSale, equipItem, canPurchase, pu
 
 
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {isForSale ? ( 
+        {isForSale ? (
           <>
             <IonButton fill="solid" disabled={!canPurchase} onClick={() => purchaseItem(weapon)}>Purchase</IonButton>
             <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
           </>
         ) : (
           <>
-            <IonButton fill="solid"  onClick={() => equipItem(weapon)}>Equip</IonButton>
+            <IonButton fill="solid" onClick={() => equipItem(weapon)}>Equip</IonButton>
             <div>
-              <IonButton fill="solid" color="warning" onClick={() => setShowModal(false)}>Sale</IonButton>
+              <IonButton fill="solid" color="warning" onClick={() => saleItem(weapon)}>Sale</IonButton>
               <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
             </div>
           </>

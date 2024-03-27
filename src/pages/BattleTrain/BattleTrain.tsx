@@ -397,7 +397,7 @@ const BattleTrain = () => {
       <Header />
 
       <IonToolbar>
-        <IonTitle style={{textAlign: 'center'}}> 
+        <IonTitle style={{textAlign : 'center'}}> 
           <span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{enemy?.name}</span>
         </IonTitle>
       </IonToolbar>

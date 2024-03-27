@@ -40,12 +40,7 @@ import {
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
-            <IonText>
-              <div>
-              
-              </div>
-            </IonText>
-  
+
           </IonContent>
         </IonPage>
       </>

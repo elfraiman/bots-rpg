@@ -1,4 +1,3 @@
-import { IWeapon } from "../types/types"
 
 
 

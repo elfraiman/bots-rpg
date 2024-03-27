@@ -1,33 +1,40 @@
-import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonText } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
+import Header from '../../components/Header';
 import WeaponCard from '../../components/WeaponCard';
 import { PlayerContext } from '../../context/PlayerContext';
-import useWeaponsHook from '../../hooks/UseWeaponsHook';
+import getShopWeapons from '../../functions/GetShopWeapons';
 import { IWeapon } from '../../types/types';
 import './Shop.css';
-import Header from '../../components/Header';
 
 
 const Shop = () => {
-  const weapons = useWeaponsHook();
-  const { player, setPlayer } = useContext(PlayerContext);
+  const { player } = useContext(PlayerContext);
   const [weaponsData, setWeaponsData] = useState<IWeapon[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const getWeaponsData = async () => {
+    setLoading(true);
+    const weaponsForShop = await getShopWeapons();
+
+
+    if (weaponsForShop) {
+      setWeaponsData(weaponsForShop);
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    if (weapons) {
-      setWeaponsData(weapons);
-    }
-
-    console.log(weapons);
-  }, [weapons]);
+    getWeaponsData()
+  }, []);
 
 
 
   return (
     <React.Fragment>
-      {player ? (
+      {player && !loading ? (
         <IonPage id="main-content" className="content">
-          <Header title="shop" />
+          <Header />
           {player ? (
             <IonContent className="ion-padding shop-bg">
               <IonText>
@@ -91,16 +98,16 @@ const Shop = () => {
                         </div>
                       </IonAccordion>
                     </IonAccordionGroup>
-                  ) : <p>Loading...</p>}
+                  ) : <IonSpinner />}
                 </IonCardContent>
               </IonCard>
 
 
             </IonContent>
-          ) : <p>Loading...</p>}
+          ) : <IonSpinner />}
 
         </IonPage>
-      ) : <p>Loading...</p>}
+      ) : <IonSpinner />}
 
     </React.Fragment>
   )

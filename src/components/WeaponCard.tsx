@@ -1,10 +1,12 @@
 import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
+import { getCreateWeapon } from "../functions/GetCreateWeapon";
 import getWeaponColor from "../functions/GetWeaponColor";
 import { IPlayer, IWeapon } from "../types/types";
 import './WeaponCard.css';
 import WeaponModal from "./WeaponModal";
+import { getSaleWeapon } from "../functions/GetSaleWeapon";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -12,9 +14,9 @@ interface IWeaponCardProps {
   isForSale?: boolean;
 }
 
-const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
+const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
-  const { player, setPlayer, updatePlayerData } = useContext(PlayerContext);
+  const { player, updatePlayerData } = useContext(PlayerContext);
 
 
 
@@ -35,21 +37,50 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
     }
   }
 
-  const purchaseItem = async (item: IWeapon) => {
-    console.log(player, 'player', initialPlayer);
-    if (player && player.gold >= item.cost && item.requirements && player.str >= item?.requirements.str && player.dex >= item.requirements.dex) {
+  const purchaseItem = async (itemToPurchase: IWeapon) => {
+    if (player && player.gold >= itemToPurchase.cost && itemToPurchase.requirements &&
+      player.str >= itemToPurchase.requirements.str && player.dex >= itemToPurchase.requirements.dex) {
       try {
-        await updatePlayerData({ ...player, gold: player.gold - item.cost, equipment: { mainHand: item } });
+
+
+        // Insert the new weapon into the database and retrieve the insertedId
+        const insertResult = await getCreateWeapon(itemToPurchase);
+        const newWeaponId = insertResult?._id;
+
+        // If the insert operation was successful, update the player's data
+        if (newWeaponId) {
+          // Deduct the cost and add the new weapon to the player's inventory
+          const updatedPlayer = {
+            ...player,
+            gold: player.gold - itemToPurchase.cost,
+            inventory: [...player.inventory, { ...insertResult, _id: newWeaponId }]
+          };
+
+          // Update the player's data in the database
+          await updatePlayerData(updatedPlayer);
+
+          // Close the modal
+          setShowModal(false);
+        } else {
+          throw new Error("Failed to insert the new weapon into the database.");
+        }
 
       } catch (e) {
-        console.error(e)
+        console.error("An error occurred while purchasing the item: ", e);
       }
-
-      setShowModal(false);
     } else {
       console.error("Player does not meet the requirements to purchase this item");
     }
   };
+
+  const saleItem = async (itemToSale: IWeapon) => {
+    if (player && itemToSale) {
+      await getSaleWeapon(itemToSale, player, updatePlayerData);
+      setShowModal(false);
+    }
+  }
+
+
   const equipItem = async (item: IWeapon) => {
     // Check if there is an existing weapon in the main hand
     const currentMainHand = player?.equipment?.mainHand;
@@ -64,7 +95,7 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
             mainHand: item, // Equip the new weapon
           },
           // Filter out the new weapon from the inventory if it was there, and keep the rest.
-          inventory: player.inventory.filter(invItem => invItem._id !== item._id),
+          inventory: player.inventory.filter((invItem: any) => invItem._id !== item._id),
         };
 
         // If there was a weapon in the main hand, move it to the inventory
@@ -87,6 +118,7 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
       console.error("Player does not meet the requirements to equip this item");
       // Optionally, handle the error (e.g., show an error message to the user)
     }
+    setShowModal(false);
   };
 
 
@@ -113,9 +145,15 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
                     {weapon.name}
                   </div>
 
-                  <span style={{}}>
-                    Price:  <span style={{ color: 'gold' }}> {weapon.cost.toLocaleString()} G</span>
+
+                  {isForSale ? (<span>
+                    Cost:<span style={{ color: 'gold' }}> {weapon.cost.toLocaleString()} G</span>
                   </span>
+                  ) : (
+                    <span>
+                      Sale: <span style={{ color: 'gold' }}> {(weapon.cost / 2).toLocaleString()} G</span>
+                    </span>
+                  )}
 
 
                 </IonCol>
@@ -150,6 +188,7 @@ const WeaponCard = ({ weapon, initialPlayer, isForSale }: IWeaponCardProps) => {
             isForSale={isForSale ?? false}
             canPurchase={checkRequirements(isForSale ?? false)}
             purchaseItem={purchaseItem}
+            saleItem={saleItem}
             showModal={showModal}
             setShowModal={setShowModal}
             weapon={weapon} />
