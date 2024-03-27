@@ -4,13 +4,13 @@ import Header from '../../components/Header';
 import WeaponCard from '../../components/WeaponCard';
 import { PlayerContext } from '../../context/PlayerContext';
 import getShopWeapons from '../../functions/GetShopWeapons';
-import { IWeapon } from '../../types/types';
+import { IShopWeapon, IWeapon } from '../../types/types';
 import './Shop.css';
 
 
 const Shop = () => {
   const { player } = useContext(PlayerContext);
-  const [weaponsData, setWeaponsData] = useState<IWeapon[]>([]);
+  const [weaponsData, setWeaponsData] = useState<IShopWeapon[]>([]);
   const [loading, setLoading] = useState(false);
 
   const getWeaponsData = async () => {

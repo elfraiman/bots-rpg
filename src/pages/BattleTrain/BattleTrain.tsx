@@ -5,11 +5,11 @@ import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
+import calculateMaxHealth from "../../functions/GetMaxHealth";
 import getWeaponColor from "../../functions/GetWeaponColor";
 import getXpReward from "../../functions/GetXpReward";
 import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
-import calculateMaxHealth from "../../functions/GetMaxHealth";
 
 interface IFightResult {
   hitChance: number;
@@ -66,8 +66,7 @@ const BattleTrain = () => {
 
 
   const getEnemy = async () => {
-    const params: any = await match.params;
-
+    const params: any = match.params;
     const monsterId = params.id;
 
     if (monsterId) {
@@ -83,7 +82,7 @@ const BattleTrain = () => {
   }
 
   useIonViewWillEnter(() => {
-    console.log("[TRAINING_BATTLE]: View will enter")
+    console.log("[Battle]: View will enter")
     getEnemy();
     setFightNarrative([]);
 
@@ -198,7 +197,7 @@ const BattleTrain = () => {
           <span>
             {isPlayerAttack ? returnEnemyShape(enemy, newEnemyHealth) :
               <span style={style.playerHealth}> damage report: {newPlayerHealth}/{playerMaxHealth}  <span style={returnPercentageColor(playerHealth)}>
-               {Math.round((newPlayerHealth / playerMaxHealth) * 100)} % left
+                {Math.round((newPlayerHealth / playerMaxHealth) * 100)} % left
               </span>
               </span>
             }
@@ -294,7 +293,7 @@ const BattleTrain = () => {
     if (playerWin) {
       console.log('Player Wins!');
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
-      const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type, playerLevel: player.level })
+      const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
       updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
@@ -391,19 +390,18 @@ const BattleTrain = () => {
   })
 
 
-
   return (
     <IonPage>
       <Header />
 
       <IonToolbar>
-        <IonTitle style={{textAlign : 'center'}}> 
+        <IonTitle style={{ textAlign: 'center' }}>
           <span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{enemy?.name}</span>
         </IonTitle>
       </IonToolbar>
 
       <IonContent>
-        <IonImg src={`resources/images/enemies/enemy-${enemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
+        <IonImg src={`/images/enemies/enemy-${enemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
 
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (

@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { getCreateWeapon } from "../functions/GetCreateWeapon";
 import getWeaponColor from "../functions/GetWeaponColor";
-import { IPlayer, IWeapon } from "../types/types";
+import { IPlayer, IShopWeapon, IWeapon } from "../types/types";
 import './WeaponCard.css';
 import WeaponModal from "./WeaponModal";
 import { getSaleWeapon } from "../functions/GetSaleWeapon";
@@ -17,8 +17,6 @@ interface IWeaponCardProps {
 const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
-
-
 
   if (!weapon.requirements) {
     console.error("Weapon requirements not found");
@@ -37,14 +35,14 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
     }
   }
 
-  const purchaseItem = async (itemToPurchase: IWeapon) => {
+  const purchaseItem = async (itemToPurchase: IShopWeapon) => {
     if (player && player.gold >= itemToPurchase.cost && itemToPurchase.requirements &&
       player.str >= itemToPurchase.requirements.str && player.dex >= itemToPurchase.requirements.dex) {
       try {
 
 
         // Insert the new weapon into the database and retrieve the insertedId
-        const insertResult = await getCreateWeapon(itemToPurchase);
+        const insertResult: IWeapon | undefined = await getCreateWeapon(itemToPurchase);
         const newWeaponId = insertResult?._id;
 
         // If the insert operation was successful, update the player's data
@@ -135,7 +133,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
                 <IonCol size="3" style={{ padding: 0 }}>
                   <IonImg
                     style={{ width: '100%', height: 'auto' }}
-                    src={`/resources/images/weapons/weapon-${weapon.imgId}.webp`}
+                    src={`/images/weapons/weapon-${weapon.imgId}.webp`}
                     alt={`A ${weapon.name} with beautiful details`} />
                 </IonCol>
 

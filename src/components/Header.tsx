@@ -52,7 +52,7 @@ const Header = () => {
         <IonHeader>
             {!loading && player && playerLocation ? (
                 <IonToolbar style={{
-                    '--background': `url('/resources/images/planets/planet-ground-${playerLocation?.imgId}.webp') 0 0/cover no-repeat`,
+                    '--background': `url('/images/planets/planet-ground-${playerLocation?.imgId}.webp') 0 0/cover no-repeat`,
                     position: 'relative' // Ensure the toolbar can contain the absolutely positioned overlay
                 }}>
                     {/* Overlay div */}

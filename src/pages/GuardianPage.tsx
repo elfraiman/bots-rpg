@@ -23,12 +23,13 @@ import {
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
-import BotOutline from '../../resources/images/BotOutline.webp';
+import BotOutline from '/images/BotOutline.webp';
 import Header from '../components/Header';
 import WeaponCard from '../components/WeaponCard';
 import { PlayerContext } from '../context/PlayerContext';
 import { IPlayer, IWeapon } from '../types/types';
 import './GuardianPage.css';
+import getWeaponColor from '../functions/GetWeaponColor';
 
 const styles = {
   notEquipped: { backgroundColor: 'rgba(214, 214, 214, 0.467)', border: '1px solid white' },
@@ -94,10 +95,10 @@ const GuardianPage: React.FC = () => {
                             <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                               <IonCol size="8" className="ion-padding">
                                 <IonText>
-                                  {player?.equipment?.mainHand?.name}
+                                  <span style={{ color: getWeaponColor(player.equipment?.mainHand?.grade ?? "common") }}>{player?.equipment?.mainHand?.name}</span>
                                 </IonText>
                                 <IonCardSubtitle>
-                                  {player?.equipment?.mainHand?.grade}
+                                  <span style={{ color: getWeaponColor(player.equipment?.mainHand?.grade ?? "common") }}>{player?.equipment?.mainHand?.grade}</span>
                                 </IonCardSubtitle>
                                 <IonText>
                                   {player?.equipment?.mainHand?.minDamage} - {player?.equipment?.mainHand?.maxDamage}
@@ -106,7 +107,7 @@ const GuardianPage: React.FC = () => {
                               <IonCol size="4" style={{ padding: 0 }}>
                                 <div style={{ display: 'flex' }}>
                                   <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.mainHand?.name} with beautiful details`} src={`/resources/images/weapons/weapon-${player?.equipment?.mainHand?.imgId}.webp`} />
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.mainHand?.name} with beautiful details`} src={`/images/weapons/weapon-${player?.equipment?.mainHand?.imgId}.webp`} />
                                   </IonThumbnail>
                                 </div>
                               </IonCol>

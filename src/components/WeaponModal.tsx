@@ -1,5 +1,5 @@
 import { IonModal, IonGrid, IonRow, IonCol, IonButton, IonImg, IonButtons } from "@ionic/react";
-import { IWeapon } from "../types/types";
+import { IShopWeapon, IWeapon } from "../types/types";
 import './WeaponModal.css';
 import getWeaponColor from "../functions/GetWeaponColor";
 
@@ -8,7 +8,7 @@ interface IWeaponModalProps {
   weapon: IWeapon;
   isForSale: boolean;
   canPurchase: boolean;
-  purchaseItem: (weapon: IWeapon) => void;
+  purchaseItem: (weapon: IShopWeapon) => void;
   equipItem: (weapon: IWeapon) => void;
   saleItem: (weapon: IWeapon) => void;
   setShowModal: (boolean: boolean) => void;
@@ -30,7 +30,7 @@ const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, pur
         <IonRow className="ion-padding">
           <IonImg
             alt={`A ${weapon.name} with beautiful details`}
-            src={`/resources/images/weapons/weapon-${weapon.imgId}.webp`}
+            src={`/images/weapons/weapon-${weapon.imgId}.webp`}
             style={{ height: 85, marginLeft: 16, border: '1px solid grey' }} />
 
           <IonCol style={{ marginLeft: 26 }}>
@@ -71,7 +71,7 @@ const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, pur
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {isForSale ? (
           <>
-            <IonButton fill="solid" disabled={!canPurchase} onClick={() => purchaseItem(weapon)}>Purchase</IonButton>
+            <IonButton fill="solid" disabled={!canPurchase} onClick={() => purchaseItem(weapon as IShopWeapon)}>Purchase</IonButton>
             <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
           </>
         ) : (

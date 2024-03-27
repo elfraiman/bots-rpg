@@ -26,7 +26,7 @@ const GalaxyPage = () => {
                       <IonCol size="3" style={{ padding: 0 }}>
                         <IonImg
                           style={{ width: '100%', height: 'auto' }}
-                          src={`/resources/images/planets/planet-space-${planet.imgId}.webp`}
+                          src={`/images/planets/planet-space-${planet.imgId}.webp`}
                           alt={`Planet`} />
                       </IonCol>
 

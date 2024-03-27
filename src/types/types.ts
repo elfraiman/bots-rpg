@@ -136,6 +136,7 @@ export type IPlayer_equipment_mainHand = {
   maxDamage?: number;
   minDamage?: number;
   name?: string;
+  grade: string;
   requirements?: IPlayer_equipment_mainHand_requirements;
 };
 
@@ -211,10 +212,10 @@ export const IShopWeaponSchema = {
 };
 
 export type IShopWeapon_requirements = {
-  con?: number;
-  dex?: number;
-  int?: number;
-  str?: number;
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
 };
 
 export const IShopWeapon_requirementsSchema = {

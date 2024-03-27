@@ -43,7 +43,7 @@ const ExplorePage: React.FC = () => {
       <IonContent
         className="explore-content"
         style={{
-          '--background': `url('/resources/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
+          '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
         }}
       >
         <div className="text-overlay">
