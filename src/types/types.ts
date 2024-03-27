@@ -52,15 +52,50 @@ export type IEnemy_equipment_mainHand = {
   name?: string;
 };
 
-export const IEnemy_equipment_mainHandSchema = {
-  name: 'IEnemy_equipment_mainHand',
-  embedded: true,
-  properties: {
-    maxDamage: 'int?',
-    minDamage: 'int?',
-    name: 'string?',
-  },
+
+export type IArmor = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  defense: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IArmor_requirements;
+  sale?: boolean;
 };
+
+
+export type IArmor_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+
+export type IShopArmor = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IShopArmor_requirements;
+  sale: boolean;
+  defense: number;
+};
+
+
+
+export type IShopArmor_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+
 
 export type IPlanet = {
   _id: Realm.BSON.ObjectId;
@@ -118,6 +153,7 @@ export const IPlayerSchema = {
 
 export type IPlayer_equipment = {
   mainHand?: IPlayer_equipment_mainHand;
+  armor?: IPlayer_equipment_armor;
 };
 
 export const IPlayer_equipmentSchema = {
@@ -126,6 +162,23 @@ export const IPlayer_equipmentSchema = {
   properties: {
     mainHand: 'IPlayer_equipment_mainHand',
   },
+};
+
+export type IPlayer_equipment_armor = {
+  _id?: Realm.BSON.ObjectId;
+  cost?: number;
+  defense?: number;
+  description?: string;
+  imgId?: number;
+  name?: string;
+  requirements?: IPlayer_equipment_armor_requirements;
+};
+
+export type IPlayer_equipment_armor_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
 };
 
 export type IPlayer_equipment_mainHand = {

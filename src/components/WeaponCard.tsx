@@ -2,11 +2,11 @@ import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { getCreateWeapon } from "../functions/GetCreateWeapon";
+import { getSaleWeapon } from "../functions/GetSaleWeapon";
 import getWeaponColor from "../functions/GetWeaponColor";
 import { IPlayer, IShopWeapon, IWeapon } from "../types/types";
 import './WeaponCard.css';
 import WeaponModal from "./WeaponModal";
-import { getSaleWeapon } from "../functions/GetSaleWeapon";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -25,7 +25,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
 
   const checkRequirements = (forPurchase: boolean) => {
     if (forPurchase) {
-      const meetsRequirements = player && player.gold >= weapon.cost && weapon.requirements && player.str >= weapon?.requirements?.str && player.dex >= weapon?.requirements.dex;
+      const meetsRequirements = player && player.gold >= weapon.cost;
       return !!meetsRequirements;
     } else {
       const requirementsToEquip = player && player.str >= weapon.requirements.str && player.dex >= weapon.requirements.dex
@@ -35,14 +35,13 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
     }
   }
 
-  const purchaseItem = async (itemToPurchase: IShopWeapon) => {
-    if (player && player.gold >= itemToPurchase.cost && itemToPurchase.requirements &&
-      player.str >= itemToPurchase.requirements.str && player.dex >= itemToPurchase.requirements.dex) {
+  const purchaseWeapon = async (weaponToPurchase: IShopWeapon) => {
+    if (player && player.gold >= weaponToPurchase.cost) {
       try {
 
 
         // Insert the new weapon into the database and retrieve the insertedId
-        const insertResult: IWeapon | undefined = await getCreateWeapon(itemToPurchase);
+        const insertResult: IWeapon | undefined = await getCreateWeapon(weaponToPurchase);
         const newWeaponId = insertResult?._id;
 
         // If the insert operation was successful, update the player's data
@@ -50,7 +49,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
           // Deduct the cost and add the new weapon to the player's inventory
           const updatedPlayer = {
             ...player,
-            gold: player.gold - itemToPurchase.cost,
+            gold: player.gold - weaponToPurchase.cost,
             inventory: [...player.inventory, { ...insertResult, _id: newWeaponId }]
           };
 
@@ -77,7 +76,6 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
       setShowModal(false);
     }
   }
-
 
   const equipItem = async (item: IWeapon) => {
     // Check if there is an existing weapon in the main hand
@@ -118,7 +116,6 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
     }
     setShowModal(false);
   };
-
 
   // ... your existing return statement in the WeaponCard component
 
@@ -185,7 +182,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
             equipItem={equipItem}
             isForSale={isForSale ?? false}
             canPurchase={checkRequirements(isForSale ?? false)}
-            purchaseItem={purchaseItem}
+            purchaseItem={purchaseWeapon}
             saleItem={saleItem}
             showModal={showModal}
             setShowModal={setShowModal}
