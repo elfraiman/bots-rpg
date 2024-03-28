@@ -180,6 +180,7 @@ export type IPlayer_equipment_boots = {
   defense?: number;
   description?: string;
   imgId?: number;
+  grade: string;
   name?: string;
   requirements?: IPlayer_equipment_boots_requirements;
 };
@@ -223,6 +224,7 @@ export type IPlayer_equipment_helmet = {
   description?: string;
   imgId?: number;
   name?: string;
+  grade: string;
   requirements: IPlayer_equipment_helmet_requirements;
 };
 

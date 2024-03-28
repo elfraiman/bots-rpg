@@ -152,14 +152,88 @@ const GuardianPage: React.FC = () => {
                         </IonPopover>
                       </IonButton>
 
-                      <div className="helmet-block" style={styles.notEquipped}>
-                      </div>
-                      <div className="right-boot-block" style={styles.notEquipped}>
+                      <IonButton fill="clear" id="helmet-click" className="helmet-block" style={player.equipment?.helmet ? styles.equipped : styles.notEquipped}>
+                        <IonPopover alignment='center' trigger="helmet-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.helmet?.grade ?? "common") }}>{player?.equipment?.helmet?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.helmet?.grade ?? "common") }}>{player?.equipment?.helmet?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  Defense: {player?.equipment?.helmet?.defense}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.helmet?.name} with beautiful details`} src={`/images/helmets/helmet-${player?.equipment?.armor?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      </IonButton>
 
-                      </div>
-                      <div className="left-boot-block" style={styles.notEquipped}>
 
-                      </div>
+                      <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={player.equipment?.boots ? styles.equipped : styles.notEquipped}>
+                        <IonPopover alignment='center' trigger="right-boot-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.boots?.grade ?? "common") }}>{player?.equipment?.boots?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.boots?.grade ?? "common") }}>{player?.equipment?.boots?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  Defense: {player?.equipment?.boots?.defense}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.boots?.name} with beautiful details`} src={`/images/boots/boots-${player?.equipment?.armor?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      </IonButton>
+
+                  
+                      <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={player.equipment?.boots ? styles.equipped : styles.notEquipped}>
+                        <IonPopover alignment='center' trigger="left-boot-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.boots?.grade ?? "common") }}>{player?.equipment?.boots?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.boots?.grade ?? "common") }}>{player?.equipment?.boots?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  Defense: {player?.equipment?.boots?.defense}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.boots?.name} with beautiful details`} src={`/images/boots/boots-${player?.equipment?.armor?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      </IonButton>
                     </IonCardContent>
 
 
