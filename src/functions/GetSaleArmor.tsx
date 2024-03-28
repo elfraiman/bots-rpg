@@ -17,7 +17,14 @@ export const getSaleArmor = async (armor: IArmor, player: IPlayer, updatePlayerD
         if (armor !== undefined && player) {
             await armorsCollection.deleteOne({ _id: armor._id });
 
-            updatePlayerData({ ...player, inventory: player.inventory.filter((i: any) => i._id !== armor._id), gold: player.gold + (armor.cost / 2) })
+            updatePlayerData({
+                ...player, 
+                gold: player.gold + (armor.cost / 2),
+                inventory: {
+                    ...player.inventory,
+                    armors: player.inventory.armors.filter((i: any) => i._id !== armor._id)
+                }
+            })
 
             return true;
         } else {

@@ -1,58 +1,58 @@
 import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
-import { getCreateArmor } from "../functions/GetCreateArmor";
-import { getSaleArmor } from "../functions/GetSaleArmor";
+import { getCreateHelmet } from "../functions/GetCreateHelmet";
+import { getSaleHelmet } from "../functions/GetSaleHelmet";
 import getItemGradeColor from "../functions/GetWeaponColor";
-import { IArmor, IPlayer, IShopArmor } from "../types/types";
+import { IHelmet, IPlayer, IShopHelmet } from "../types/types";
 import ItemModal from "./ItemModal";
 import './WeaponCard.css';
 
-interface IArmorCardProps {
-    armor: IArmor;
+interface IHelmetCardProps {
+    helmet: IHelmet;
     initialPlayer: IPlayer;
     isForSale?: boolean;
 }
 
-const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
+const HelmetCard = ({ helmet, isForSale }: IHelmetCardProps) => {
     const [showModal, setShowModal] = useState(false);
     const { player, updatePlayerData } = useContext(PlayerContext);
 
-    if (!armor.requirements) {
-        console.error("Armor requirements not found");
+    if (!helmet.requirements) {
+        console.error("helmet requirements not found");
         return;
     }
 
     const checkRequirements = (forPurchase: boolean) => {
 
         if (forPurchase) {
-            const meetsRequirements = player && player.gold >= armor.cost;
+            const meetsRequirements = player && player.gold >= helmet.cost;
             return !!meetsRequirements;
         } else {
-            const requirementsToEquip = player && player.str >= armor.requirements.str && player.dex >= armor.requirements.dex
-                && player.con >= armor.requirements.con && player.int >= armor.requirements.int;
+            const requirementsToEquip = player && player.str >= helmet.requirements.str && player.dex >= helmet.requirements.dex
+                && player.con >= helmet.requirements.con && player.int >= helmet.requirements.int;
 
             return !!requirementsToEquip;
         }
     }
 
-    const purchaseArmor = async (armorToPurchase: IShopArmor) => {
-        if (player && armorToPurchase && player.gold >= armorToPurchase.cost) {
+    const purchaseHelmet = async (helmetToPurchase: IShopHelmet) => {
+        if (player && helmetToPurchase && player.gold >= helmetToPurchase.cost) {
             try {
 
                 // Insert the new weapon into the database and retrieve the insertedId
-                const insertResult = await getCreateArmor(armorToPurchase);
-                const newArmorId = insertResult?._id;
+                const insertResult = await getCreateHelmet(helmetToPurchase);
+                const newHelmetId = insertResult?._id;
 
                 // If the insert operation was successful, update the player's data
-                if (newArmorId) {
+                if (newHelmetId) {
                     // Deduct the cost and add the new weapon to the player's inventory
                     const updatedPlayer = {
                         ...player,
-                        gold: player.gold - armorToPurchase.cost,
+                        gold: player.gold - helmetToPurchase.cost,
                         inventory: {
                             ...player.inventory,
-                            armors: [...player.inventory.armors, { ...insertResult, _id: newArmorId }]
+                            helmets: [...player.inventory.helmets, { ...insertResult, _id: newHelmetId }]
                         }
                     };
 
@@ -73,16 +73,16 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
         }
     };
 
-    const saleArmor = async (armorToSale: IArmor) => {
+    const saleHelmet = async (helmetToSale: IHelmet) => {
         if (player) {
-            await getSaleArmor(armorToSale, player, updatePlayerData);
+            await getSaleHelmet(helmetToSale, player, updatePlayerData);
             setShowModal(false);
         }
     }
 
-    const equipArmor = async (armor: IArmor) => {
+    const equipHelmet = async (helmet: IHelmet) => {
         // Check if there is an existing weapon in the main hand
-        const currentArmor = player?.equipment?.armor;
+        const currentHelmet = player?.equipment?.helmet;
 
         if (player && checkRequirements(false)) {
             try {
@@ -91,20 +91,20 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
                     ...player,
                     equipment: {
                         ...player.equipment,
-                        armor: armor, // Equip the new weapon
+                        helmet: helmet, // Equip the new weapon
                     },
                     // Filter out the new weapon from the inventory if it was there, and keep the rest.
                     inventory: {
                         ...player.inventory,
-                        armors: player.inventory.armors.filter((invArmor: IArmor) => invArmor._id !== armor._id)
+                        helmets: player.inventory.helmets.filter((invHelmet: IHelmet) => invHelmet._id !== helmet._id)
                     }
                 };
 
                 // If there was a weapon in the main hand, move it to the inventory
-                if (currentArmor) {
+                if (currentHelmet) {
                     // Ensure that the weapon being moved to the inventory is not the same as the one being equipped
-                    if (currentArmor._id !== armor._id) {
-                        updatedPlayer.inventory.armors.push(currentArmor);
+                    if (currentHelmet._id !== helmet._id) {
+                        updatedPlayer.inventory.helmets.push(currentHelmet);
                     }
                 }
 
@@ -123,11 +123,9 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
         setShowModal(false);
     };
 
-    // ... your existing return statement in the Armorcard component
-
     return (
         <>
-            {armor && player ? (
+            {helmet && player ? (
                 <>
                     <div onClick={() => setShowModal(true)} style={{ padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
                         <IonGrid style={{ width: '100%', padding: 0 }}>
@@ -136,23 +134,23 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
                                 <IonCol size="3" style={{ padding: 0 }}>
                                     <IonImg
                                         style={{ width: '100%', height: 'auto' }}
-                                        src={`/images/armors/armor-${armor.imgId}.webp`}
-                                        alt={`A ${armor.name} with beautiful details`} />
+                                        src={`/images/helmets/helmet-${helmet.imgId}.webp`}
+                                        alt={`A ${helmet.name} with beautiful details`} />
                                 </IonCol>
 
                                 {/* Gold Column */}
                                 <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                    <div style={{ color: getItemGradeColor(armor.grade), fontSize: '14px', marginBottom: 6 }}>
-                                        {armor.name}
+                                    <div style={{ color: getItemGradeColor(helmet.grade), fontSize: '14px', marginBottom: 6 }}>
+                                        {helmet.name}
                                     </div>
 
 
                                     {isForSale ? (<span>
-                                        Cost:<span style={{ color: 'gold' }}> {armor.cost.toLocaleString()} G</span>
+                                        Cost:<span style={{ color: 'gold' }}> {helmet.cost.toLocaleString()} G</span>
                                     </span>
                                     ) : (
                                         <span>
-                                            Sale: <span style={{ color: 'gold' }}> {(armor.cost / 2).toLocaleString()} G</span>
+                                            Sale: <span style={{ color: 'gold' }}> {(helmet.cost / 2).toLocaleString()} G</span>
                                         </span>
                                     )}
 
@@ -162,19 +160,19 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
                                 {/* Requirements Column */}
                                 <IonCol size="5" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                                     <div style={{ fontSize: '14px', color: 'white' }}>
-                                        Defense: {armor.defense}
+                                        Defense: {helmet.defense}
                                     </div>
                                     <span style={{ fontSize: '12px' }}>
                                         Stats required:
                                     </span>
 
                                     <IonCardSubtitle style={{ fontSize: '12px' }}>
-                                        DEX: <span style={{ color: player?.dex >= armor.requirements.dex ? 'green' : 'red', marginRight: 6 }}>
-                                            {armor.requirements.dex}
+                                        DEX: <span style={{ color: player?.dex >= helmet.requirements.dex ? 'green' : 'red', marginRight: 6 }}>
+                                            {helmet.requirements.dex}
                                         </span>
 
-                                        STR: <span style={{ color: player?.str >= armor.requirements.str ? 'green' : 'red', }}>
-                                            {armor.requirements.str}
+                                        STR: <span style={{ color: player?.str >= helmet.requirements.str ? 'green' : 'red', }}>
+                                            {helmet.requirements.str}
                                         </span>
                                     </IonCardSubtitle>
                                 </IonCol>
@@ -185,15 +183,15 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
 
 
                     <ItemModal
-                        equipItem={equipArmor}
+                        equipItem={equipHelmet}
                         isForSale={isForSale ?? false}
                         canPurchase={checkRequirements(isForSale ?? false)}
-                        purchaseItem={purchaseArmor}
-                        saleItem={saleArmor}
+                        purchaseItem={purchaseHelmet}
+                        saleItem={saleHelmet}
                         showModal={showModal}
                         setShowModal={setShowModal}
-                        imgString={`/images/armors/armor-${armor.imgId}.webp`}
-                        item={armor} />
+                        imgString={`/images/helmets/helmet-${helmet.imgId}.webp`}
+                        item={helmet} />
                 </>
             ) : <>Loading..</>}
 
@@ -201,4 +199,4 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
     );
 };
 
-export default ArmorCard;
+export default HelmetCard;

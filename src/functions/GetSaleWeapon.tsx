@@ -17,7 +17,12 @@ export const getSaleWeapon = async (weapon: IWeapon, player: IPlayer, updatePlay
         if (weapon !== undefined && player) {
             await weaponsCollection.deleteOne({ _id: weapon._id });
 
-            updatePlayerData({ ...player, inventory: player.inventory.filter((i: any) => i._id !== weapon._id), gold: player.gold + (weapon.cost / 2) })
+            updatePlayerData({ ...player,
+                gold: player.gold + (weapon.cost / 2),
+                inventory: {
+                ...player.inventory,
+                weapons: player.inventory.weapons.filter((i: any) => i._id !== weapon._id)
+            } })
 
             return true;
         } else {

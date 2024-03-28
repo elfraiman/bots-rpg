@@ -27,9 +27,12 @@ import BotOutline from '/images/BotOutline.webp';
 import Header from '../components/Header';
 import WeaponCard from '../components/WeaponCard';
 import { PlayerContext } from '../context/PlayerContext';
-import { IPlayer, IWeapon } from '../types/types';
+import { IArmor, IBoots, IHelmet, IPlayer, IWeapon } from '../types/types';
 import './GuardianPage.css';
-import getWeaponColor from '../functions/GetWeaponColor';
+import getItemGradeColor from '../functions/GetWeaponColor';
+import ArmorCard from '../components/ArmorCard';
+import HelmetCard from '../components/HelmetCard';
+import BootsCard from '../components/BootsCard';
 
 const styles = {
   notEquipped: { backgroundColor: 'rgba(214, 214, 214, 0.467)', border: '1px solid white' },
@@ -74,6 +77,7 @@ const GuardianPage: React.FC = () => {
 
   }, [player])
 
+
   return (
     <>
       <IonPage id="main-content">
@@ -89,19 +93,20 @@ const GuardianPage: React.FC = () => {
                     <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
                     <IonCardContent className="bot-card-content">
                       <IonImg src={BotOutline} className="bot-outline-img" />
-                      <IonButton fill="clear" id="click-trigger" className="left-arm-block" style={player.equipment?.mainHand ? styles.equipped : styles.notEquipped}>
-                        <IonPopover alignment='center' trigger="click-trigger" triggerAction="click">
+
+                      <IonButton fill="clear" id="weapon-click" className="left-arm-block" style={player.equipment?.mainHand ? styles.equipped : styles.notEquipped}>
+                        <IonPopover alignment='center' trigger="weapon-click" triggerAction="click">
                           <IonContent>
                             <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                               <IonCol size="8" className="ion-padding">
                                 <IonText>
-                                  <span style={{ color: getWeaponColor(player.equipment?.mainHand?.grade ?? "common") }}>{player?.equipment?.mainHand?.name}</span>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.mainHand?.grade ?? "common") }}>{player?.equipment?.mainHand?.name}</span>
                                 </IonText>
                                 <IonCardSubtitle>
-                                  <span style={{ color: getWeaponColor(player.equipment?.mainHand?.grade ?? "common") }}>{player?.equipment?.mainHand?.grade}</span>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.mainHand?.grade ?? "common") }}>{player?.equipment?.mainHand?.grade}</span>
                                 </IonCardSubtitle>
                                 <IonText>
-                                  {player?.equipment?.mainHand?.minDamage} - {player?.equipment?.mainHand?.maxDamage}
+                                  Damage: {player?.equipment?.mainHand?.minDamage} - {player?.equipment?.mainHand?.maxDamage}
                                 </IonText>
                               </IonCol>
                               <IonCol size="4" style={{ padding: 0 }}>
@@ -116,10 +121,37 @@ const GuardianPage: React.FC = () => {
                         </IonPopover>
 
                       </IonButton>
+
                       <div className="right-arm-block" style={styles.notEquipped}>
                       </div>
-                      <div className="armor-block" style={styles.notEquipped}>
-                      </div>
+
+                      <IonButton fill="clear" id="armor-click" className="armor-block" style={player.equipment?.armor ? styles.equipped : styles.notEquipped}>
+                        <IonPopover alignment='center' trigger="armor-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.armor?.grade ?? "common") }}>{player?.equipment?.armor?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(player.equipment?.armor?.grade ?? "common") }}>{player?.equipment?.armor?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  Defense: {player?.equipment?.armor?.defense}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${player?.equipment?.armor?.name} with beautiful details`} src={`/images/armors/armor-${player?.equipment?.armor?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      </IonButton>
+
                       <div className="helmet-block" style={styles.notEquipped}>
                       </div>
                       <div className="right-boot-block" style={styles.notEquipped}>
@@ -129,16 +161,63 @@ const GuardianPage: React.FC = () => {
 
                       </div>
                     </IonCardContent>
+
+
                     <IonAccordionGroup>
-                      <IonAccordion value="first">
+                      <IonAccordion value="weapons">
                         <IonItem slot="header" color="light">
                           <IonLabel>Weapons</IonLabel>
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {player?.inventory?.map((weapon: IWeapon, index: number) => {
+                            {player?.inventory?.weapons.map((weapon: IWeapon, index: number) => {
                               return (
                                 <WeaponCard weapon={weapon} initialPlayer={player} key={index} isForSale={false} />
+                              );
+                            })}
+                          </IonList>
+                        </div>
+                      </IonAccordion>
+
+                      <IonAccordion value="armors">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Armors</IonLabel>
+                        </IonItem>
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {player?.inventory?.armors.map((armor: IArmor, index: number) => {
+                              return (
+                                <ArmorCard armor={armor} initialPlayer={player} key={index} isForSale={false} />
+                              );
+                            })}
+                          </IonList>
+                        </div>
+                      </IonAccordion>
+
+                      <IonAccordion value="helmets">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Helmets</IonLabel>
+                        </IonItem>
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {player?.inventory?.helmets.map((helmet: IHelmet, index: number) => {
+                              return (
+                                <HelmetCard helmet={helmet} initialPlayer={player} key={index} isForSale={false} />
+                              );
+                            })}
+                          </IonList>
+                        </div>
+                      </IonAccordion>
+
+                      <IonAccordion value="boots">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Boots</IonLabel>
+                        </IonItem>
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {player?.inventory?.boots.map((boots: IBoots, index: number) => {
+                              return (
+                                <BootsCard boots={boots} initialPlayer={player} key={index} isForSale={false} />
                               );
                             })}
                           </IonList>
@@ -148,6 +227,8 @@ const GuardianPage: React.FC = () => {
                   </div>
                 )}
               </IonCard>
+
+
 
               <IonCard className="ion-padding card-fade">
                 <div>

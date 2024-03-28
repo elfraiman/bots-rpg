@@ -3,10 +3,10 @@ import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { getCreateWeapon } from "../functions/GetCreateWeapon";
 import { getSaleWeapon } from "../functions/GetSaleWeapon";
-import getWeaponColor from "../functions/GetWeaponColor";
+import getItemGradeColor from "../functions/GetWeaponColor";
 import { IPlayer, IShopWeapon, IWeapon } from "../types/types";
+import ItemModal from "./ItemModal";
 import './WeaponCard.css';
-import WeaponModal from "./WeaponModal";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -50,7 +50,10 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
           const updatedPlayer = {
             ...player,
             gold: player.gold - weaponToPurchase.cost,
-            inventory: [...player.inventory, { ...insertResult, _id: newWeaponId }]
+            inventory: {
+              ...player.inventory,
+              weapons: [...player.inventory.weapons, { ...insertResult, _id: newWeaponId }]
+            }
           };
 
           // Update the player's data in the database
@@ -77,7 +80,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
     }
   }
 
-  const equipItem = async (item: IWeapon) => {
+  const equipWeapon = async (weapon: IWeapon) => {
     // Check if there is an existing weapon in the main hand
     const currentMainHand = player?.equipment?.mainHand;
 
@@ -88,17 +91,20 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
           ...player,
           equipment: {
             ...player.equipment,
-            mainHand: item, // Equip the new weapon
+            mainHand: weapon, // Equip the new weapon
           },
           // Filter out the new weapon from the inventory if it was there, and keep the rest.
-          inventory: player.inventory.filter((invItem: any) => invItem._id !== item._id),
+          inventory: {
+            ...player.inventory,
+            weapons: player.inventory.weapons.filter((invWep: IWeapon) => invWep._id !== weapon._id)
+          },
         };
 
         // If there was a weapon in the main hand, move it to the inventory
         if (currentMainHand) {
           // Ensure that the weapon being moved to the inventory is not the same as the one being equipped
-          if (currentMainHand._id !== item._id) {
-            updatedPlayer.inventory.push(currentMainHand);
+          if (currentMainHand._id !== weapon._id) {
+            updatedPlayer.inventory.weapons.push(currentMainHand);
           }
         }
 
@@ -136,7 +142,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
 
                 {/* Gold Column */}
                 <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ color: getWeaponColor(weapon.grade), fontSize: '14px', marginBottom: 6 }}>
+                  <div style={{ color: getItemGradeColor(weapon.grade), fontSize: '14px', marginBottom: 6 }}>
                     {weapon.name}
                   </div>
 
@@ -178,15 +184,16 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
 
 
 
-          <WeaponModal
-            equipItem={equipItem}
+          <ItemModal
+            imgString={`/images/weapons/weapon-${weapon.imgId}.webp`}
+            equipItem={equipWeapon}
             isForSale={isForSale ?? false}
             canPurchase={checkRequirements(isForSale ?? false)}
             purchaseItem={purchaseWeapon}
             saleItem={saleItem}
             showModal={showModal}
             setShowModal={setShowModal}
-            weapon={weapon} />
+            item={weapon} />
         </>
       ) : <>Loading..</>}
 

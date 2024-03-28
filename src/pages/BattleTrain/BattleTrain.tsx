@@ -6,7 +6,7 @@ import { PlayerContext } from "../../context/PlayerContext";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
-import getWeaponColor from "../../functions/GetWeaponColor";
+import getItemGradeColor from "../../functions/GetWeaponColor";
 import getXpReward from "../../functions/GetXpReward";
 import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
@@ -187,7 +187,7 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={{ ...style.weaponName, color: getWeaponColor(player?.equipment?.mainHand?.grade ?? 'common') }}> {attacker.equipment?.mainHand?.name}.
+          <span style={{ ...style.weaponName, color: getItemGradeColor(player?.equipment?.mainHand?.grade ?? 'common') }}> {attacker.equipment?.mainHand?.name}.
           </span>
           <br />
           <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>

@@ -2,31 +2,45 @@ import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, I
 import React, { useContext, useEffect, useState } from 'react';
 import ArmorCard from '../../components/ArmorCard';
 import Header from '../../components/Header';
+import HelmetCard from '../../components/HelmetCard';
 import WeaponCard from '../../components/WeaponCard';
 import { PlayerContext } from '../../context/PlayerContext';
 import getShopArmors from '../../functions/GetShopArmors';
+import getShopHelmets from '../../functions/GetShopHelmets';
 import getShopWeapons from '../../functions/GetShopWeapons';
-import { IArmor, IShopArmor, IShopWeapon, IWeapon } from '../../types/types';
+import { IBoots, IHelmet, IShopArmor, IShopBoots, IShopHelmet, IShopWeapon } from '../../types/types';
 import './Shop.css';
+import getShopBoots from '../../functions/GetShopBoots';
+import BootsCard from '../../components/BootsCard';
 
 
 const Shop = () => {
   const { player } = useContext(PlayerContext);
   const [weaponsData, setWeaponsData] = useState<IShopWeapon[]>([]);
   const [armorsData, setArmorsData] = useState<IShopArmor[]>([]);
+  const [helmetsData, setHelmetsData] = useState<IShopHelmet[]>([]);
+  const [bootsData, setBootsData] = useState<IShopBoots[]>([])
   const [loading, setLoading] = useState(false);
 
   const getData = async () => {
     setLoading(true);
     const weaponsForShop = await getShopWeapons();
     const armorsForShop = await getShopArmors();
+    const helmetsForShop = await getShopHelmets();
+    const bootsForShop = await getShopBoots();
+
 
     if (armorsForShop) {
       setArmorsData(armorsForShop);
     }
-
     if (weaponsForShop) {
       setWeaponsData(weaponsForShop);
+    }
+    if (helmetsForShop) {
+      setHelmetsData(helmetsForShop);
+    }
+    if (bootsForShop) {
+      setBootsData(bootsForShop);
     }
 
     setLoading(false);
@@ -48,9 +62,6 @@ const Shop = () => {
               <IonText>
                 <div className="text-overlay">
                   <h2><strong>The shop</strong></h2>
-                  <p>
-                    Welcome to the training room. Here you can practice your skills and level up your bot.
-                  </p>
                 </div>
               </IonText>
 
@@ -64,7 +75,7 @@ const Shop = () => {
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {weaponsData.map((weapon: IWeapon, index: number) => { // Add type annotations for weapon and index
+                            {weaponsData.map((weapon: IShopWeapon, index: number) => { // Add type annotations for weapon and index
                               return (
                                 <WeaponCard weapon={weapon} initialPlayer={player} key={index} isForSale={true} />
                               );
@@ -77,8 +88,8 @@ const Shop = () => {
                           <IonLabel>Armors</IonLabel>
                         </IonItem>
                         <div slot="content">
-                        <IonList lines='full'>
-                            {armorsData?.map((armor: IArmor, index: number) => { // Add type annotations for weapon and index
+                          <IonList lines='full'>
+                            {armorsData?.map((armor: IShopArmor, index: number) => { // Add type annotations for weapon and index
                               return (
                                 <ArmorCard armor={armor} initialPlayer={player} key={index} isForSale={true} />
                               );
@@ -86,28 +97,32 @@ const Shop = () => {
                           </IonList>
                         </div>
                       </IonAccordion>
-                      <IonAccordion value="third">
+                      <IonAccordion value="boots">
                         <IonItem slot="header" color="light">
                           <IonLabel>Boots</IonLabel>
                         </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Third Content
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {bootsData?.map((boots: IShopBoots, index: number) => { // Add type annotations for weapon and index
+                              return (
+                                <BootsCard boots={boots as IBoots} initialPlayer={player} key={index} isForSale={true} />
+                              );
+                            })}
+                          </IonList>
                         </div>
                       </IonAccordion>
-                      <IonAccordion value="fourth">
-                        <IonItem slot="header" color="light">
-                          <IonLabel>Gloves</IonLabel>
-                        </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Third Content
-                        </div>
-                      </IonAccordion>
-                      <IonAccordion value="fifth">
+                      <IonAccordion value="helmets">
                         <IonItem slot="header" color="light">
                           <IonLabel>Helmets</IonLabel>
                         </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Third Content
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {helmetsData?.map((helmet: IShopHelmet, index: number) => { // Add type annotations for weapon and index
+                              return (
+                                <HelmetCard helmet={helmet as IHelmet} initialPlayer={player} key={index} isForSale={true} />
+                              );
+                            })}
+                          </IonList>
                         </div>
                       </IonAccordion>
                     </IonAccordionGroup>

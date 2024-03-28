@@ -151,9 +151,79 @@ export const IPlayerSchema = {
   primaryKey: '_id',
 };
 
+
+export type IPlayer_inventory = {
+  armors: Realm.List<IPlayer_inventory_armors>;
+  boots: Realm.List<IPlayer_inventory_boots>;
+  helmets: Realm.List<IPlayer_inventory_helmets>;
+  weapons: Realm.List<IPlayer_inventory_weapons>;
+};
+
+export type IPlayer_inventory_armors = {
+};
+export type IPlayer_inventory_boots = {
+};
+export type IPlayer_inventory_helmets = {
+};
+export type IPlayer_inventory_weapons = {
+};
+
 export type IPlayer_equipment = {
-  mainHand?: IPlayer_equipment_mainHand;
   armor?: IPlayer_equipment_armor;
+  boots?: IPlayer_equipment_boots;
+  helmet?: IPlayer_equipment_helmet;
+  mainHand?: IPlayer_equipment_mainHand;
+};
+export type IPlayer_equipment_boots = {
+  _id?: Realm.BSON.ObjectId;
+  cost?: number;
+  defense?: number;
+  description?: string;
+  imgId?: number;
+  name?: string;
+  requirements?: IPlayer_equipment_boots_requirements;
+};
+
+export type IBoots = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  defense: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IBoots_requirements;
+  sale?: boolean;
+};
+
+export type IBoots_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+export type IPlayer_equipment_boots_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+export type IPlayer_equipment_helmet_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+export type IPlayer_equipment_helmet = {
+  _id?: Realm.BSON.ObjectId;
+  cost?: number;
+  defense?: number;
+  description?: string;
+  imgId?: number;
+  name?: string;
+  requirements: IPlayer_equipment_helmet_requirements;
 };
 
 export const IPlayer_equipmentSchema = {
@@ -172,6 +242,63 @@ export type IPlayer_equipment_armor = {
   imgId?: number;
   name?: string;
   requirements?: IPlayer_equipment_armor_requirements;
+  grade: string;
+};
+
+
+
+export type IHelmet_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+export type IShopBoots = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  defense: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IShopBoots_requirements;
+  sale: boolean;
+};
+export type IShopBoots_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+export type IShopHelmet = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  defense: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IShopHelmet_requirements;
+  sale: boolean;
+};
+export type IShopHelmet_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+export type IHelmet = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  defense: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IHelmet_requirements;
+  sale?: boolean;
 };
 
 export type IPlayer_equipment_armor_requirements = {
@@ -226,8 +353,6 @@ export const IPlayer_equipment_mainHand_requirementsSchema = {
   },
 };
 
-export type IPlayer_inventory = {
-};
 
 export const IPlayer_inventorySchema = {
   name: 'IPlayer_inventory',

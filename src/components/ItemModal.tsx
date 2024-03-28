@@ -1,54 +1,63 @@
-import { IonModal, IonGrid, IonRow, IonCol, IonButton, IonImg, IonButtons } from "@ionic/react";
-import { IShopWeapon, IWeapon } from "../types/types";
-import './WeaponModal.css';
-import getWeaponColor from "../functions/GetWeaponColor";
+import { IonButton, IonCol, IonGrid, IonImg, IonModal, IonRow } from "@ionic/react";
+import getItemGradeColor from "../functions/GetWeaponColor";
+import './ItemModal.css';
 
-interface IWeaponModalProps {
+interface IItemModalProps {
   showModal: boolean;
-  weapon: IWeapon;
+  item: any;
   isForSale: boolean;
   canPurchase: boolean;
-  purchaseItem: (weapon: IShopWeapon) => void;
-  equipItem: (weapon: IWeapon) => void;
-  saleItem: (weapon: IWeapon) => void;
+  imgString: string;
+  purchaseItem: (item: any) => void;
+  equipItem: (item: any) => void;
+  saleItem: (item: any) => void;
   setShowModal: (boolean: boolean) => void;
 }
 
 
-const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, purchaseItem, setShowModal, saleItem }: IWeaponModalProps) => {
+const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchaseItem, saleItem, setShowModal, imgString }: IItemModalProps) => {
 
+  console.log(imgString)
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
       <div className="weapon-modal-title">
-        Weapon
+        Armor
       </div>
-      <div className="weapon-name-title" style={{ color: getWeaponColor(weapon.grade) }}>
-        {weapon.name}
+      <div className="weapon-name-title" style={{ color: getItemGradeColor(item?.grade) }}>
+        {item.name}
       </div>
 
       <IonGrid style={{ height: '100px', border: '2px solid rgb(89, 59, 47)', margin: "6px 16px 16px 16px" }}>
         <IonRow className="ion-padding">
           <IonImg
-            alt={`A ${weapon.name} with beautiful details`}
-            src={`/images/weapons/weapon-${weapon.imgId}.webp`}
+            alt={`A ${item.name} with beautiful details`}
+            src={imgString}
             style={{ height: 85, marginLeft: 16, border: '1px solid grey' }} />
 
           <IonCol style={{ marginLeft: 26 }}>
             <IonRow>
-              <span style={{ color: getWeaponColor(weapon.grade), fontSize: 12 }}>
-                {weapon?.grade?.toUpperCase()}
+              <span style={{ color: getItemGradeColor(item.grade), fontSize: 12 }}>
+                {item?.grade?.toUpperCase()}
               </span>
             </IonRow>
 
             <IonRow>
               <span style={{ fontSize: 50, fontWeight: 900 }}>
-                {weapon.minDamage} - {weapon.maxDamage}
+                {item.minDamage ? (
+                  <>
+                    {item.minDamage} - {item.maxDamage}
+                  </>
+                ) : (
+                  <>
+                    {item.defense}
+                  </>
+                )}
               </span>
             </IonRow>
           </IonCol>
         </IonRow>
         <IonRow className="ion-padding" style={{ color: 'lightgray' }}>
-          {weapon.description}
+          {item.description}
         </IonRow>
 
         <IonRow className="ion-padding">
@@ -56,13 +65,13 @@ const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, pur
             {isForSale ? (
               <>
                 <h2>Cost</h2>
-                <p>{weapon.cost} <span style={{ color: 'gold' }}>Gold</span></p>
+                <p>{item.cost} <span style={{ color: 'gold' }}>Gold</span></p>
               </>
 
             ) : <></>}
 
             <h2>Requirements</h2>
-            <p>DEX {weapon?.requirements?.dex}, STR {weapon?.requirements?.str}</p>
+            <p>DEX {item?.requirements?.dex}, STR {item?.requirements?.str}</p>
           </IonCol>
         </IonRow>
       </IonGrid>
@@ -71,14 +80,14 @@ const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, pur
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {isForSale ? (
           <>
-            <IonButton fill="solid" disabled={!canPurchase} onClick={() => purchaseItem(weapon as IShopWeapon)}>Purchase</IonButton>
+            <IonButton fill="solid" disabled={!canPurchase} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
             <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
           </>
         ) : (
           <>
-            <IonButton fill="solid" onClick={() => equipItem(weapon)}>Equip</IonButton>
+            <IonButton fill="solid" onClick={() => equipItem(item)}>Equip</IonButton>
             <div>
-              <IonButton fill="solid" color="warning" onClick={() => saleItem(weapon)}>Sale</IonButton>
+              <IonButton fill="solid" color="warning" onClick={() => saleItem(item)}>Sale</IonButton>
               <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
             </div>
           </>
@@ -89,4 +98,4 @@ const WeaponModal = ({ showModal, weapon, isForSale, equipItem, canPurchase, pur
 }
 
 
-export default WeaponModal;
+export default ItemModal;

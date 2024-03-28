@@ -1,7 +1,7 @@
 import { IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
 import Header from "../../components/Header";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
-import getWeaponColor from "../../functions/GetWeaponColor";
+import getItemGradeColor from "../../functions/GetWeaponColor";
 
 
 
