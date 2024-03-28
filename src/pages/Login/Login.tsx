@@ -1,9 +1,8 @@
 import { IonAlert, IonButton, IonCard, IonCardContent, IonContent, IonInput, IonItem, IonLabel, IonPage } from "@ionic/react";
-import { useContext, useState, FormEvent } from 'react'; // Import FormEvent
+import { FormEvent, useState } from 'react'; // Import FormEvent
+import { useHistory } from "react-router";
 import * as Realm from 'realm-web';
 import './Login.css';
-import { PlayerContext } from "../../context/PlayerContext";
-import { useHistory } from "react-router";
 
 const app = Realm.App.getApp('application-0-vgvqx');
 
@@ -12,7 +11,6 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [verifyPassword, setVerifyPassword] = useState('');
     const [showAlert, setShowAlert] = useState(false);
-    const { setPlayer } = useContext(PlayerContext);
     const history = useHistory();
     const [isLogin, setIsLogin] = useState(true);
 

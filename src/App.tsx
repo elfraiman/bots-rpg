@@ -4,7 +4,7 @@ import React from 'react';
 import { Redirect, Route } from 'react-router';
 import * as Realm from "realm-web";
 
-import { barbell, diamond, home, medal, planetOutline, search } from 'ionicons/icons';
+import { barbell, diamond, home, medal, planetOutline, search, walk } from 'ionicons/icons';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -26,10 +26,10 @@ import '@ionic/react/css/text-transformation.css';
 /* Theme variables */
 import { PlayerProvider } from './context/PlayerContext';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
-import Home from './pages/Home';
+import GuardianPage from './pages/GuardianPage';
 import Login from './pages/Login/Login';
 import Shop from './pages/Shop/Shop';
-import Train from './pages/Train/TrainingRoom';
+import ExplorePage from './pages/Train/ExplorePage';
 import './theme/variables.css';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 
@@ -44,7 +44,7 @@ const app = new Realm.App({ id: 'application-0-vgvqx' });
 const App: React.FC = () => {
   // Keep the logged in Realm user in local state. This lets the app re-render
   // whenever the current user changes (e.g. logs in or logs out).
-  const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
+  const [user] = React.useState<Realm.User | null>(app.currentUser);
 
 
 
@@ -57,26 +57,26 @@ const App: React.FC = () => {
             <IonTabs>
               <IonRouterOutlet>
                 <Redirect exact path="/" to="/home" />
-                <Route path="/home" render={() => <Home />} exact={true} />
-                <Route path="/train" render={() => <Train />} exact={true} />
-                <Route path="/train/:id" render={() => <BattleTrain />} exact={true} />
+                <Route path="/guardian" render={() => <GuardianPage />} exact={true} />
+                <Route path="/explore" render={() => <ExplorePage />} exact={true} />
+                <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
                 <Route path="/shop" render={() => <Shop />} exact={true} />
                 <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
-                <Route path="/search" render={() => <Home />} exact={true} />
-                <Route path="/search" render={() => <Home />} exact={true} />
-                <Route path="/search" render={() => <Home />} exact={true} />
+                <Route path="/search" render={() => <GuardianPage />} exact={true} />
+                <Route path="/search" render={() => <GuardianPage />} exact={true} />
+                <Route path="/search" render={() => <GuardianPage />} exact={true} />
               </IonRouterOutlet>
 
 
               <IonTabBar slot="bottom">
-                <IonTabButton tab="home" href="/home">
-                  <IonIcon icon={home} />
-                  <IonLabel>Home</IonLabel>
+                <IonTabButton tab="home" href="/guardian">
+                  <IonIcon icon={walk} />
+                  <IonLabel>Guardian</IonLabel>
                 </IonTabButton>
 
-                <IonTabButton tab="radio" href="/train">
+                <IonTabButton tab="radio" href="/explore">
                   <IonIcon icon={barbell} />
-                  <IonLabel>Train</IonLabel>
+                  <IonLabel>Explore</IonLabel>
                 </IonTabButton>
 
                 <IonTabButton tab="library" href="/library">

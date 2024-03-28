@@ -1,7 +1,7 @@
 import { IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
 import Header from "../../components/Header";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
-import getWeaponColor from "../../functions/GetWeaponColor";
+import getItemGradeColor from "../../functions/GetWeaponColor";
 
 
 
@@ -14,7 +14,7 @@ const GalaxyPage = () => {
   return (
     <>
       <IonPage id="main-content" className="content">
-        <Header title="Travel" />
+        <Header />
         <IonContent>
           <IonList>
             {planets?.map((planet, index) => {
@@ -26,7 +26,7 @@ const GalaxyPage = () => {
                       <IonCol size="3" style={{ padding: 0 }}>
                         <IonImg
                           style={{ width: '100%', height: 'auto' }}
-                          src={`/resources/images/planets/planet-space-${planet.imgId}.webp`}
+                          src={`/images/planets/planet-space-${planet.imgId}.webp`}
                           alt={`Planet`} />
                       </IonCol>
 

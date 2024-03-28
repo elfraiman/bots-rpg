@@ -9,7 +9,7 @@ ion-menu::part(backdrop) {
   }
 
   .home-bg {
-    --background: url('/resources/images/Home.webp') no-repeat center center / cover;
+    --background: url('/images/Home.webp') no-repeat center center / cover;
 }
 
 .left-arm-block {
@@ -37,8 +37,8 @@ ion-menu::part(backdrop) {
   width: 40px;
   height: 60px;
   z-index: 100;
-  top: 80px;
-  left: 138px;
+  top: 70px;
+  left: 136px;
 }
 
 .helmet-block {
@@ -46,23 +46,23 @@ ion-menu::part(backdrop) {
   width: 35px;
   height: 35px;
   z-index: 100;
-  top: 15px;
-  left: 140px;
+  top: 10px;
+  left: 138px;
 }
 .right-boot-block {
   position: absolute;
-  width: 40px;
-  height: 30px;
+  width: 50px;
+  height: 25px;
   z-index: 100;
-  top: 270px;
-  left: 185px;
+  top: 250px;
+  left: 178px;
 }
 .left-boot-block {
   position: absolute;
-  width: 40px;
-  height: 30px;
+  width: 50px;
+  height: 25px;
   z-index: 100;
-  top: 270px;
+  top: 250px;
   left: 90px;;
 }
 

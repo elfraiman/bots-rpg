@@ -1,0 +1,6 @@
+
+.text-overlay {
+  z-index: 100 !important;
+  /* other styles if necessary */
+  padding: 16px;
+}

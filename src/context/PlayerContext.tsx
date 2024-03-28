@@ -31,6 +31,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    console.log(updates, 'updates')
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
     const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
     const userId = app.currentUser.id;

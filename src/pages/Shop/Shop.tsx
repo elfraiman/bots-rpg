@@ -1,56 +1,81 @@
-import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonText } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
+import ArmorCard from '../../components/ArmorCard';
+import Header from '../../components/Header';
+import HelmetCard from '../../components/HelmetCard';
 import WeaponCard from '../../components/WeaponCard';
 import { PlayerContext } from '../../context/PlayerContext';
-import useWeaponsHook from '../../hooks/UseWeaponsHook';
-import { IWeapon } from '../../types/types';
+import getShopArmors from '../../functions/GetShopArmors';
+import getShopHelmets from '../../functions/GetShopHelmets';
+import getShopWeapons from '../../functions/GetShopWeapons';
+import { IBoots, IHelmet, IShopArmor, IShopBoots, IShopHelmet, IShopWeapon } from '../../types/types';
 import './Shop.css';
-import Header from '../../components/Header';
+import getShopBoots from '../../functions/GetShopBoots';
+import BootsCard from '../../components/BootsCard';
 
 
 const Shop = () => {
-  const weapons = useWeaponsHook();
-  const { player, setPlayer } = useContext(PlayerContext);
-  const [weaponsData, setWeaponsData] = useState<IWeapon[]>([]);
+  const { player } = useContext(PlayerContext);
+  const [weaponsData, setWeaponsData] = useState<IShopWeapon[]>([]);
+  const [armorsData, setArmorsData] = useState<IShopArmor[]>([]);
+  const [helmetsData, setHelmetsData] = useState<IShopHelmet[]>([]);
+  const [bootsData, setBootsData] = useState<IShopBoots[]>([])
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (weapons) {
-      setWeaponsData(weapons);
+  const getData = async () => {
+    setLoading(true);
+    const weaponsForShop = await getShopWeapons();
+    const armorsForShop = await getShopArmors();
+    const helmetsForShop = await getShopHelmets();
+    const bootsForShop = await getShopBoots();
+
+
+    if (armorsForShop) {
+      setArmorsData(armorsForShop);
+    }
+    if (weaponsForShop) {
+      setWeaponsData(weaponsForShop);
+    }
+    if (helmetsForShop) {
+      setHelmetsData(helmetsForShop);
+    }
+    if (bootsForShop) {
+      setBootsData(bootsForShop);
     }
 
-    console.log(weapons);
-  }, [weapons]);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    getData()
+  }, []);
 
 
 
   return (
     <React.Fragment>
-      {player ? (
+      {player && !loading ? (
         <IonPage id="main-content" className="content">
-          <Header title="shop" />
+          <Header />
           {player ? (
             <IonContent className="ion-padding shop-bg">
               <IonText>
                 <div className="text-overlay">
                   <h2><strong>The shop</strong></h2>
-                  <p>
-                    Welcome to the training room. Here you can practice your skills and level up your bot.
-                  </p>
                 </div>
               </IonText>
 
               <IonCard className="card-fade">
                 <IonCardContent>
-                  {weaponsData && player ? (
+                  {weaponsData && armorsData && player ? (
                     <IonAccordionGroup>
-
-                      <IonAccordion value="first">
+                      <IonAccordion value="weapons">
                         <IonItem slot="header" color="light">
                           <IonLabel>Weapons</IonLabel>
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {weaponsData.map((weapon: IWeapon, index: number) => { // Add type annotations for weapon and index
+                            {weaponsData.map((weapon: IShopWeapon, index: number) => { // Add type annotations for weapon and index
                               return (
                                 <WeaponCard weapon={weapon} initialPlayer={player} key={index} isForSale={true} />
                               );
@@ -58,49 +83,59 @@ const Shop = () => {
                           </IonList>
                         </div>
                       </IonAccordion>
-                      <IonAccordion value="second">
+                      <IonAccordion value="armors">
                         <IonItem slot="header" color="light">
-                          <IonLabel>Armor</IonLabel>
+                          <IonLabel>Armors</IonLabel>
                         </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Second Content
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {armorsData?.map((armor: IShopArmor, index: number) => { // Add type annotations for weapon and index
+                              return (
+                                <ArmorCard armor={armor} initialPlayer={player} key={index} isForSale={true} />
+                              );
+                            })}
+                          </IonList>
                         </div>
                       </IonAccordion>
-                      <IonAccordion value="third">
+                      <IonAccordion value="boots">
                         <IonItem slot="header" color="light">
                           <IonLabel>Boots</IonLabel>
                         </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Third Content
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {bootsData?.map((boots: IShopBoots, index: number) => { // Add type annotations for weapon and index
+                              return (
+                                <BootsCard boots={boots as IBoots} initialPlayer={player} key={index} isForSale={true} />
+                              );
+                            })}
+                          </IonList>
                         </div>
                       </IonAccordion>
-                      <IonAccordion value="fourth">
-                        <IonItem slot="header" color="light">
-                          <IonLabel>Gloves</IonLabel>
-                        </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Third Content
-                        </div>
-                      </IonAccordion>
-                      <IonAccordion value="fifth">
+                      <IonAccordion value="helmets">
                         <IonItem slot="header" color="light">
                           <IonLabel>Helmets</IonLabel>
                         </IonItem>
-                        <div className="ion-padding" slot="content">
-                          Third Content
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {helmetsData?.map((helmet: IShopHelmet, index: number) => { // Add type annotations for weapon and index
+                              return (
+                                <HelmetCard helmet={helmet as IHelmet} initialPlayer={player} key={index} isForSale={true} />
+                              );
+                            })}
+                          </IonList>
                         </div>
                       </IonAccordion>
                     </IonAccordionGroup>
-                  ) : <p>Loading...</p>}
+                  ) : <IonSpinner />}
                 </IonCardContent>
               </IonCard>
 
 
             </IonContent>
-          ) : <p>Loading...</p>}
+          ) : <IonSpinner />}
 
         </IonPage>
-      ) : <p>Loading...</p>}
+      ) : <IonSpinner />}
 
     </React.Fragment>
   )
