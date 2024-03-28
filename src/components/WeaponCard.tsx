@@ -1,4 +1,4 @@
-import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
+import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow, useIonToast } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { getCreateWeapon } from "../functions/GetCreateWeapon";
@@ -7,6 +7,8 @@ import getItemGradeColor from "../functions/GetWeaponColor";
 import { IPlayer, IShopWeapon, IWeapon } from "../types/types";
 import ItemModal from "./ItemModal";
 import './WeaponCard.css';
+import { serverOutline } from "ionicons/icons";
+import GetToast from "../functions/Toast";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -17,6 +19,8 @@ interface IWeaponCardProps {
 const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
+  const [present] = useIonToast();
+
 
   if (!weapon.requirements) {
     console.error("Weapon requirements not found");
@@ -76,6 +80,7 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
   const saleItem = async (itemToSale: IWeapon) => {
     if (player && itemToSale) {
       await getSaleWeapon(itemToSale, player, updatePlayerData);
+      present({message: `Gold + ${itemToSale.cost / 2}`, color: 'primary', duration: 1500});
       setShowModal(false);
     }
   }

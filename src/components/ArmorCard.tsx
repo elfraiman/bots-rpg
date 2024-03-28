@@ -1,4 +1,4 @@
-import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
+import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow, useIonToast } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { getCreateArmor } from "../functions/GetCreateArmor";
@@ -17,7 +17,8 @@ interface IArmorCardProps {
 const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
     const [showModal, setShowModal] = useState(false);
     const { player, updatePlayerData } = useContext(PlayerContext);
-
+    const [present] = useIonToast();
+    
     if (!armor.requirements) {
         console.error("Armor requirements not found");
         return;
@@ -76,6 +77,7 @@ const ArmorCard = ({ armor, isForSale }: IArmorCardProps) => {
     const saleArmor = async (armorToSale: IArmor) => {
         if (player) {
             await getSaleArmor(armorToSale, player, updatePlayerData);
+            present({message: `Gold + ${armorToSale.cost / 2}`, color: 'primary', duration: 1500});
             setShowModal(false);
         }
     }

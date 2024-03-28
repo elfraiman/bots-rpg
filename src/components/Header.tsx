@@ -16,6 +16,7 @@ const Header = () => {
     const [loading, setLoading] = useState(false);
     const [playerLocation, setPlayerLocation] = useState<IPlanet>();
     const { player } = useContext(PlayerContext);
+    const [goldDigits, setGoldDigits] = useState([]);
 
 
 
@@ -47,6 +48,7 @@ const Header = () => {
         }
         
     }, [player])
+    
 
     return (
         <IonHeader>

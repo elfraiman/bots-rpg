@@ -19,7 +19,9 @@ import {
   IonRow,
   IonSpinner,
   IonText,
-  IonThumbnail
+  IonThumbnail,
+  IonToast,
+  useIonToast
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
@@ -84,6 +86,7 @@ const GuardianPage: React.FC = () => {
         <Header />
 
         <IonContent className="ion-padding home-bg">
+
           {player ? (
             <React.Fragment>
               <IonCard className="ion-padding card-fade ion-bot-card">
