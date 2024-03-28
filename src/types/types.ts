@@ -153,10 +153,10 @@ export const IPlayerSchema = {
 
 
 export type IPlayer_inventory = {
-  armors: Realm.List<IPlayer_inventory_armors>;
-  boots: Realm.List<IPlayer_inventory_boots>;
-  helmets: Realm.List<IPlayer_inventory_helmets>;
-  weapons: Realm.List<IPlayer_inventory_weapons>;
+  armors: any;
+  boots: any;
+  helmets: any;
+  weapons: any;
 };
 
 export type IPlayer_inventory_armors = {
