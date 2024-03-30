@@ -13,6 +13,7 @@ export type IEnemy = {
   name: string;
   str: number;
   type: string;
+  trashLoot: Array<Realm.BSON.ObjectId>
 };
 
 export const IEnemySchema = {
@@ -30,6 +31,7 @@ export const IEnemySchema = {
     name: 'string',
     str: 'int',
     type: 'string',
+    trashLoot: 'Array<ObjectId>'
   },
   primaryKey: '_id',
 };

@@ -10,6 +10,7 @@ import getItemGradeColor from "../../functions/GetWeaponColor";
 import getXpReward from "../../functions/GetXpReward";
 import { IEnemy, IPlayer } from "../../types/types";
 import './BattleTrain.css';
+import GetTrashLoot from "../../functions/GetTrashLoot";
 
 interface IFightResult {
   hitChance: number;
@@ -127,7 +128,6 @@ const BattleTrain = () => {
     } else {
       return style.barelyAlive;
     }
-
   }
 
   const attack = (attacker: IPlayer | IEnemy, defender: IPlayer | IEnemy, isPlayerAttack: boolean) => {
@@ -286,24 +286,35 @@ const BattleTrain = () => {
     }
   };
 
-  const fightEnd = (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
+  const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
     console.log('fight end')
     const playerMaxHealth = calculateMaxHealth(player);
     const enemyMaxHealth = calculateMaxHealth(enemy);
     if (playerWin) {
-      console.log('Player Wins!');
+      console.log(enemy, 'enemy');
+      try {
+        const trashLoot = await GetTrashLoot(enemy.trashLoot[0]);
+
+        console.log('Player Wins!', trashLoot);
+      } catch (e) {
+        console.error(e);
+      }
+
+
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
       updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
 
-      // Add new message and reset health
+      // Add average damage and hit rate to the battleStats logging.
+      // and set winnerMessage display
       //
       const averageDamage = battleStats.hits > 0 ? Math.round(battleStats.totalDamage / battleStats.hits) : 0;
       const hitRate = battleStats.attempts > 0 ? Math.round((battleStats.hits / battleStats.attempts) * 100) : 0;
-      console.log(battleStats)
-      const winnerMessage = (
+      // The battle stats log
+      //
+      const battleStatsLogMessage = (
         <div>
           <IonGrid>
             <IonRow>
@@ -349,7 +360,11 @@ const BattleTrain = () => {
           </IonGrid>
         </div>
       );
-      setFightNarrative(prev => [...prev, winnerMessage]);
+
+      setFightNarrative(prev => [...prev, battleStatsLogMessage]);
+
+      // reset stats
+      //
       setPlayerHealth(playerMaxHealth);
       setEnemyHealth(enemyMaxHealth);
       setBattleStats({

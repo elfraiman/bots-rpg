@@ -17,7 +17,6 @@ interface IItemModalProps {
 
 const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchaseItem, saleItem, setShowModal, imgString }: IItemModalProps) => {
 
-  console.log(imgString)
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
       <div className="weapon-modal-title">
