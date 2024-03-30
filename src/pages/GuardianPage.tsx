@@ -29,12 +29,13 @@ import BotOutline from '/images/BotOutline.webp';
 import Header from '../components/Header';
 import WeaponCard from '../components/WeaponCard';
 import { PlayerContext } from '../context/PlayerContext';
-import { IArmor, IBoots, IHelmet, IPlayer, IWeapon } from '../types/types';
+import { IArmor, IBoots, IHelmet, IItem, IPlayer, IWeapon } from '../types/types';
 import './GuardianPage.css';
 import getItemGradeColor from '../functions/GetWeaponColor';
 import ArmorCard from '../components/ArmorCard';
 import HelmetCard from '../components/HelmetCard';
 import BootsCard from '../components/BootsCard';
+import GeneralItemCard from '../components/GeneralItemCard';
 
 const styles = {
   notEquipped: { backgroundColor: 'rgba(214, 214, 214, 0.467)', border: '1px solid white' },
@@ -295,6 +296,20 @@ const GuardianPage: React.FC = () => {
                             {player?.inventory?.boots.map((boots: IBoots, index: number) => {
                               return (
                                 <BootsCard boots={boots} initialPlayer={player} key={index} isForSale={false} />
+                              );
+                            })}
+                          </IonList>
+                        </div>
+                      </IonAccordion>
+                      <IonAccordion value="items">
+                        <IonItem slot="header" color="light">
+                          <IonLabel>Items</IonLabel>
+                        </IonItem>
+                        <div slot="content">
+                          <IonList lines='full'>
+                            {player?.inventory?.items.map((item: IItem, index: number) => {
+                              return (
+                                <GeneralItemCard item={item} initialPlayer={player} key={index} isForSale={false} />
                               );
                             })}
                           </IonList>

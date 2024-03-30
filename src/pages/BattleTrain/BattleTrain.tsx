@@ -8,7 +8,7 @@ import getGoldReward from "../../functions/GetGoldReward";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
 import getItemGradeColor from "../../functions/GetWeaponColor";
 import getXpReward from "../../functions/GetXpReward";
-import { IEnemy, IPlayer } from "../../types/types";
+import { IEnemy, IItem, IPlayer } from "../../types/types";
 import './BattleTrain.css';
 import GetTrashLoot from "../../functions/GetTrashLoot";
 
@@ -293,7 +293,18 @@ const BattleTrain = () => {
     if (playerWin) {
       console.log(enemy, 'enemy');
       try {
+        // Get the trash loot from the enemy
+        //
         const trashLoot = await GetTrashLoot(enemy.trashLoot[0]);
+        console.log(trashLoot, 'trash', enemy.trashLoot[0])
+
+        const findItemInInventory = player.inventory?.items?.filter((i: IItem) => i._id !== trashLoot._id);
+
+        if (findItemInInventory.length > 0) {
+          findItemInInventory[0].quantity += 5;
+        } else {
+          player.inventory.items?.push(trashLoot);
+        }
 
         console.log('Player Wins!', trashLoot);
       } catch (e) {
@@ -304,7 +315,8 @@ const BattleTrain = () => {
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
-      updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
+
+        updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
 
       // Add average damage and hit rate to the battleStats logging.

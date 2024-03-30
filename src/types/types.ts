@@ -16,6 +16,32 @@ export type IEnemy = {
   trashLoot: Array<Realm.BSON.ObjectId>
 };
 
+export type IItem = {
+  _id: Realm.BSON.ObjectId;
+  category: string;
+  cost: number;
+  description: string;
+  imgId: number;
+  name: string;
+  quantity?: number;
+  grade: string;
+};
+
+
+export const IItemSchema = {
+  name: 'IItem',
+  properties: {
+    _id: 'objectId?',
+    category: 'string?',
+    cost: 'int?',
+    description: 'string?',
+    imgId: 'int?',
+    name: 'string?',
+  },
+  primaryKey: '_id',
+};
+
+
 export const IEnemySchema = {
   name: 'IEnemy',
   properties: {
