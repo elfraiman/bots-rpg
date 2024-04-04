@@ -3,13 +3,13 @@ import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
-import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedItemDetails";
+import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEquipmentStatsDetails";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
 import GetTrashLoot from "../../functions/GetTrashLoot";
-import getItemGradeColor from "../../functions/GetWeaponColor";
-import getXpReward from "../../functions/GetXpReward";
+import GetItemGradeColor from "../../functions/GetItemGradeColor";
+import GetXpReward from "../../functions/GetXpReward";
 import { IEnemy, IEnemy_equipment_weapon, IItem, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
 
@@ -198,8 +198,8 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={{ ...style.weaponName, color: getItemGradeColor(isPlayerAttack ? playerWeapon.grade : 'common' ?? 'common') }}>
-            {isPlayerAttack ? playerWeapon.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon).name}.
+          <span style={{ ...style.weaponName, color: GetItemGradeColor(isPlayerAttack ? playerWeapon.grade : 'common' ?? 'common') }}>
+            {isPlayerAttack ? playerWeapon?.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.name}.
           </span>
           <br />
           <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>
@@ -326,7 +326,7 @@ const BattleTrain = () => {
 
 
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
-      const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
+      const xpReward = GetXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
 
       updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })

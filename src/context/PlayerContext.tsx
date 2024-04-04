@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { IPlayer } from '../types/types';
 import * as Realm from 'realm-web';
-import getXpForNextLevel from '../functions/GetXpForNextLevel';
+import GetXpForNextLevel from '../functions/GetXpForNextLevel';
 
 // Assuming you've properly initialized the Realm app outside of this component
 const app = Realm.App.getApp('application-0-vgvqx');
@@ -42,10 +42,10 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const xpToNextLevel = getXpForNextLevel({level: player?.level ?? 0,});
-      
+      const xpToNextLevel = GetXpForNextLevel({ level: player?.level ?? 0, });
+
       // Handle leveling up.
-      if (player && xpToNextLevel <= player?.experience ) {
+      if (player && xpToNextLevel <= player?.experience) {
         updates['level'] = player?.level + 1;
         updates['experience'] = 0;
         updates['attributePoints'] = player.attributePoints + 5;

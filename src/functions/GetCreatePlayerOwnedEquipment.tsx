@@ -1,12 +1,12 @@
 import * as Realm from 'realm-web';
-import { IArmor, IPlayer, IPlayerEquipment } from "../types/types";
+import { IArmor, IEquipment, IPlayer, IPlayerEquipment } from "../types/types";
 
 const app = Realm.App.getApp('application-0-vgvqx');
 
 
-export const GetCreatePlayerEquipment = async (
+export const GetCreatePlayerOwnedEquipment = async (
     player: IPlayer,
-    equipment: IArmor,
+    equipment: IEquipment,
 ): Promise<IPlayerEquipment | undefined> => {
     if (!app.currentUser) {
         throw new Error("No current user found. Ensure you're logged in to Realm.");

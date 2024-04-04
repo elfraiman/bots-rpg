@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import { getCreateBoots } from "../functions/GetCreateBoots";
 import { getSaleBoots } from "../functions/GetSaleBoots";
-import getItemGradeColor from "../functions/GetWeaponColor";
+import GetItemGradeColor from "../functions/GetItemGradeColor";
 import { IBoots, IItem, IPlayer, IShopBoots } from "../types/types";
 import ItemModal from "./ItemModal";
 import './WeaponCard.css';
@@ -40,7 +40,7 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
           <div onClick={() => setShowModal(true)} style={{ padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
             <IonGrid style={{ width: '100%', padding: 0 }}>
               <IonRow style={{ width: '100%' }}>
-                
+
                 {/* Image Column */}
                 <IonCol size="3" style={{ padding: 0 }}>
                   <IonImg
@@ -51,7 +51,7 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
 
                 {/* Gold Column */}
                 <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ color: getItemGradeColor(item.grade), fontSize: '14px', marginBottom: 6 }}>
+                  <div style={{ color: GetItemGradeColor(item.grade), fontSize: '14px', marginBottom: 6 }}>
                     {item.name}
                   </div>
 

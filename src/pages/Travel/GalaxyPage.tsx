@@ -1,7 +1,7 @@
 import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
 import Header from "../../components/Header";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
-import getItemGradeColor from "../../functions/GetWeaponColor";
+import GetItemGradeColor from "../../functions/GetItemGradeColor";
 import { PlayerContext } from "../../context/PlayerContext";
 import { useContext, useState } from "react";
 import { ITravelDestinations, getTravel } from "../../functions/GetTravel";

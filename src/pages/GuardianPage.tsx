@@ -23,14 +23,14 @@ import {
   useIonViewWillEnter
 } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
-import ArmorCard from '../components/ArmorCard';
+import EquipmentCard from '../components/EquipmentCard';
 import Header from '../components/Header';
 import { PlayerContext } from '../context/PlayerContext';
-import { GetCombinedEquipmentStatsDetails } from '../functions/GetCombinedItemDetails';
-import { IArmor, IPlayerOwnedArmor, IEquippedItemsDetails, IPlayer, IPlayer_equipment } from '../types/types';
+import { GetCombinedEquipmentStatsDetails } from '../functions/GetCombinedEquipmentStatsDetails';
+import { IArmor, IPlayerOwnedArmor, IEquippedItemsDetails, IPlayer, IPlayer_equipment, IEquipment } from '../types/types';
 import './GuardianPage.css';
 import { add } from 'ionicons/icons';
-import getItemGradeColor from '../functions/GetWeaponColor';
+import GetItemGradeColor from '../functions/GetItemGradeColor';
 import BotOutline from '../../public/images/BotOutline.webp'
 
 const styles = {
@@ -171,10 +171,10 @@ const GuardianPage: React.FC = () => {
                           <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                             <IonCol size="8" className="ion-padding">
                               <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
                               </IonText>
                               <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
                               </IonCardSubtitle>
                               <IonText>
                                 AP: {equippedDetails?.weapon?.stats.minAttack} ~ {equippedDetails?.weapon?.stats.maxAttack}
@@ -201,10 +201,10 @@ const GuardianPage: React.FC = () => {
                           <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                             <IonCol size="8" className="ion-padding">
                               <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
                               </IonText>
                               <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
                               </IonCardSubtitle>
                               <IonText>
                                 AP: {equippedDetails?.weapon?.stats.minAttack} ~ {equippedDetails?.weapon?.stats.maxAttack}
@@ -232,10 +232,10 @@ const GuardianPage: React.FC = () => {
                           <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                             <IonCol size="8" className="ion-padding">
                               <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.name}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.name}</span>
                               </IonText>
                               <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.grade}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.grade}</span>
                               </IonCardSubtitle>
                               <IonText>
                                 DP: {equippedDetails?.armor?.stats?.defense} <br />
@@ -262,10 +262,10 @@ const GuardianPage: React.FC = () => {
                           <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                             <IonCol size="8" className="ion-padding">
                               <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.name}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.name}</span>
                               </IonText>
                               <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.grade}</span>
+                                <span style={{ color: GetItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.grade}</span>
                               </IonCardSubtitle>
                               <IonText>
                                 DP: {equippedDetails?.helmet?.stats.defense} <br />
@@ -292,10 +292,10 @@ const GuardianPage: React.FC = () => {
                         <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                           <IonCol size="8" className="ion-padding">
                             <IonText>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
+                              <span style={{ color: GetItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
                             </IonText>
                             <IonCardSubtitle>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
+                              <span style={{ color: GetItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
                             </IonCardSubtitle>
                             <IonText>
                               DP: {equippedDetails?.boots?.stats.defense} <br />
@@ -321,10 +321,10 @@ const GuardianPage: React.FC = () => {
                         <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                           <IonCol size="8" className="ion-padding">
                             <IonText>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
+                              <span style={{ color: GetItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
                             </IonText>
                             <IonCardSubtitle>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
+                              <span style={{ color: GetItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
                             </IonCardSubtitle>
                             <IonText>
                               DP: {equippedDetails?.boots?.stats.defense} <br />
@@ -362,11 +362,11 @@ const GuardianPage: React.FC = () => {
                   </IonItem>
                   <div slot="content">
                     <IonList lines='full'>
-                      {inventoryItems?.map((item: IPlayerOwnedArmor, index: number) => {
+                      {inventoryItems?.map((item: IEquipment, index: number) => {
                         return (
                           <div key={index}>
                             {item ? (
-                              <ArmorCard armor={item} initialPlayer={player} key={index} isForSale={false} />
+                              <EquipmentCard equipment={item} key={index} isForSale={false} />
                             ) : (<></>)}
                           </div>
                         );
