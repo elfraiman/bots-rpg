@@ -1,4 +1,5 @@
 import * as Realm from 'realm-web';
+import { IItem } from '../types/types';
 
 
 const app = Realm.App.getApp('application-0-vgvqx');
@@ -13,7 +14,7 @@ const GetTrashLoot = async (_id: Realm.BSON.ObjectId) => {
     }
 
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const itemsCollection = mongodb.db("bots_rpg").collection<any>("items");
+    const itemsCollection = mongodb.db("bots_rpg").collection<IItem>("items");
 
     try {
         if (_id !== undefined) {

@@ -5,7 +5,7 @@ import { IShopWeapon, IWeapon } from "../types/types";
 const app = Realm.App.getApp('application-0-vgvqx');
 
 
-export const getCreateWeapon = async (weapon: IShopWeapon): Promise<IWeapon | undefined> => {
+export const getCreateWeapon = async (weapon: IWeapon): Promise<IWeapon | undefined> => {
     if (!app.currentUser) {
         throw new Error("No current user found. Ensure you're logged in to Realm.");
     }
@@ -26,6 +26,7 @@ export const getCreateWeapon = async (weapon: IShopWeapon): Promise<IWeapon | un
                 minDamage: weapon.minDamage,
                 name: weapon.name,
                 requirements: weapon.requirements,
+                type: weapon.type,
                 // You could add more fields here based on your IWeapon type
             };
             

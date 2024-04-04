@@ -1,10 +1,10 @@
-import { IonApp, IonCard, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
+import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import React from 'react';
 import { Redirect, Route } from 'react-router';
 import * as Realm from "realm-web";
 
-import { barbell, diamond, home, medal, planetOutline, search, walk } from 'ionicons/icons';
+import { barbell, diamond, medal, planetOutline, search, walk } from 'ionicons/icons';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,8 +30,8 @@ import GuardianPage from './pages/GuardianPage';
 import Login from './pages/Login/Login';
 import Shop from './pages/Shop/Shop';
 import ExplorePage from './pages/Train/ExplorePage';
-import './theme/variables.css';
 import GalaxyPage from './pages/Travel/GalaxyPage';
+import './theme/variables.css';
 
 
 setupIonicReact();

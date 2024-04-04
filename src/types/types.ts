@@ -2,19 +2,24 @@ import * as Realm from "realm-web";
 
 export type IEnemy = {
   _id: Realm.BSON.ObjectId;
+  armorLoot: Array<Realm.BSON.ObjectId>;
+  bootsLoot: Array<Realm.BSON.ObjectId>;
   con: number;
   description: string;
   dex: number;
   equipment?: IEnemy_equipment;
+  helmetLoot: Array<Realm.BSON.ObjectId>;
   imgId: number;
   int: number;
   level: number;
   location: string;
   name: string;
   str: number;
+  trashLoot: Array<Realm.BSON.ObjectId>;
   type: string;
-  trashLoot: Array<Realm.BSON.ObjectId>
+  weaponLoot: Array<Realm.BSON.ObjectId>;
 };
+
 
 export type IItem = {
   _id: Realm.BSON.ObjectId;
@@ -25,7 +30,21 @@ export type IItem = {
   name: string;
   quantity?: number;
   grade: string;
+  type: string;
 };
+
+export type IPlayerEquipment = {
+  _id: Realm.BSON.ObjectId;
+  baseItemId: Realm.BSON.ObjectId;
+  itemType: string;
+  modifications?: IPlayerEquipment_modifications;
+  ownerId: string;
+};
+
+export type IPlayerEquipment_modifications = {
+  enhancementLevel?: number;
+};
+
 
 
 export const IItemSchema = {
@@ -41,38 +60,20 @@ export const IItemSchema = {
   primaryKey: '_id',
 };
 
-
-export const IEnemySchema = {
-  name: 'IEnemy',
-  properties: {
-    _id: 'objectId',
-    con: 'int',
-    description: 'string',
-    dex: 'int',
-    equipment: 'IEnemy_equipment',
-    imgId: 'int',
-    int: 'int',
-    level: 'int',
-    location: 'string',
-    name: 'string',
-    str: 'int',
-    type: 'string',
-    trashLoot: 'Array<ObjectId>'
-  },
-  primaryKey: '_id',
-};
-
 export type IEnemy_equipment = {
-  mainHand?: IEnemy_equipment_mainHand;
+  weapon: IEnemy_equipment_weapon;
 };
 
-export const IEnemy_equipmentSchema = {
-  name: 'IEnemy_equipment',
-  embedded: true,
-  properties: {
-    mainHand: 'IEnemy_equipment_mainHand',
-  },
+export type IEnemy_equipment_weapon = {
+  name: string;
+  stats: IEnemy_equipment_weapon_stats;
 };
+
+export type IEnemy_equipment_weapon_stats = {
+  maxAttack: number;
+  minAttack: number;
+};
+
 
 export type IEnemy_equipment_mainHand = {
   maxDamage?: number;
@@ -81,17 +82,87 @@ export type IEnemy_equipment_mainHand = {
 };
 
 
+export type IEquipment = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  description: string;
+  forSale: boolean;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IEquipment_requirements;
+  sale?: boolean;
+  stats?: IEquipment_stats;
+  type: string;
+};
+
+export type IEquipment_requirements = {
+  con: number;
+  dex: number;
+  int: number;
+  str: number;
+};
+
+export type IEquipment_stats = {
+  defense?: number;
+  evasion?: number;
+  maxAttack?: number;
+  minAttack?: number;
+  modifier?: string;
+};
+
 export type IArmor = {
   _id: Realm.BSON.ObjectId;
   cost: number;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IArmor_requirements;
+  forSale?: boolean;
+  stats: IArmor_stats;
+  type: string;
+};
+
+export type IArmor_stats = {
   defense: number;
+  evasion: number;
+  modifier: string;
+};
+
+export type IPlayerOwnedArmor = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  stats: IArmor_stats;
   description: string;
   grade: string;
   imgId: number;
   name: string;
   requirements: IArmor_requirements;
   sale?: boolean;
-};
+  type: string;
+  baseItemId: Realm.BSON.ObjectId;
+  itemType: string;
+  modifications?: IPlayerEquipment_modifications;
+  ownerId: string;
+}
+
+export type IPlayerOwnedWeapon = {
+  _id: Realm.BSON.ObjectId;
+  cost: number;
+  stats: IWeapon_stats;
+  description: string;
+  grade: string;
+  imgId: number;
+  name: string;
+  requirements: IWeapon_requirements;
+  sale?: boolean;
+  type: string;
+  baseItemId: Realm.BSON.ObjectId;
+  itemType: string;
+  modifications?: IPlayerEquipment_modifications;
+  ownerId: string;
+}
 
 
 export type IArmor_requirements = {
@@ -100,29 +171,6 @@ export type IArmor_requirements = {
   int: number;
   str: number;
 };
-
-
-export type IShopArmor = {
-  _id: Realm.BSON.ObjectId;
-  cost: number;
-  description: string;
-  grade: string;
-  imgId: number;
-  name: string;
-  requirements: IShopArmor_requirements;
-  sale: boolean;
-  defense: number;
-};
-
-
-
-export type IShopArmor_requirements = {
-  con: number;
-  dex: number;
-  int: number;
-  str: number;
-};
-
 
 
 export type IPlanet = {
@@ -152,117 +200,20 @@ export type IPlayer = {
   experience: number;
   gold: number;
   int: number;
-  inventory: any;
+  inventory: Realm.BSON.ObjectId[];
   level: number;
   location: string;
   name: string;
   str: number;
 };
 
-export const IPlayerSchema = {
-  name: 'IPlayer',
-  properties: {
-    _id: 'string',
-    attributePoints: 'int',
-    con: 'int',
-    dex: 'int',
-    equipment: 'IPlayer_equipment',
-    experience: 'int',
-    gold: 'int',
-    int: 'int',
-    inventory: 'IPlayer_inventory[]',
-    level: 'int',
-    location: 'string?',
-    name: 'string',
-    str: 'int',
-  },
-  primaryKey: '_id',
-};
-
-
-export type IPlayer_inventory = {
-  armors: any;
-  boots: any;
-  helmets: any;
-  weapons: any;
-};
-
-export type IPlayer_inventory_armors = {
-};
-export type IPlayer_inventory_boots = {
-};
-export type IPlayer_inventory_helmets = {
-};
-export type IPlayer_inventory_weapons = {
-};
-
 export type IPlayer_equipment = {
-  armor?: IPlayer_equipment_armor;
-  boots?: IPlayer_equipment_boots;
-  helmet?: IPlayer_equipment_helmet;
-  mainHand?: IPlayer_equipment_mainHand;
-};
-export type IPlayer_equipment_boots = {
-  _id?: Realm.BSON.ObjectId;
-  cost?: number;
-  defense?: number;
-  description?: string;
-  imgId?: number;
-  grade: string;
-  name?: string;
-  requirements?: IPlayer_equipment_boots_requirements;
+  armor?: Realm.BSON.ObjectId;
+  boots?: Realm.BSON.ObjectId;
+  helmet?: Realm.BSON.ObjectId;
+  weapon?: Realm.BSON.ObjectId;
 };
 
-export type IBoots = {
-  _id: Realm.BSON.ObjectId;
-  cost: number;
-  defense: number;
-  description: string;
-  grade: string;
-  imgId: number;
-  name: string;
-  requirements: IBoots_requirements;
-  sale?: boolean;
-};
-
-export type IBoots_requirements = {
-  con: number;
-  dex: number;
-  int: number;
-  str: number;
-};
-
-export type IPlayer_equipment_boots_requirements = {
-  con: number;
-  dex: number;
-  int: number;
-  str: number;
-};
-export type IPlayer_equipment_helmet_requirements = {
-  con: number;
-  dex: number;
-  int: number;
-  str: number;
-};
-
-export type IPlayer_equipment_helmet = {
-  _id?: Realm.BSON.ObjectId;
-  cost?: number;
-  defense?: number;
-  description?: string;
-  imgId?: number;
-  name?: string;
-  grade: string;
-  requirements: IPlayer_equipment_helmet_requirements;
-};
-
-export const IPlayer_equipmentSchema = {
-  name: 'IPlayer_equipment',
-  embedded: true,
-  properties: {
-    mainHand: 'IPlayer_equipment_mainHand',
-  },
-};
 
 export type IPlayer_equipment_armor = {
   _id?: Realm.BSON.ObjectId;
@@ -272,7 +223,21 @@ export type IPlayer_equipment_armor = {
   imgId?: number;
   name?: string;
   requirements?: IPlayer_equipment_armor_requirements;
-  grade: string;
+  grade?: string;
+};
+export type IEquippedItemsDetails = {
+  armor?: IPlayer_equipment_armor;
+  helmet?: IPlayer_equipment_armor;
+  boots?: IPlayer_equipment_armor;
+}
+
+
+export const IPlayer_equipmentSchema = {
+  name: 'IPlayer_equipment',
+  embedded: true,
+  properties: {
+    mainHand: 'IPlayer_equipment_mainHand',
+  },
 };
 
 
@@ -329,6 +294,7 @@ export type IHelmet = {
   name: string;
   requirements: IHelmet_requirements;
   sale?: boolean;
+  type: string;
 };
 
 export type IPlayer_equipment_armor_requirements = {
@@ -443,12 +409,18 @@ export type IWeapon = {
   description: string;
   grade: string;
   imgId: number;
-  maxDamage: number;
-  minDamage: number;
   name: string;
   requirements: IWeapon_requirements;
-  sale?: boolean;
+  forSale?: boolean;
+  stats?: IWeapon_stats;
+  type?: string;
 };
+export type IWeapon_stats = {
+  maxAttack: number;
+  minAttack: number;
+  modifier: string;
+};
+
 
 export const IWeaponSchema = {
   name: 'IWeapon',

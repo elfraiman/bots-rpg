@@ -13,7 +13,7 @@ const getShopWeapons = async () => {
     }
 
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const shopWeaponCollection = mongodb.db("bots_rpg").collection<IShopWeapon>("shopWeapons");
+    const shopWeaponCollection = mongodb.db("bots_rpg").collection<IWeapon>("weapons");
 
     if (!shopWeaponCollection) {
         console.error("No weapons found");
@@ -21,7 +21,7 @@ const getShopWeapons = async () => {
     }
 
     try {
-        const weaponsResult = await shopWeaponCollection.find({sale: true}); // Or just use userId if it's a string
+        const weaponsResult = await shopWeaponCollection.find({ forSale: true }); // Or just use userId if it's a string
         return weaponsResult
     } catch (err) {
         console.error("Failed to fetch shop weapons data:", err);

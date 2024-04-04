@@ -22,7 +22,7 @@ export const getCreateHelmet = async (helmet: IShopHelmet): Promise<IHelmet | un
                 description: helmet.description,
                 grade: helmet.grade,
                 imgId: helmet.imgId,
-                defense: helmet.defense,
+                defense: helmet.stats.defense,
                 name: helmet.name,
                 requirements: helmet.requirements,
             };

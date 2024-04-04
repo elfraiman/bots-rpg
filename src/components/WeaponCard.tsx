@@ -9,6 +9,7 @@ import ItemModal from "./ItemModal";
 import './WeaponCard.css';
 import { serverOutline } from "ionicons/icons";
 import GetToast from "../functions/Toast";
+import { GetSalePlayerEquipment } from "../functions/GetSalePlayerEquipment";
 
 interface IWeaponCardProps {
   weapon: IWeapon;
@@ -20,7 +21,6 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
   const [present] = useIonToast();
-
 
   if (!weapon.requirements) {
     console.error("Weapon requirements not found");
@@ -42,8 +42,6 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
   const purchaseWeapon = async (weaponToPurchase: IShopWeapon) => {
     if (player && player.gold >= weaponToPurchase.cost) {
       try {
-
-
         // Insert the new weapon into the database and retrieve the insertedId
         const insertResult: IWeapon | undefined = await getCreateWeapon(weaponToPurchase);
         const newWeaponId = insertResult?._id;
@@ -77,10 +75,10 @@ const WeaponCard = ({ weapon, isForSale }: IWeaponCardProps) => {
     }
   };
 
-  const saleItem = async (itemToSale: IWeapon) => {
+  const saleItem = async (itemToSale: any) => {
     if (player && itemToSale) {
-      await getSaleWeapon(itemToSale, player, updatePlayerData);
-      present({message: `Gold + ${itemToSale.cost / 2}`, color: 'primary', duration: 1500});
+      await GetSalePlayerEquipment(itemToSale, player, updatePlayerData);
+      present({ message: `Gold + ${itemToSale.cost / 2}`, color: 'primary', duration: 1500 });
       setShowModal(false);
     }
   }

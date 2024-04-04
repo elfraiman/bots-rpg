@@ -20,7 +20,7 @@ const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchas
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
       <div className="weapon-modal-title">
-        Armor
+        {item.type}
       </div>
       <div className="weapon-name-title" style={{ color: getItemGradeColor(item?.grade) }}>
         {item.name}
@@ -42,13 +42,14 @@ const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchas
 
             <IonRow>
               <span style={{ fontSize: 50, fontWeight: 900 }}>
-                {item.minDamage ? (
+                {item.type === 'weapon' ? (
                   <>
-                    {item.minDamage} - {item.maxDamage}
+                    {item.stats.minAttack} ~ {item.stats.maxAttack}
                   </>
                 ) : (
                   <>
-                    {item.defense}
+                    DP: {item.stats.defense}<br />
+                    <span style={{ fontSize: 16 }}>Evasion: {item.stats.evasion}</span>
                   </>
                 )}
               </span>
@@ -84,7 +85,7 @@ const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchas
           </>
         ) : (
           <>
-            <IonButton fill="solid" onClick={() => equipItem(item)}>Equip</IonButton>
+            <IonButton fill="solid" onClick={() => equipItem(item._id)}>Equip</IonButton>
             <div>
               <IonButton fill="solid" color="warning" onClick={() => saleItem(item)}>Sale</IonButton>
               <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>

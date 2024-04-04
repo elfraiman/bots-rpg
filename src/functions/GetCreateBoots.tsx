@@ -22,7 +22,7 @@ export const getCreateBoots = async (boots: IShopBoots): Promise<IBoots | undefi
                 description: boots.description,
                 grade: boots.grade,
                 imgId: boots.imgId,
-                defense: boots.defense,
+                defense: boots.stats.defense,
                 name: boots.name,
                 requirements: boots.requirements,
             };

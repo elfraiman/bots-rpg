@@ -3,19 +3,20 @@ import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
+import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedItemDetails";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
+import GetTrashLoot from "../../functions/GetTrashLoot";
 import getItemGradeColor from "../../functions/GetWeaponColor";
 import getXpReward from "../../functions/GetXpReward";
-import { IEnemy, IItem, IPlayer } from "../../types/types";
+import { IEnemy, IEnemy_equipment_weapon, IItem, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
-import GetTrashLoot from "../../functions/GetTrashLoot";
 
 interface IFightResult {
   hitChance: number;
-  maxDamage: number;
-  minDamage: number;
+  maxAttack: number;
+  minAttack: number;
   attacker: IPlayer | IEnemy;
   defender: IPlayer | IEnemy;
   isPlayerAttack: boolean;
@@ -41,7 +42,8 @@ const style = {
 
 
 const BattleTrain = () => {
-  const { player, setPlayer, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
+  const { player, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
+  const [playerWeapon, setPlayerWeapon] = useState<IPlayerOwnedWeapon | any>();
   const [enemy, setEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(0);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
@@ -50,7 +52,6 @@ const BattleTrain = () => {
   const turnRef = useRef<boolean>(true); // true indicates it's the player's turn, false for the enemy's turn
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const match = useRouteMatch<{ id: string }>();
-
 
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
@@ -82,6 +83,13 @@ const BattleTrain = () => {
 
   }
 
+  const getPlayerEquipment = async () => {
+    if (player && player.equipment && player.equipment.weapon) {
+      const weapon = await GetCombinedEquipmentStatsDetails(player?._id, player?.equipment?.weapon);
+      if (weapon) setPlayerWeapon(weapon);
+    };
+  }
+
   useIonViewWillEnter(() => {
     console.log("[Battle]: View will enter")
     getEnemy();
@@ -90,6 +98,7 @@ const BattleTrain = () => {
     if (player) {
       const playerMaxHealth = calculateMaxHealth(player);
       setPlayerHealth(playerMaxHealth);
+      getPlayerEquipment();
     }
 
   });
@@ -136,37 +145,39 @@ const BattleTrain = () => {
       return;
     }
 
+
     const baseHitChance = 0.7;
     const dexDifference = attacker.dex - defender.dex;
     const dexModifier = 0.01; // Incase something affects dex
     const hitChance = baseHitChance + (dexDifference * dexModifier) + 0.05;
-    const strModifierForMinDamage = 0.2;
+    const strModifierFromAttack = 0.2;
     const baseDamageIncrease = 1;
 
-    const minDamageBase = attacker.equipment?.mainHand?.minDamage ?? 0;
-    const maxDamageBase = attacker.equipment?.mainHand?.maxDamage ?? 0;
 
-    const minDamage = Math.round(minDamageBase + (attacker.str * strModifierForMinDamage) + baseDamageIncrease);
-    const maxDamage = Math.round(maxDamageBase + (attacker.str * strModifierForMinDamage) + baseDamageIncrease);
+    const minAttackBase = isPlayerAttack ? playerWeapon?.stats?.minAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.minAttack ?? 0;
+    const maxAttackBase = isPlayerAttack ? playerWeapon?.stats?.maxAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.maxAttack ?? 0;
+
+    const minAttack = Math.round(minAttackBase + (attacker.str * strModifierFromAttack) + baseDamageIncrease);
+    const maxAttack = Math.round(maxAttackBase + (attacker.str * strModifierFromAttack) + baseDamageIncrease);
 
     applyFightResults({
       hitChance,
-      maxDamage,
-      minDamage,
-      attacker,
+      maxAttack,
+      minAttack,
+      attacker: attacker,
       defender,
       isPlayerAttack: isPlayerAttack
     });
   };
 
-  const applyFightResults = ({ hitChance, maxDamage, minDamage, attacker, defender, isPlayerAttack }: IFightResult) => {
+  const applyFightResults = ({ hitChance, maxAttack, minAttack, attacker, defender, isPlayerAttack }: IFightResult) => {
     if (!player || !enemy) return;
     const playerMaxHealth = calculateMaxHealth(player);
     const randomNumber = Math.random();
 
 
     if (randomNumber <= hitChance) {
-      const damageDealt = Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
+      const damageDealt = Math.floor(Math.random() * (maxAttack - minAttack + 1) + minAttack);
       let newPlayerHealth = playerHealth;
       let newEnemyHealth = enemyHealth;
 
@@ -187,7 +198,8 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={{ ...style.weaponName, color: getItemGradeColor(player?.equipment?.mainHand?.grade ?? 'common') }}> {attacker.equipment?.mainHand?.name}.
+          <span style={{ ...style.weaponName, color: getItemGradeColor(isPlayerAttack ? playerWeapon.grade : 'common' ?? 'common') }}>
+            {isPlayerAttack ? playerWeapon.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon).name}.
           </span>
           <br />
           <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>
@@ -292,31 +304,32 @@ const BattleTrain = () => {
     const enemyMaxHealth = calculateMaxHealth(enemy);
     if (playerWin) {
       console.log(enemy, 'enemy');
-      try {
-        // Get the trash loot from the enemy
-        //
-        const trashLoot = await GetTrashLoot(enemy.trashLoot[0]);
-        console.log(trashLoot, 'trash', enemy.trashLoot[0])
 
-        const findItemInInventory = player.inventory?.items?.filter((i: IItem) => i._id !== trashLoot._id);
-
-        if (findItemInInventory.length > 0) {
-          findItemInInventory[0].quantity += 5;
-        } else {
-          player.inventory.items?.push(trashLoot);
-        }
-
-        console.log('Player Wins!', trashLoot);
-      } catch (e) {
-        console.error(e);
-      }
+      /*       try {
+              // Get the trash loot from the enemy
+              //
+              const trashLoot = await GetTrashLoot(enemy.trashLoot[0]);
+              console.log(trashLoot, 'trash', enemy.trashLoot[0])
+      
+              const findItemInInventory = player.inventory?.filter((i: any) => i._id !== trashLoot?._id);
+      
+              if (findItemInInventory.length > 0) {
+                findItemInInventory[0].quantity += 5;
+              } else {
+                player.inventory?.push(trashLoot);
+              }
+      
+              console.log('Player Wins!', trashLoot);
+            } catch (e) {
+              console.error(e);
+            } */
 
 
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
 
-        updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
+      updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
 
 
       // Add average damage and hit rate to the battleStats logging.
