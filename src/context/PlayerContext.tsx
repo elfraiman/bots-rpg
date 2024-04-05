@@ -103,3 +103,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     </PlayerContext.Provider>
   );
 };
+
+
+// Custom hook to use the splash screen context
+export const usePlayerData = () => {
+  const context = useContext(PlayerContext);
+  if (context === undefined) {
+    throw new Error('useSplashScreen must be used within a SplashScreenProvider');
+  }
+  return context;
+};

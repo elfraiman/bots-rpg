@@ -1,10 +1,10 @@
-import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
+import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
+import { useContext } from "react";
 import Header from "../../components/Header";
-import usePlanetsHook from "../../hooks/UsePlanetsHook";
-import GetItemGradeColor from "../../functions/GetItemGradeColor";
 import { PlayerContext } from "../../context/PlayerContext";
-import { useContext, useState } from "react";
+import { useSplashScreen } from "../../context/SplashScreenContxt";
 import { ITravelDestinations, getTravel } from "../../functions/GetTravel";
+import usePlanetsHook from "../../hooks/UsePlanetsHook";
 import SplashScreen from "../SplashScreen/SplashScreen";
 
 
@@ -15,19 +15,20 @@ import SplashScreen from "../SplashScreen/SplashScreen";
 const GalaxyPage = () => {
   const planets = usePlanetsHook();
   const { player, updatePlayerData } = useContext(PlayerContext)
-  const [travelTimer, setTravelTimer] = useState(false);
+  const { isSplashScreenActive, setIsSplashScreenActive } = useSplashScreen();
 
   if (!player) {
     return;
   };
 
   const travelToPlanet = async (destination: ITravelDestinations) => {
-    setTravelTimer(true);
-    setTimeout(() => {
-      setTravelTimer(false);
-    }, 5000)
     try {
       await getTravel({ destination, player, updatePlayerData });
+      setIsSplashScreenActive(true);
+      setTimeout(() => {
+        setIsSplashScreenActive(false);
+      }, 5000)
+
     } catch (e) {
       console.error(e);
     }
@@ -35,9 +36,8 @@ const GalaxyPage = () => {
 
   return (
     <>
-
       <IonPage id="main-content" className="content">
-        {travelTimer ? (
+        {isSplashScreenActive ? (
           <SplashScreen />
         ) : (
           <>

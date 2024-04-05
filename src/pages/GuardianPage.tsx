@@ -157,7 +157,7 @@ const GuardianPage: React.FC = () => {
     <>
       <IonPage id="main-content">
         <Header />
-        <IonContent>
+        <IonContent className="ion-padding home-bg">
 
           <IonCard className="ion-padding card-fade ion-bot-card">
             {loading ? <IonSpinner /> : (
