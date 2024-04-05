@@ -4,13 +4,13 @@ import React, { ReactNode, createContext, useContext, useState } from 'react';
 // Define the shape of the context
 interface ISplashScreenContextValue {
     isSplashScreenActive: boolean;
-    setIsSplashScreenActive: React.Dispatch<React.SetStateAction<boolean>>;
+    triggerSplashScreen: (milliseconds: number) => void;
     // Add any function to change this state if needed
 }
 
 const defaultContext: ISplashScreenContextValue = {
     isSplashScreenActive: false,
-    setIsSplashScreenActive: () => false
+    triggerSplashScreen: () => 5000
 }
 
 // Create the context
@@ -20,10 +20,19 @@ export const SplashScreenContext = createContext<ISplashScreenContextValue>(defa
 export const SplashScreenProvider = ({ children }: { children: ReactNode }) => {
     const [isSplashScreenActive, setIsSplashScreenActive] = useState<boolean>(false);
 
+
+    const triggerSplashScreen = (milliseconds: number = 5000) => {
+        setIsSplashScreenActive(true);
+        setTimeout(() => {
+            setIsSplashScreenActive(false);
+        }, milliseconds)
+    }
+
+
     console.log(isSplashScreenActive, 'is splash active? #')
 
     return (
-        <SplashScreenContext.Provider value={{ isSplashScreenActive, setIsSplashScreenActive }}>
+        <SplashScreenContext.Provider value={{ isSplashScreenActive, triggerSplashScreen }}>
             {children}
         </SplashScreenContext.Provider>
     );

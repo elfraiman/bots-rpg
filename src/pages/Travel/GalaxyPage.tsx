@@ -9,13 +9,10 @@ import SplashScreen from "../SplashScreen/SplashScreen";
 
 
 
-
-
-
 const GalaxyPage = () => {
   const planets = usePlanetsHook();
   const { player, updatePlayerData } = useContext(PlayerContext)
-  const { isSplashScreenActive, setIsSplashScreenActive } = useSplashScreen();
+  const { isSplashScreenActive, triggerSplashScreen } = useSplashScreen();
 
   if (!player) {
     return;
@@ -24,11 +21,7 @@ const GalaxyPage = () => {
   const travelToPlanet = async (destination: ITravelDestinations) => {
     try {
       await getTravel({ destination, player, updatePlayerData });
-      setIsSplashScreenActive(true);
-      setTimeout(() => {
-        setIsSplashScreenActive(false);
-      }, 5000)
-
+      triggerSplashScreen(5000);
     } catch (e) {
       console.error(e);
     }
