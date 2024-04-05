@@ -15,7 +15,7 @@ export type IEnemy = {
   location: string;
   name: string;
   str: number;
-  trashLoot: Array<Realm.BSON.ObjectId>;
+  trashLoot: Realm.BSON.ObjectId;
   type: string;
   weaponLoot: Array<Realm.BSON.ObjectId>;
 };
@@ -23,14 +23,34 @@ export type IEnemy = {
 
 export type IItem = {
   _id: Realm.BSON.ObjectId;
-  category: string;
   cost: number;
   description: string;
+  grade?: string;
   imgId: number;
   name: string;
-  quantity?: number;
-  grade: string;
-  type: string;
+  type?: string;
+};
+
+
+
+export type IPlayerOwnedItem = {
+  _id: Realm.BSON.ObjectId;
+  baseItemId: Realm.BSON.ObjectId;
+  ownerId: string;
+  quantity: number;
+  cost: number;
+  description: string;
+  grade?: string;
+  imgId: number;
+  name: string;
+  type?: string;
+};
+
+export type IPlayerItem = {
+  _id: Realm.BSON.ObjectId;
+  baseItemId: Realm.BSON.ObjectId;
+  ownerId: string;
+  quantity: number;
 };
 
 export type IPlayerEquipment = {
@@ -201,6 +221,7 @@ export type IPlayer = {
   gold: number;
   int: number;
   inventory: Realm.BSON.ObjectId[];
+  equipmentInventory: Realm.BSON.ObjectId[];
   level: number;
   location: string;
   name: string;

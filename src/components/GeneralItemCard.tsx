@@ -1,17 +1,12 @@
-import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
+import { IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
-import { getCreateBoots } from "../functions/GetCreateBoots";
-import { getSaleBoots } from "../functions/GetSaleBoots";
 import GetItemGradeColor from "../functions/GetItemGradeColor";
-import { IBoots, IItem, IPlayer, IShopBoots } from "../types/types";
-import ItemModal from "./ItemModal";
-import './WeaponCard.css';
 import { getSaleItem } from "../functions/GetSaleItem";
+import { IItem, IPlayerOwnedItem } from "../types/types";
 
 interface IBootsCardProps {
-  item: IItem;
-  initialPlayer: IPlayer;
+  item: IPlayerOwnedItem;
   isForSale?: boolean;
 }
 
@@ -51,8 +46,11 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
 
                 {/* Gold Column */}
                 <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ color: GetItemGradeColor(item.grade), fontSize: '14px', marginBottom: 6 }}>
+                  <div style={{ color: GetItemGradeColor(item?.grade ?? "common"), fontSize: '14px', marginBottom: 6 }}>
                     {item.name}
+                  </div>
+                  <div style={{ color: GetItemGradeColor(item?.grade ?? "common"), fontSize: '14px', marginBottom: 6 }}>
+                    Quantity: {item?.quantity}
                   </div>
 
 
@@ -64,25 +62,22 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
                       Sale: <span style={{ color: 'gold' }}> {(item.cost / 2).toLocaleString()} G</span>
                     </span>
                   )}
-
-
                 </IonCol>
               </IonRow>
             </IonGrid>
           </div>
 
 
-
-          {/*       <ItemModal
-                        equipItem={equipBoots}
-                        isForSale={isForSale ?? false}
-                        canPurchase={checkRequirements(isForSale ?? false)}
-                        purchaseItem={purchaseBoots}
-                        saleItem={saleBoots}
-                        showModal={showModal}
-                        setShowModal={setShowModal}
-                        imgString={`/images/boots/boots-${boots.imgId}.webp`}
-                        item={boots} /> */}
+          {/* 
+          {<EquipmentModal
+            isForSale={isForSale ?? false}
+            canPurchase={checkRequirements(isForSale ?? false)}
+            purchaseItem={purchaseBoots}
+            saleItem={saleBoots}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            imgString={`/images/boots/boots-${boots.imgId}.webp`}
+            item={boots} />} */}
         </>
       ) : <>Loading..</>}
 

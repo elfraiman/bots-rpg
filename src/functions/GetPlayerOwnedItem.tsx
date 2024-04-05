@@ -1,5 +1,5 @@
 import * as Realm from 'realm-web';
-import { IItem } from '../types/types';
+import { IItem, IPlayerItem } from '../types/types';
 
 
 const app = Realm.App.getApp('application-0-vgvqx');
@@ -7,20 +7,20 @@ const app = Realm.App.getApp('application-0-vgvqx');
 
 
 
-const GetTrashLoot = async (_id: Realm.BSON.ObjectId) => {
+const GetPlayerOwnedItem = async (_id: Realm.BSON.ObjectId) => {
 
     if (!app.currentUser) {
         throw new Error("No current user found. Ensure you're logged in to Realm.");
     }
 
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const itemsCollection = mongodb.db("bots_rpg").collection<IItem>("items");
+    const playerOwnedItemsCollection = mongodb.db("bots_rpg").collection<IPlayerItem>("playerItems");
 
     try {
         if (_id !== undefined) {
-            const trash = await itemsCollection.findOne({ _id: _id });
+            const playerOwnedItem = await playerOwnedItemsCollection.findOne({ _id });
 
-            return trash;
+            return playerOwnedItem;
         } else {
             console.error("Cant find trash");
             return undefined;
@@ -33,4 +33,4 @@ const GetTrashLoot = async (_id: Realm.BSON.ObjectId) => {
 }
 
 
-export default GetTrashLoot;
+export default GetPlayerOwnedItem;

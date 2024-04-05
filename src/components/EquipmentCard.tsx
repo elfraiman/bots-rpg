@@ -7,8 +7,8 @@ import { GetPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
 import { GetSalePlayerEquipment } from "../functions/GetSalePlayerEquipment";
 import GetItemGradeColor from "../functions/GetItemGradeColor";
 import { IEquipment, IPlayer } from "../types/types";
-import ItemModal from "./ItemModal";
-import './WeaponCard.css';
+import EquipmentModal from "./EquipmentModal";
+
 
 interface IEquipmentCardProps {
   equipment: IEquipment;
@@ -48,7 +48,7 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
       updatePlayerData({
         ...player,
         gold: player.gold - equipmentToPurchase.cost,
-        inventory: [...player.inventory, playerEquipment._id]
+        equipmentInventory: [...player.equipmentInventory, playerEquipment._id]
       });
       setShowModal(false);
     } catch (e) {
@@ -76,7 +76,10 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
     setLoading(true);
 
     try {
-      // Fetches the IPlayerItem reference for the item
+      // Fetches the IPlayerEquipment reference for the item
+      // reason for this is that the player owned equipments are unique and 
+      // separate from the list of armors and weapons.
+      // 
       const playerEquipmentItem = await GetPlayerOwnedEquipment(player._id, itemId);
 
       if (!playerEquipmentItem) {
@@ -84,45 +87,56 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
         return;
       }
 
-      // Assuming GetPlayerOwnedEquipment also provides the itemType, e.g., 'armor', 'helmet', 'boots'
+      // And equipment type can be armor, weapon, helmet, boots.
+      //
       const { itemType } = playerEquipmentItem;
 
       // Prepare the updated equipment object and determine the correct slot
+      //
       let updatedEquipment = { ...player.equipment };
 
       // Determine the equipment slot based on the item type
+      //
       const equipmentSlot = itemType === 'armor' ? 'armor' :
         itemType === 'helmet' ? 'helmet' :
           itemType === 'boots' ? 'boots' : itemType === 'weapon' ? 'weapon' : null;
 
+      // Make sure the slot is one that we know
+      //
       if (!equipmentSlot) {
         console.error("Unknown item type. Cannot equip.");
         return;
       }
 
       // If there is currently an item equipped in the slot, move it back to inventory
+      // because we are equipping a new one
       //
       if (updatedEquipment[equipmentSlot]) {
-        player.inventory.push(updatedEquipment[equipmentSlot] as any);
+        player.equipmentInventory.push(updatedEquipment[equipmentSlot] as any);
       }
 
       // Update the player's equipment with the new item
+      //
       updatedEquipment[equipmentSlot] = itemId;
 
       // Remove the newly equipped item from the inventory
-      const updatedInventory = player.inventory.filter((item: Realm.BSON.ObjectId) => item.toString() !== itemId.toString());
+      //
+      const updatedEquipmentInventory = player.equipmentInventory.filter((item: Realm.BSON.ObjectId) => item.toString() !== itemId.toString());
 
       // Prepare the new state for the player
-      let updatedPlayer: IPlayer = {
+      //
+      const updatedPlayer: IPlayer = {
         ...player,
         equipment: updatedEquipment,
-        inventory: updatedInventory
+        equipmentInventory: updatedEquipmentInventory
       };
 
       // Update the player's data in the database
+      //
       await updatePlayerData(updatedPlayer);
 
       // Close the modal if applicable
+      //
       setShowModal && setShowModal(false);
     } catch (e) {
       console.error("An error occurred while equipping the item: ", e);
@@ -152,7 +166,6 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
                     {equipment.name}
                   </div>
 
-
                   {isForSale ? (<span>
                     Cost:<span style={{ color: 'gold' }}> {equipment.cost.toLocaleString()} G</span>
                   </span>
@@ -161,8 +174,6 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
                       Sale: <span style={{ color: 'gold' }}> {(equipment.cost / 2).toLocaleString()} G</span>
                     </span>
                   )}
-
-
                 </IonCol>
 
                 {/* Requirements Column */}
@@ -177,8 +188,8 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
                       <>
                         AP: {(equipment as IEquipment)?.stats?.minAttack} ~ {(equipment as IEquipment)?.stats?.maxAttack}
                       </>)}
-
                   </div>
+
                   <span style={{ fontSize: '12px' }}>
                     Stats required:
                   </span>
@@ -199,7 +210,7 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
         </div>
       )}
 
-      <ItemModal
+      <EquipmentModal
         equipItem={() => handleArmorAction()}
         isForSale={isForSale}
         canPurchase={checkRequirements()}

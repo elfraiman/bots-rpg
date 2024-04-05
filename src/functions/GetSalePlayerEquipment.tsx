@@ -17,12 +17,12 @@ export const GetSalePlayerEquipment = async (equipment: IEquipment, player: IPla
         if (equipment !== undefined && player) {
             await playerEquipmentsCollections.deleteOne({ _id: equipment._id });
             // Correctly filter out the sold armor using .equals() for ObjectId comparison
-            const updatedInventory = player.inventory.filter((itemId: Realm.BSON.ObjectId) => !itemId.equals(equipment._id));
+            const updatedEquipInventory = player.equipmentInventory.filter((itemId: Realm.BSON.ObjectId) => !itemId.equals(equipment._id));
 
             await updatePlayerData({
                 ...player,
                 gold: player.gold + (equipment.cost / 2),
-                inventory: updatedInventory
+                equipmentInventory: updatedEquipInventory
             });
             return true;
         } else {

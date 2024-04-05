@@ -22,7 +22,7 @@ const ExplorePage: React.FC = () => {
           const enemyList = await getEnemies({ location: player.location });
 
           if (planet) setPlanetData(planet);
-          
+
           setEnemies(enemyList ?? []);
         } catch (e) {
           console.error('Error fetching planet or enemies', e);

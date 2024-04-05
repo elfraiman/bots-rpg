@@ -1,5 +1,5 @@
 import { IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../types/types";
-import { GetBaseEquipment } from "./GetBaseArmor";
+import { GetBaseEquipment } from "./GetBaseEquipment";
 import { GetPlayerOwnedEquipment } from "./GetPlayerOwnedEquipment";
 import * as Realm from 'realm-web';
 

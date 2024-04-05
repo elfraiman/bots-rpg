@@ -3,15 +3,19 @@ import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
+import GetBaseItem from "../../functions/GetBaseItem";
 import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEquipmentStatsDetails";
+import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
-import calculateMaxHealth from "../../functions/GetMaxHealth";
-import GetTrashLoot from "../../functions/GetTrashLoot";
 import GetItemGradeColor from "../../functions/GetItemGradeColor";
+import calculateMaxHealth from "../../functions/GetMaxHealth";
 import GetXpReward from "../../functions/GetXpReward";
-import { IEnemy, IEnemy_equipment_weapon, IItem, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../../types/types";
+import { IEnemy, IEnemy_equipment_weapon, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
+import GetModifyBaseItem from "../../functions/GetModifyBaseItem";
+import GetModifyOwnedItem from "../../functions/GetModifyBaseItem";
+import * as Realm from 'realm-web';
 
 interface IFightResult {
   hitChance: number;
@@ -62,10 +66,8 @@ const BattleTrain = () => {
     totalDamage: 0,
   });
 
-
   // Ref for scrolling
   const narrativeEndRef = useRef(null);
-
 
   const getEnemy = async () => {
     const params: any = match.params;
@@ -198,7 +200,7 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={{ ...style.weaponName, color: GetItemGradeColor(isPlayerAttack ? playerWeapon.grade : 'common' ?? 'common') }}>
+          <span style={{ ...style.weaponName, color: GetItemGradeColor(isPlayerAttack ? playerWeapon?.grade : 'common' ?? 'common') }}>
             {isPlayerAttack ? playerWeapon?.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.name}.
           </span>
           <br />
@@ -299,38 +301,49 @@ const BattleTrain = () => {
   };
 
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
-    console.log('fight end')
     const playerMaxHealth = calculateMaxHealth(player);
     const enemyMaxHealth = calculateMaxHealth(enemy);
+
     if (playerWin) {
-      console.log(enemy, 'enemy');
+      let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
 
-      /*       try {
-              // Get the trash loot from the enemy
-              //
-              const trashLoot = await GetTrashLoot(enemy.trashLoot[0]);
-              console.log(trashLoot, 'trash', enemy.trashLoot[0])
-      
-              const findItemInInventory = player.inventory?.filter((i: any) => i._id !== trashLoot?._id);
-      
-              if (findItemInInventory.length > 0) {
-                findItemInInventory[0].quantity += 5;
-              } else {
-                player.inventory?.push(trashLoot);
-              }
-      
-              console.log('Player Wins!', trashLoot);
-            } catch (e) {
-              console.error(e);
-            } */
+      // Create loot chance logic here
+      if (enemy.trashLoot) {
+        // This is the logic to create "basic item" loot from the fight
+        //
+        try {
+          // Step 1: Create or get the already owned item from the player owned items.
+          // reference the trash loot from the monster
+          //
+          const playerOwnedItem = await GetCreatePlayerOwnedItem(player, enemy.trashLoot);
 
+          // Check if the player's inventory already includes this playerOwnedItem.
+          //
+          const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === playerOwnedItem?._id.toString());
+
+          if (itemInInventoryIndex >= 0 && playerOwnedItem) {
+            // The player already owns this item, so increase its quantity.
+            await GetModifyOwnedItem(playerOwnedItem?._id, 10);
+          } else {
+            // The player does not own this item, so add it to the inventory.
+            // that will be pushed to the updatePlayerData
+            //
+            if (playerOwnedItem) {
+              updatedInventory.push(playerOwnedItem._id);
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        };
+      }
 
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       const xpReward = GetXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
-
-      updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
-
+      // Update the player with all the new data
+      // this will update in context & back-end
+      //
+      await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
 
       // Add average damage and hit rate to the battleStats logging.
       // and set winnerMessage display
@@ -405,6 +418,8 @@ const BattleTrain = () => {
 
   // interval effect
   useEffect(() => {
+    if (!player) return
+
     if (battleActive && player && enemy) {
       intervalIdRef.current = setInterval(alternateAttack, 1000); // Set interval to 1 second
     }
@@ -449,7 +464,6 @@ const BattleTrain = () => {
           ))}
           {!battleActive ? (<IonButton onClick={startFight} style={{ width: '100%' }}>Fight</IonButton>) : (<></>)}
           {/* Invisible element at the end of your narratives */}
-
           <div ref={narrativeEndRef} />
         </div>
 

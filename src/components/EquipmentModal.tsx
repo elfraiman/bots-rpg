@@ -1,8 +1,8 @@
 import { IonButton, IonCol, IonGrid, IonImg, IonModal, IonRow, IonSpinner } from "@ionic/react";
 import GetItemGradeColor from "../functions/GetItemGradeColor";
-import './ItemModal.css';
+import './EquipmentModal.css';
 
-interface IItemModalProps {
+interface IEquipmentModalProps {
   showModal: boolean;
   item: any;
   isForSale: boolean;
@@ -16,7 +16,7 @@ interface IItemModalProps {
 }
 
 
-const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchaseItem, saleItem, setShowModal, imgString, loading }: IItemModalProps) => {
+const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchaseItem, saleItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
 
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
@@ -101,4 +101,4 @@ const ItemModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchas
 }
 
 
-export default ItemModal;
+export default EquipmentModal;

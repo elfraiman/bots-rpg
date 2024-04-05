@@ -19,19 +19,21 @@ import {
   IonRow,
   IonSpinner,
   IonText,
-  IonThumbnail,
-  useIonViewWillEnter
+  IonThumbnail
 } from '@ionic/react';
+import { add } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
+import * as Realm from 'realm-web';
+import BotOutline from '../../public/images/BotOutline.webp';
 import EquipmentCard from '../components/EquipmentCard';
+import GeneralItemCard from '../components/GeneralItemCard';
 import Header from '../components/Header';
 import { PlayerContext } from '../context/PlayerContext';
 import { GetCombinedEquipmentStatsDetails } from '../functions/GetCombinedEquipmentStatsDetails';
-import { IArmor, IPlayerOwnedArmor, IEquippedItemsDetails, IPlayer, IPlayer_equipment, IEquipment } from '../types/types';
-import './GuardianPage.css';
-import { add } from 'ionicons/icons';
+import { GetCombinedItemDetails } from '../functions/GetCombinedItemDetails';
 import GetItemGradeColor from '../functions/GetItemGradeColor';
-import BotOutline from '../../public/images/BotOutline.webp'
+import { IEquipment, IPlayer, IPlayerOwnedItem } from '../types/types';
+import './GuardianPage.css';
 
 const styles = {
   notEquipped: { backgroundColor: 'rgba(214, 214, 214, 0.467)', border: '1px solid white' },
@@ -44,7 +46,8 @@ const GuardianPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [attributeLoading, setAttributeLoading] = useState(false);
   const [equippedItems, setEquippedItems] = useState({});
-  const [inventoryItems, setInventoryItems] = useState([]);
+  const [inventoryEquipments, setEquipmentInventoryItems] = useState<IEquipment[]>([]);
+  const [inventoryItems, setInventoryItems] = useState<IPlayerOwnedItem[]>([]);
   const [equippedDetails, setEquippedDetails] = useState<any>({});
 
 
@@ -76,12 +79,17 @@ const GuardianPage: React.FC = () => {
       return;
     }
 
-    const itemsPromises = player.inventory.map(item => GetCombinedEquipmentStatsDetails(player._id, item));
+    const equipmentPromises = player.equipmentInventory?.map((item: Realm.BSON.ObjectId) => GetCombinedEquipmentStatsDetails(player._id, item));
+    const itemPromises = player.inventory?.map(async (itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId));
 
     try {
-      const items = await Promise.all(itemsPromises);
-      const filteredItems: any = items.filter(item => item !== undefined); // Filter out undefined items
+      const equipments = await Promise.all(equipmentPromises);
+      const items = await Promise.all(itemPromises);
+      const filteredEquipments: any = equipments.filter(equipment => equipment !== undefined); // Filter out undefined items
+      const filteredItems: any = items.filter(item => item !== undefined);
+
       setInventoryItems(filteredItems);
+      setEquipmentInventoryItems(filteredEquipments);
     } catch (error) {
       console.error("Error loading inventory items:", error);
       // Handle any errors that occurred during fetching
@@ -89,8 +97,6 @@ const GuardianPage: React.FC = () => {
       setLoading(false);
     }
   };
-
-
 
   const loadEquippedDetails = async () => {
     if (!player || !player.equipment) {
@@ -104,7 +110,6 @@ const GuardianPage: React.FC = () => {
     const bootsDetails = player.equipment.boots ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.boots) : null;
     const weaponDetails = player.equipment.weapon ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.weapon) : null;
     // Repeat the process for armor, helmet, and boots...
-
     setEquippedDetails({
       armor: armorDetails,
       helmet: helmetDetails,
@@ -124,14 +129,12 @@ const GuardianPage: React.FC = () => {
     }
   }
 
-
   useEffect(() => {
     loadInventory();
     loadEquippedDetails();
     loadAttributePoints();
 
   }, [player]);
-
 
 
   if (loading) {
@@ -347,13 +350,29 @@ const GuardianPage: React.FC = () => {
           </IonCard>
 
 
-
-
-
-
-
-
           <IonCard>
+            <div>
+              <IonAccordionGroup>
+                <IonAccordion value="items">
+                  <IonItem slot="header" color="light">
+                    <IonLabel>Equipment inventory</IonLabel>
+                  </IonItem>
+                  <div slot="content">
+                    <IonList lines='full'>
+                      {inventoryEquipments?.map((item: IEquipment, index: number) => {
+                        return (
+                          <div key={index}>
+                            {item ? (
+                              <EquipmentCard equipment={item} key={index} isForSale={false} />
+                            ) : (<></>)}
+                          </div>
+                        );
+                      })}
+                    </IonList>
+                  </div>
+                </IonAccordion>
+              </IonAccordionGroup>
+            </div>
             <div>
               <IonAccordionGroup>
                 <IonAccordion value="items">
@@ -362,11 +381,11 @@ const GuardianPage: React.FC = () => {
                   </IonItem>
                   <div slot="content">
                     <IonList lines='full'>
-                      {inventoryItems?.map((item: IEquipment, index: number) => {
+                      {inventoryItems?.map((item: IPlayerOwnedItem, index: number) => {
                         return (
                           <div key={index}>
                             {item ? (
-                              <EquipmentCard equipment={item} key={index} isForSale={false} />
+                              <GeneralItemCard item={item} key={index} isForSale={false} />
                             ) : (<></>)}
                           </div>
                         );
