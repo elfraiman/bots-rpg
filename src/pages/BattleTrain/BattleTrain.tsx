@@ -15,6 +15,7 @@ import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import GetXpReward from "../../functions/GetXpReward";
 import { IEnemy, IEnemy_equipment_weapon, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
+import GetBaseItem from "../../functions/GetBaseItem";
 
 interface IFightResult {
   hitChance: number;
@@ -348,6 +349,7 @@ const BattleTrain = () => {
   };
 
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
+    let loot = [];
 
     if (playerWin) {
       let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
@@ -361,6 +363,7 @@ const BattleTrain = () => {
           // reference the trash loot from the monster
           //
           const playerOwnedItem = await GetCreatePlayerOwnedItem(player, enemy.trashLoot);
+          const baseItem = await GetBaseItem(enemy.trashLoot);
 
           // Check if the player's inventory already includes this playerOwnedItem.
           //
@@ -377,6 +380,8 @@ const BattleTrain = () => {
               updatedInventory.push(playerOwnedItem._id);
             }
           }
+
+          loot.push({ item: baseItem, quantityDropped: 10 })
         } catch (e) {
           console.error(e);
         };
@@ -440,11 +445,27 @@ const BattleTrain = () => {
               <IonCol>Gained XP</IonCol>
               <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
             </IonRow>
+            {loot.length > 0 ? (
+              <IonRow>
+                <IonCol>
+                  Loot:
+                  {loot.map((i) => {
+                    return (
+                      <p>{i.quantityDropped}x <span style={{ color: GetItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
+                    );
+                  })}
+                </IonCol>
+              </IonRow>
+            ) : <></>}
           </IonGrid>
         </div>
       );
 
       setFightNarrative(prev => [...prev, battleStatsLogMessage]);
+
+      if (enemy.hidden) {
+        setHiddenEnemyDead(true);
+      }
 
       // if we were fighting a hidden enemy
       // we want to reset the enemy to be the one we initially navigated
@@ -452,9 +473,7 @@ const BattleTrain = () => {
       // since the hidden enemy fight has concluded.
       //
       resetStats();
-      if (enemy.hidden) {
-        setHiddenEnemyDead(true);
-      }
+
     }
   }
 
@@ -501,12 +520,10 @@ const BattleTrain = () => {
             <div key={index}>{line}</div>
           ))}
 
-
-
           {!battleActive ? (
             <>
               <div >
-                {enemy?.hidden && enemyIntimidation ? (
+                {enemy?.hidden && !hiddenEnemyDead ? (
                   <div>
                     Type: <span style={{ color: enemy?.type === 'boss' ? 'orange' : '#A335EE' }}>{enemy?.type.toLocaleUpperCase()} </span><br />
                     Level: <span style={{ fontWeight: 700, marginBottom: 36 }}>{enemy?.level}</span> <br />
