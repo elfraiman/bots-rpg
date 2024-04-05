@@ -17,16 +17,15 @@ const EnemyCard = ({ enemy }: IEnemyCardProps) => {
                         <IonCardSubtitle>Level: {enemy.level}</IonCardSubtitle>
                     </div>
                     <IonThumbnail>
-                        <IonImg src={`/images/enemies/enemy-${enemy?.imgId}.webp`} alt="Enemy "/>
+                        <IonImg src={`/images/enemies/enemy-${enemy?.imgId}.webp`} alt="Enemy " />
                     </IonThumbnail>
                 </div>
             </IonCardHeader>
 
             <IonCardContent>
                 {enemy.description}
-
-
             </IonCardContent>
+
             <IonGrid className="ion-padding">
                 <IonRow>
                     <IonCol>

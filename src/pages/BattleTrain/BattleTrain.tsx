@@ -1,21 +1,20 @@
-import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
+import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
-import GetBaseItem from "../../functions/GetBaseItem";
 import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEquipmentStatsDetails";
 import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import GetItemGradeColor from "../../functions/GetItemGradeColor";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
+import GetModifyOwnedItem from "../../functions/GetModifyBaseItem";
+import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import GetXpReward from "../../functions/GetXpReward";
 import { IEnemy, IEnemy_equipment_weapon, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
-import GetModifyBaseItem from "../../functions/GetModifyBaseItem";
-import GetModifyOwnedItem from "../../functions/GetModifyBaseItem";
-import * as Realm from 'realm-web';
 
 interface IFightResult {
   hitChance: number;
@@ -51,12 +50,13 @@ const BattleTrain = () => {
   const [enemy, setEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(0);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
+  const [enemyIntimidation, setEnemyIntimidation] = useState<string>("");
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
+  const [hiddenEnemyDead, setHiddenEnemyDead] = useState<boolean>(true);
   const [battleActive, setBattleActive] = useState<boolean>(false);
   const turnRef = useRef<boolean>(true); // true indicates it's the player's turn, false for the enemy's turn
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const match = useRouteMatch<{ id: string }>();
-
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
     hits: 0,
@@ -82,7 +82,27 @@ const BattleTrain = () => {
         setEnemyHealth(enemyMaxHealth); // Setting enemy's health based on the loaded enemy data
       }
     }
+  }
 
+  const resetStats = () => {
+    if (!player || !enemy) return;
+    const playerMaxHealth = calculateMaxHealth(player);
+    const enemyMaxHealth = calculateMaxHealth(enemy);
+
+    // reset stats
+    //
+    setPlayerHealth(playerMaxHealth);
+    setEnemyHealth(enemyMaxHealth);
+    setBattleStats({
+      attempts: 0,
+      hits: 0,
+      maxHit: 0,
+      misses: 0,
+      totalDamage: 0,
+      dodges: 0,
+    });
+
+    setEnemyIntimidation('');
   }
 
   const getPlayerEquipment = async () => {
@@ -102,9 +122,10 @@ const BattleTrain = () => {
       setPlayerHealth(playerMaxHealth);
       getPlayerEquipment();
     }
-
   });
 
+  // Returns some text to describe the enemy's health status
+  //
   const returnEnemyShape = (enemy: IEnemy, health: number) => {
     let enemyNameStyled = <span style={style.enemyName}>{enemy.name}</span>;
     const enemyMaxHealth = calculateMaxHealth(enemy);
@@ -124,6 +145,8 @@ const BattleTrain = () => {
     }
   }
 
+  // This returns the color of the health left
+  //
   const returnPercentageColor = (health: number) => {
     if (!player) return;
     const playerMaxHealth = calculateMaxHealth(player);
@@ -146,7 +169,6 @@ const BattleTrain = () => {
       setFightNarrative(prev => [...prev, <div>Player or enemy is missing.</div>]);
       return;
     }
-
 
     const baseHitChance = 0.7;
     const dexDifference = attacker.dex - defender.dex;
@@ -177,7 +199,6 @@ const BattleTrain = () => {
     const playerMaxHealth = calculateMaxHealth(player);
     const randomNumber = Math.random();
 
-
     if (randomNumber <= hitChance) {
       const damageDealt = Math.floor(Math.random() * (maxAttack - minAttack + 1) + minAttack);
       let newPlayerHealth = playerHealth;
@@ -191,7 +212,6 @@ const BattleTrain = () => {
         newPlayerHealth = Math.max(playerHealth - damageDealt, 0);
         setPlayerHealth(newPlayerHealth);
       }
-
 
       const hitMessage = (
         <div style={style.fightNarrative}>
@@ -264,12 +284,39 @@ const BattleTrain = () => {
     }
   };
 
-  const startFight = () => {
-    if (enemy && player) {
+  const startFight = async () => {
+    if (!enemy || !player) return;
+
+    if (enemy.hidden && hiddenEnemyDead) {
+      getEnemy();
+      resetStats();
       setFightNarrative([]);
-      setBattleActive(true);
-      attack(player, enemy, true);
+      return;
     }
+    // Try to spawn hidden enemies (Elites, Bosses) based on their spawn chance
+    // and the players planet location
+    //
+    const spawnHiddenEnemies = await GetSpawnHiddenEnemies(player);
+
+    if (spawnHiddenEnemies.length > 0 && !enemy.hidden) {
+
+      // Find the enemy with the lowest chanceToEncounter, treating undefined as 1 (or another high value indicating very common)
+      const chooseRarest = spawnHiddenEnemies.reduce((rarest, current) => {
+        const rarestChance = rarest.chanceToEncounter !== undefined ? rarest.chanceToEncounter : 1;
+        const currentChance = current.chanceToEncounter !== undefined ? current.chanceToEncounter : 1;
+        return currentChance < rarestChance ? current : rarest;
+      }, spawnHiddenEnemies[0]);
+
+      setEnemy(chooseRarest);
+      setFightNarrative([]);
+      setEnemyIntimidation(spawnHiddenEnemies[0].description ?? '');
+      setHiddenEnemyDead(false);
+      return;
+    }
+
+    setFightNarrative([]);
+    setBattleActive(true);
+    attack(player, enemy, true);
   };
 
   const alternateAttack = () => {
@@ -301,8 +348,6 @@ const BattleTrain = () => {
   };
 
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
-    const playerMaxHealth = calculateMaxHealth(player);
-    const enemyMaxHealth = calculateMaxHealth(enemy);
 
     if (playerWin) {
       let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
@@ -401,18 +446,15 @@ const BattleTrain = () => {
 
       setFightNarrative(prev => [...prev, battleStatsLogMessage]);
 
-      // reset stats
+      // if we were fighting a hidden enemy
+      // we want to reset the enemy to be the one we initially navigated
+      // here to.
+      // since the hidden enemy fight has concluded.
       //
-      setPlayerHealth(playerMaxHealth);
-      setEnemyHealth(enemyMaxHealth);
-      setBattleStats({
-        attempts: 0,
-        hits: 0,
-        maxHit: 0,
-        misses: 0,
-        totalDamage: 0,
-        dodges: 0,
-      });
+      resetStats();
+      if (enemy.hidden) {
+        setHiddenEnemyDead(true);
+      }
     }
   }
 
@@ -429,7 +471,6 @@ const BattleTrain = () => {
     };
   }, [battleActive, player, enemy, playerHealth, enemyHealth]);
 
-
   // Automatically scroll to the latest narrative entry
   useEffect(() => {
     (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
@@ -437,13 +478,10 @@ const BattleTrain = () => {
 
   useIonViewDidLeave(() => {
     if (player && enemy) {
-      const playerMaxHealth = calculateMaxHealth(player);
-      const enemyMaxHealth = calculateMaxHealth(enemy);
-      setPlayerHealth(playerMaxHealth);
-      setEnemyHealth(enemyMaxHealth);
+      resetStats();
+      setFightNarrative([]);
     }
   })
-
 
   return (
     <IonPage>
@@ -462,7 +500,28 @@ const BattleTrain = () => {
           {fightNarrative.map((line, index) => (
             <div key={index}>{line}</div>
           ))}
-          {!battleActive ? (<IonButton onClick={startFight} style={{ width: '100%' }}>Fight</IonButton>) : (<></>)}
+
+
+
+          {!battleActive ? (
+            <>
+              <div >
+                {enemy?.hidden && enemyIntimidation ? (
+                  <div>
+                    Type: <span style={{ color: enemy?.type === 'boss' ? 'orange' : '#A335EE' }}>{enemy?.type.toLocaleUpperCase()} </span><br />
+                    Level: <span style={{ fontWeight: 700, marginBottom: 36 }}>{enemy?.level}</span> <br />
+                    <IonCardSubtitle>This enemy has a chance to drop rare loot.</IonCardSubtitle>
+                    <p style={{ color: 'red', fontSize: 16, fontWeight: 700 }}>{enemyIntimidation ?? ''}</p>
+                  </div>
+                ) : <></>}
+
+              </div>
+
+              <IonButton onClick={startFight} color={enemy?.hidden && !hiddenEnemyDead ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
+                {enemy?.hidden && hiddenEnemyDead ? <>Back to original enemy</> : <>Fight</>}
+              </IonButton>
+            </>
+          ) : (<></>)}
           {/* Invisible element at the end of your narratives */}
           <div ref={narrativeEndRef} />
         </div>

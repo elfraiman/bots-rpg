@@ -4,22 +4,23 @@ export type IEnemy = {
   _id: Realm.BSON.ObjectId;
   armorLoot: Array<Realm.BSON.ObjectId>;
   bootsLoot: Array<Realm.BSON.ObjectId>;
+  chanceToEncounter?: number;
   con: number;
   description: string;
   dex: number;
   equipment?: IEnemy_equipment;
   helmetLoot: Array<Realm.BSON.ObjectId>;
+  hidden?: boolean;
   imgId: number;
   int: number;
   level: number;
   location: string;
   name: string;
   str: number;
-  trashLoot: Realm.BSON.ObjectId;
+  trashLoot?: Realm.BSON.ObjectId;
   type: string;
   weaponLoot: Array<Realm.BSON.ObjectId>;
 };
-
 
 export type IItem = {
   _id: Realm.BSON.ObjectId;
