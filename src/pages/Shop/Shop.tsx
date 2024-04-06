@@ -14,7 +14,6 @@ const Shop = () => {
   const [armorsData, setArmorsData] = useState<IEquipment[]>([]);
   const [helmetsData, setHelmetsData] = useState<IEquipment[]>([]);
   const [bootsData, setBootsData] = useState<IEquipment[]>([]);
-
   const [loading, setLoading] = useState(false);
 
   const getData = async () => {

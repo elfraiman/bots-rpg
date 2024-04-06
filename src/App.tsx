@@ -41,13 +41,13 @@ const app = new Realm.App({ id: 'application-0-vgvqx' });
 const App: React.FC = () => {
   // Keep the logged in Realm user in local state. This lets the app re-render
   // whenever the current user changes (e.g. logs in or logs out).
-  const [user] = React.useState<Realm.User | null>(app.currentUser);
+  const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
   const { isSplashScreenActive } = useSplashScreen(); // Use the custom hook
   const { player } = usePlayerData();
 
   React.useEffect(() => {
-    console.log('Splash screen active:', isSplashScreenActive);
-  }, [isSplashScreenActive]);
+    setUser(app.currentUser)
+  }, [app.currentUser, player]);
 
 
   return (

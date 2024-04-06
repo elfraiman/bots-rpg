@@ -31,7 +31,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    console.log(updates, 'updates')
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
     const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
     const userId = app.currentUser.id;
@@ -51,7 +50,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         updates['attributePoints'] = player.attributePoints + 5;
       }
 
-      console.log(xpToNextLevel, 'xp to next level within the player context');
       // Assuming 'updates' is an object with fields you want to update and their new values
       await players.updateOne({ _id: userId }, { $set: updates });
 

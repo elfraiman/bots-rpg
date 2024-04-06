@@ -5,7 +5,7 @@ interface IXPCalculationParams {
   efficiencyBonus?: number; // This could be based on how quickly or skillfully the player defeats the enemy
 }
 
-function GetXpReward({ playerLevel, enemyLevel, enemyType, efficiencyBonus = 1 }: IXPCalculationParams): number {
+function getXpReward({ playerLevel, enemyLevel, enemyType, efficiencyBonus = 1 }: IXPCalculationParams): number {
   const baseXP = 20; // Base experience for an enemy at level 1
   let difficultyModifier: number;
 
@@ -36,4 +36,4 @@ function GetXpReward({ playerLevel, enemyLevel, enemyType, efficiencyBonus = 1 }
   return Math.round(xp); // Round to the nearest whole number
 }
 
-export default GetXpReward;
+export default getXpReward;

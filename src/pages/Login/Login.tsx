@@ -46,8 +46,7 @@ const LoginPage = () => {
                 const user: Realm.User = await app.logIn(Realm.Credentials.emailPassword(email, password));
 
                 if (user) {
-                    console.log('user')
-                    history.push('/home'); // Refresh or redirect upon successful login
+                    history.push('/guardian'); // Refresh or redirect upon successful login
                 }
             } catch (error) {
                 console.error("Error logging in:", error);

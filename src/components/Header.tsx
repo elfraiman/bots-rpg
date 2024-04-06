@@ -28,7 +28,8 @@ const Header = () => {
 
         // if player is in the same location no need to get planet
         //
-        if (player.location === playerLocation?.name) return;
+        if (player?.location === playerLocation?.name) return;
+        console.log(player.location, playerLocation, 'player location')
 
         setLoading(true);
         const playerLocationPlanet = await getSinglePlanet(player.location)

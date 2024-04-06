@@ -45,7 +45,6 @@ const GuardianPage: React.FC = () => {
   const [playerHasPoints, setPlayerHasPoints] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [attributeLoading, setAttributeLoading] = useState(false);
-  const [equippedItems, setEquippedItems] = useState({});
   const [inventoryEquipments, setEquipmentInventoryItems] = useState<IEquipment[]>([]);
   const [inventoryItems, setInventoryItems] = useState<IPlayerOwnedItem[]>([]);
   const [equippedDetails, setEquippedDetails] = useState<any>({});

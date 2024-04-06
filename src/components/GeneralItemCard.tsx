@@ -1,9 +1,10 @@
-import { IonCol, IonGrid, IonImg, IonRow } from "@ionic/react";
-import { useContext, useState } from 'react';
+import { IonButton, IonCol, IonGrid, IonImg, IonRow, useIonActionSheet } from "@ionic/react";
+import { useContext, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import GetItemGradeColor from "../functions/GetItemGradeColor";
 import { getSaleItem } from "../functions/GetSaleItem";
 import { IItem, IPlayerOwnedItem } from "../types/types";
+import ItemModal from "./ItemModal";
 
 interface IBootsCardProps {
   item: IPlayerOwnedItem;
@@ -13,6 +14,9 @@ interface IBootsCardProps {
 const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
+  const modal = useRef<HTMLIonModalElement>(null);
+  const [present] = useIonActionSheet();
+
 
   if (item._id === undefined) {
     console.error("No id on item");
@@ -20,12 +24,14 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
   }
 
 
-  const saleItem = async (item: IItem) => {
+  const saleItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
     if (player) {
-      await getSaleItem(item, player, updatePlayerData);
+      await getSaleItem(item, sellQuantity, updatePlayerData, player);
+
       setShowModal(false);
     }
   }
+
 
 
   return (
@@ -40,7 +46,7 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
                 <IonCol size="3" style={{ padding: 0 }}>
                   <IonImg
                     style={{ width: '100%', height: 'auto' }}
-                    src={`/images/trash/trash-${item.imgId}.png`}
+                    src={`/images/item/item-${item.imgId}.webp`}
                     alt={`A ${item.name} with beautiful details`} />
                 </IonCol>
 
@@ -59,25 +65,27 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
                   </span>
                   ) : (
                     <span>
-                      Sale: <span style={{ color: 'gold' }}> {(item.cost / 2).toLocaleString()} G</span>
+                      Sale: <span style={{ color: 'gold' }}> {(item.cost).toLocaleString()} G</span>
                     </span>
                   )}
+                </IonCol>
+
+                <IonCol style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                  <IonButton fill="clear" id="sale-modal">Sale</IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>
           </div>
 
 
-          {/* 
-          {<EquipmentModal
-            isForSale={isForSale ?? false}
-            canPurchase={checkRequirements(isForSale ?? false)}
-            purchaseItem={purchaseBoots}
-            saleItem={saleBoots}
+
+
+          {<ItemModal
+            saleItem={saleItem}
             showModal={showModal}
             setShowModal={setShowModal}
-            imgString={`/images/boots/boots-${boots.imgId}.webp`}
-            item={boots} />} */}
+            imgString={`/images/item/item-${item.imgId}.webp`}
+            item={item} loading={false} />}
         </>
       ) : <>Loading..</>}
 

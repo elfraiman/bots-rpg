@@ -28,7 +28,6 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
       </div>
 
       {loading ? <IonSpinner /> : (
-
         <IonGrid style={{ height: '100px', border: '2px solid rgb(89, 59, 47)', margin: "6px 16px 16px 16px" }}>
           <IonRow className="ion-padding">
             <IonImg
