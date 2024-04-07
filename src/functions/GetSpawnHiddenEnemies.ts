@@ -3,9 +3,6 @@ import { getEnemies } from "./GetEnemies";
 
 
 
-
-
-
 export const GetSpawnHiddenEnemies = async (player: IPlayer) => {
     const enemyList = await getEnemies({ location: player?.location });
     // We want to get the hidden enemies for the location and give it a chance to spawn
@@ -20,7 +17,7 @@ export const GetSpawnHiddenEnemies = async (player: IPlayer) => {
 
             // Compare the random number to the enemy's chance to encounter
             if (enemy.chanceToEncounter) {
-                return randomNumber <= enemy.chanceToEncounter;
+                return randomNumber < (enemy.chanceToEncounter as unknown as number);
             }
         });
         // Return the list of enemies that have "spawned" based on the random chance

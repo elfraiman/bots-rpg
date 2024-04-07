@@ -1,11 +1,10 @@
 import * as Realm from 'realm-web';
-import { IArmor, IPlayer } from "../types/types";
+import { IPlayer } from "../types/types";
 
 export type ITravelDestinations = "Earth" | "Xyleria" | "Volcanix" | "Cryothus";
 
-
 export interface ITravelDestinationsProps {
-    destination: ITravelDestinations;
+    destination: Realm.BSON.ObjectId;
     player: IPlayer;
     updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>;
 }
@@ -26,11 +25,11 @@ export const getTravel = async ({ destination, player, updatePlayerData }: ITrav
             })
             return true;
         } else {
-            console.error("Cant delete armor");
+            console.error("Cannot travel to destination");
             return undefined;
         }
     } catch (err) {
-        console.error("Failed to create armor:", err);
+        console.error("Failed to travel:", err);
         throw err; // Rethrow the error for the calling function to handle
     }
 }

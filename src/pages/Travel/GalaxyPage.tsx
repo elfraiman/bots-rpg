@@ -1,13 +1,12 @@
 import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
 import { useContext } from "react";
+import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
 import { useSplashScreen } from "../../context/SplashScreenContxt";
-import { ITravelDestinations, getTravel } from "../../functions/GetTravel";
+import { getTravel } from "../../functions/GetTravel";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
 import SplashScreen from "../SplashScreen/SplashScreen";
-
-
 
 const GalaxyPage = () => {
   const planets = usePlanetsHook();
@@ -18,7 +17,7 @@ const GalaxyPage = () => {
     return;
   };
 
-  const travelToPlanet = async (destination: ITravelDestinations) => {
+  const travelToPlanet = async (destination: Realm.BSON.ObjectId) => {
     try {
       await getTravel({ destination, player, updatePlayerData });
       triggerSplashScreen(5000);
@@ -57,7 +56,7 @@ const GalaxyPage = () => {
                             </div>
 
                             <span>
-                              <IonButton fill="clear" onClick={() => travelToPlanet(planet.name as ITravelDestinations)}>Travel</IonButton>
+                              <IonButton fill="clear" onClick={() => travelToPlanet(planet._id)}>Travel</IonButton>
                             </span>
 
 

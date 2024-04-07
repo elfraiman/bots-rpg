@@ -35,7 +35,7 @@ const LoginPage = () => {
                 const user: Realm.User = await app.logIn(Realm.Credentials.emailPassword(email, password));
 
                 if (user) {
-                    history?.push('/home')
+                    history?.push('/guardian')
                 }
             } catch (error) {
                 console.error("Error registering new user:", error);
@@ -61,18 +61,15 @@ const LoginPage = () => {
                     <IonCardContent>
                         <form onSubmit={handleSubmit}> {/* Wrap inputs and buttons with a form */}
                             <IonItem>
-                                <IonLabel position="floating">Email</IonLabel>
-                                <IonInput value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
+                                <IonInput label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
                             </IonItem>
                             <IonItem>
-                                <IonLabel position="floating">Password</IonLabel>
-                                <IonInput value={password} onIonChange={e => setPassword(e.detail.value!)} type="password" name="password"></IonInput>
+                                <IonInput label="Password" value={password} onIonChange={e => setPassword(e.detail.value!)} type="password" name="password"></IonInput>
                             </IonItem>
 
                             {!isLogin && (
                                 <IonItem>
-                                    <IonLabel position="floating">Verify Password</IonLabel>
-                                    <IonInput value={verifyPassword} onIonChange={e => setVerifyPassword(e.detail.value!)} type="password" name="verifyPassword"></IonInput>
+                                    <IonInput label="Verify password" value={verifyPassword} onIonChange={e => setVerifyPassword(e.detail.value!)} type="password" name="verifyPassword"></IonInput>
                                 </IonItem>
                             )}
 

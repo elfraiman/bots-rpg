@@ -1,5 +1,4 @@
 import * as Realm from 'realm-web';
-import { usePlayerData } from '../context/PlayerContext';
 import { IPlayer, IPlayerOwnedItem } from '../types/types';
 
 
@@ -19,16 +18,22 @@ export const getSaleItem = async (item: IPlayerOwnedItem, quantityToSell: number
     if (playerOwnedItemsCollection && quantityToSell) {
 
 
-        if (item.quantity == quantityToSell) {
-            playerOwnedItemsCollection.deleteOne({ _id: item._id });
-        } else {
-            playerOwnedItemsCollection.updateOne({ _id: item._id }, { $inc: { quantity: -quantityToSell } })
+        try {
+            if (item.quantity == quantityToSell) {
+                await playerOwnedItemsCollection.deleteOne({ _id: item._id });
+            } else {
+                await playerOwnedItemsCollection.updateOne({ _id: item._id }, { $inc: { quantity: -quantityToSell } })
+            }
+
+            await updatePlayerData({
+                ...player,
+                gold: player.gold + (quantityToSell * item.cost)
+            });
+
+        } catch (e) {
+            console.error('Error selling player owned items');
         }
 
-        await updatePlayerData({
-            ...player,
-            gold: player.gold + (quantityToSell * item.cost)
-        });
 
     }
 }

@@ -1,5 +1,5 @@
 import { IonButton, IonCol, IonGrid, IonImg, IonModal, IonRow, IonSpinner } from "@ionic/react";
-import GetItemGradeColor from "../functions/GetItemGradeColor";
+import getItemGradeColor from "../functions/GetItemGradeColor";
 import './EquipmentModal.css';
 
 interface IEquipmentModalProps {
@@ -23,7 +23,7 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
       <div className="weapon-modal-title">
         {item.type}
       </div>
-      <div className="weapon-name-title" style={{ color: GetItemGradeColor(item?.grade) }}>
+      <div className="weapon-name-title" style={{ color: getItemGradeColor(item?.grade) }}>
         {item.name}
       </div>
 
@@ -37,7 +37,7 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
 
             <IonCol style={{ marginLeft: 26 }}>
               <IonRow>
-                <span style={{ color: GetItemGradeColor(item.grade), fontSize: 12 }}>
+                <span style={{ color: getItemGradeColor(item.grade), fontSize: 12 }}>
                   {item?.grade?.toUpperCase()}
                 </span>
               </IonRow>

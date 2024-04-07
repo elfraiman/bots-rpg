@@ -1,7 +1,7 @@
 import { IonButton, IonCol, IonGrid, IonImg, IonModal, IonRange, IonRow, IonSpinner } from "@ionic/react";
-import GetItemGradeColor from "../functions/GetItemGradeColor";
-import { IItem, IPlayerOwnedItem } from "../types/types";
 import { useState } from "react";
+import getItemGradeColor from "../functions/GetItemGradeColor";
+import { IPlayerOwnedItem } from "../types/types";
 
 interface IEquipmentModalProps {
     showModal: boolean;
@@ -14,8 +14,8 @@ interface IEquipmentModalProps {
 
 
 const ItemModal = ({ showModal, item, saleItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
-    const [totalSellValue, setTotalSellValue] = useState(0);
-    const [sellQuantity, setSellQuantity] = useState(0);
+    const [totalSellValue, setTotalSellValue] = useState(item.cost);
+    const [sellQuantity, setSellQuantity] = useState(1);
 
     const customFormatter = (value: number): string => {
         // Calculate the selected quantity as a percentage of the maxQuantity
@@ -37,7 +37,7 @@ const ItemModal = ({ showModal, item, saleItem, setShowModal, imgString, loading
             <div className="weapon-modal-title">
                 {item.type?.toUpperCase()}
             </div>
-            <div className="weapon-name-title" style={{ color: GetItemGradeColor(item?.grade ?? 'common') }}>
+            <div className="weapon-name-title" style={{ color: getItemGradeColor(item?.grade ?? 'common') }}>
                 {item.name}
             </div>
 
@@ -51,7 +51,7 @@ const ItemModal = ({ showModal, item, saleItem, setShowModal, imgString, loading
 
                         <IonCol style={{ marginLeft: 26 }}>
                             <IonRow>
-                                <span style={{ color: GetItemGradeColor(item.grade ?? 'common'), fontSize: 12 }}>
+                                <span style={{ color: getItemGradeColor(item.grade ?? 'common'), fontSize: 12 }}>
                                     {item?.grade?.toUpperCase()}
                                 </span>
                             </IonRow>
@@ -67,13 +67,18 @@ const ItemModal = ({ showModal, item, saleItem, setShowModal, imgString, loading
                             <p>{item.cost} <span style={{ color: 'gold' }}>Gold</span></p> <></>
                         </IonCol>
                     </IonRow>
-                    <IonRow className='ion-padding'>
-                        <IonRange label={'Quantity'} labelPlacement="start" aria-label="Range with pin" pin={true} pinFormatter={customFormatter} defaultValue={0}>
-                        </IonRange>
-                    </IonRow>
-                    <IonRow className="ion-padding">Total value: {totalSellValue.toLocaleString()}
-                        <span style={{ color: 'gold' }}>Gold</span>
-                    </IonRow>
+
+                    {item.quantity > 1 ? (
+                        <>
+                            <IonRow className='ion-padding'>
+                                <IonRange label={'Quantity'} labelPlacement="start" aria-label="Range with pin" pin={true} pinFormatter={customFormatter} defaultValue={0}>
+                                </IonRange>
+                            </IonRow>
+                            <IonRow className="ion-padding">Total value: {totalSellValue.toLocaleString()}
+                                <span style={{ color: 'gold' }}>Gold</span>
+                            </IonRow></>
+                    ) : (<></>)}
+
                 </IonGrid>
             )}
 

@@ -15,7 +15,6 @@ const Header = () => {
     const [xpToNextLevel, setXpToNextLevel] = useState(0);
     const [loading, setLoading] = useState(false);
     const { player } = useContext(PlayerContext);
-    const [goldDigits, setGoldDigits] = useState([]);
     const [playerLocation, setPlayerLocation] = useState<IPlanet>();
 
 
@@ -25,10 +24,10 @@ const Header = () => {
         if (!player) {
             return;
         }
-
         // if player is in the same location no need to get planet
         //
-        if (player?.location === playerLocation?.name) return;
+        if (player?.location.toString() === playerLocation?._id.toString()) return;
+
         console.log(player.location, playerLocation, 'player location')
 
         setLoading(true);

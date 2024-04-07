@@ -5,7 +5,7 @@
 
 
 
-const GetItemGradeColor = (itemGrade: string) => {
+const getItemGradeColor = (itemGrade: string) => {
 
     switch (itemGrade) {
         case 'common':
@@ -22,4 +22,4 @@ const GetItemGradeColor = (itemGrade: string) => {
 
 }
 
-export default GetItemGradeColor;
+export default getItemGradeColor;

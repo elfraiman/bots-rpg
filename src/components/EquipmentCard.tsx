@@ -5,7 +5,7 @@ import { PlayerContext } from '../context/PlayerContext';
 import { GetCreatePlayerOwnedEquipment } from "../functions/GetCreatePlayerOwnedEquipment";
 import { GetPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
 import { GetSalePlayerEquipment } from "../functions/GetSalePlayerEquipment";
-import GetItemGradeColor from "../functions/GetItemGradeColor";
+import getItemGradeColor from "../functions/GetItemGradeColor";
 import { IEquipment, IPlayer } from "../types/types";
 import EquipmentModal from "./EquipmentModal";
 
@@ -162,7 +162,7 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
 
                 {/* Gold Column */}
                 <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ color: GetItemGradeColor(equipment.grade), fontSize: '14px', marginBottom: 6 }}>
+                  <div style={{ color: getItemGradeColor(equipment.grade), fontSize: '14px', marginBottom: 6 }}>
                     {equipment.name}
                   </div>
 

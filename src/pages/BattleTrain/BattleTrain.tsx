@@ -1,4 +1,4 @@
-import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router";
 import * as Realm from 'realm-web';
@@ -8,7 +8,7 @@ import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEqu
 import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
-import GetItemGradeColor from "../../functions/GetItemGradeColor";
+import getItemGradeColor from "../../functions/GetItemGradeColor";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
 import GetModifyOwnedItem from "../../functions/GetModifyBaseItem";
 import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
@@ -57,6 +57,7 @@ const BattleTrain = () => {
   const [playerHealth, setPlayerHealth] = useState<number>(0);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
   const [enemyIntimidation, setEnemyIntimidation] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
   const [hiddenEnemyConcluded, setHiddenEnemyConcluded] = useState<boolean>(true);
   const [battleActive, setBattleActive] = useState<boolean>(false);
@@ -92,11 +93,13 @@ const BattleTrain = () => {
     const monsterId = params.id;
 
     if (monsterId) {
+      setLoading(true);
       const enemyData = await getSingleEnemy({ monsterId: monsterId });
 
       if (enemyData) {
         setEnemyInState(enemyData);
       }
+      setLoading(false);
     }
   }
 
@@ -123,8 +126,10 @@ const BattleTrain = () => {
 
   const getPlayerEquipment = async () => {
     if (player && player.equipment && player.equipment.weapon) {
+      setLoading(true);
       const weapon = await GetCombinedEquipmentStatsDetails(player?._id, player?.equipment?.weapon);
       if (weapon) setPlayerWeapon(weapon);
+      setLoading(false);
     };
   }
 
@@ -236,7 +241,7 @@ const BattleTrain = () => {
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
           </span> with its
-          <span style={{ ...style.weaponName, color: GetItemGradeColor(isPlayerAttack ? playerWeapon?.grade : 'common' ?? 'common') }}>
+          <span style={{ ...style.weaponName, color: getItemGradeColor(isPlayerAttack ? playerWeapon?.grade : 'common' ?? 'common') }}>
             {isPlayerAttack ? playerWeapon?.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.name}.
           </span>
           <br />
@@ -302,11 +307,12 @@ const BattleTrain = () => {
 
   const startFight = async () => {
     if (!currentEnemy || !player) return;
-
+    setLoading(true);
     if (currentEnemy.hidden && hiddenEnemyConcluded) {
       getEnemy();
       resetStats();
       setFightNarrative([]);
+      setLoading(false);
       return;
     } else {
       // Try to spawn hidden enemies (Elites, Bosses) based on their spawn chance
@@ -328,6 +334,7 @@ const BattleTrain = () => {
         // if we manage to actually spawn a hidden enemy
         // we want to return here so the player can make a decision to fight or not
         //
+        setLoading(false);
         return;
       }
     }
@@ -335,6 +342,7 @@ const BattleTrain = () => {
     setFightNarrative([]);
     setBattleActive(true);
     attack(player, currentEnemy, true);
+    setLoading(false);
   };
 
   const alternateAttack = () => {
@@ -365,7 +373,9 @@ const BattleTrain = () => {
     }
   };
 
+
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
+    setLoading(true);
     let loot: ILootDrop[] = [];
 
     if (playerWin) {
@@ -396,6 +406,8 @@ const BattleTrain = () => {
             if (playerOwnedItem) {
               updatedInventory.push(playerOwnedItem._id);
             }
+
+
           }
 
           if (baseItem) {
@@ -471,7 +483,7 @@ const BattleTrain = () => {
                   Loot:
                   {loot.map((i, index) => {
                     return (
-                      <p key={index}>{i.quantity}x <span style={{ color: GetItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
+                      <p key={index}>{i.quantity}x <span style={{ color: getItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
                     );
                   })}
                 </IonCol>
@@ -494,6 +506,7 @@ const BattleTrain = () => {
       resetStats();
 
     }
+    setLoading(false);
   }
 
   // interval effect
@@ -553,9 +566,12 @@ const BattleTrain = () => {
 
               </div>
 
-              <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
-                {currentEnemy?.hidden && hiddenEnemyConcluded ? <>Back to original enemy</> : <>Fight</>}
-              </IonButton>
+              {!loading ? (
+                <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
+                  {currentEnemy?.hidden && hiddenEnemyConcluded ? <>Back to original enemy</> : <>Fight</>}
+                </IonButton>
+              ) : (<IonSpinner />)}
+
             </>
           ) : (<></>)}
           {/* Invisible element at the end of your narratives */}

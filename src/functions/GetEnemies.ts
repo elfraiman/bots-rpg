@@ -2,7 +2,7 @@ import * as Realm from "realm-web";
 import { IEnemy } from "../types/types";
 
 interface IGetEnemiesProps {
-  location?: string;
+  location?: Realm.BSON.ObjectId;
   monsterId?: string; // Use string type assuming _id is a string in your schema
 }
 

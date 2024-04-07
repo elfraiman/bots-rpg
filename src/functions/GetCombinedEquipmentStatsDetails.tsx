@@ -5,11 +5,11 @@ import * as Realm from 'realm-web';
 
 
 //
-export const GetCombinedEquipmentStatsDetails = async (playerId: string, itemId: Realm.BSON.ObjectId) => {
+export const GetCombinedEquipmentStatsDetails = async (playerId: string, playerOwnedItemId: Realm.BSON.ObjectId) => {
     // Fetch the player-owned item details
 
     try {
-        const playerOwnedEquipmentDetails = await GetPlayerOwnedEquipment(playerId, itemId);
+        const playerOwnedEquipmentDetails = await GetPlayerOwnedEquipment(playerId, playerOwnedItemId);
 
         if (!playerOwnedEquipmentDetails) return;
 

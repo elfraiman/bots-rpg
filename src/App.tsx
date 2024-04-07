@@ -31,7 +31,6 @@ import Shop from './pages/Shop/Shop';
 import ExplorePage from './pages/Train/ExplorePage';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
-import { usePlayerData } from './context/PlayerContext';
 
 setupIonicReact();
 
@@ -43,17 +42,17 @@ const App: React.FC = () => {
   // whenever the current user changes (e.g. logs in or logs out).
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
   const { isSplashScreenActive } = useSplashScreen(); // Use the custom hook
-  const { player } = usePlayerData();
+
 
   React.useEffect(() => {
     setUser(app.currentUser)
-  }, [app.currentUser, player]);
+  }, [app.currentUser]);
 
 
   return (
     <IonApp>
       <IonReactRouter>
-        {user && player ? (
+        {user ? (
           <IonTabs>
             <IonRouterOutlet>
               <Redirect exact path="/" to="/home" />

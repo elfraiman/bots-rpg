@@ -1,10 +1,11 @@
 import * as Realm from "realm-web";
 
+
 export type IEnemy = {
   _id: Realm.BSON.ObjectId;
   armorLoot: Array<Realm.BSON.ObjectId>;
   bootsLoot: Array<Realm.BSON.ObjectId>;
-  chanceToEncounter?: number;
+  chanceToEncounter?: Realm.BSON.Decimal128;
   con: number;
   description: string;
   dex: number;
@@ -14,14 +15,13 @@ export type IEnemy = {
   imgId: number;
   int: number;
   level: number;
-  location: string;
+  location: Realm.BSON.ObjectId;
   name: string;
   str: number;
   trashLoot?: Realm.BSON.ObjectId;
   type: string;
   weaponLoot: Array<Realm.BSON.ObjectId>;
 };
-
 export type IItem = {
   _id: Realm.BSON.ObjectId;
   cost: number;
@@ -212,23 +212,24 @@ export const IPlanetSchema = {
   primaryKey: '_id',
 };
 
+
 export type IPlayer = {
   _id: string;
   attributePoints: number;
   con: number;
   dex: number;
   equipment?: IPlayer_equipment;
+  equipmentInventory: Array<Realm.BSON.ObjectId>;
   experience: number;
   gold: number;
   int: number;
-  inventory: Realm.BSON.ObjectId[];
-  equipmentInventory: Realm.BSON.ObjectId[];
+  inventory: Array<Realm.BSON.ObjectId>;
   level: number;
-  location: string;
+  location: Realm.BSON.ObjectId;
   name: string;
   str: number;
+  unlockedLocations: Array<Realm.BSON.ObjectId>;
 };
-
 export type IPlayer_equipment = {
   armor?: Realm.BSON.ObjectId;
   boots?: Realm.BSON.ObjectId;

@@ -6,7 +6,7 @@ interface IXPCalculationParams {
 }
 
 function getXpReward({ playerLevel, enemyLevel, enemyType, efficiencyBonus = 1 }: IXPCalculationParams): number {
-  const baseXP = 20; // Base experience for an enemy at level 1
+  const baseXP = 35; // Base experience for an enemy at level 1
   let difficultyModifier: number;
 
   switch (enemyType) {
