@@ -1,5 +1,5 @@
 import * as Realm from 'realm-web';
-import { IArmor, IEquipment, IPlayer, IPlayerEquipment } from "../types/types";
+import { IEquipment, IPlayer, IPlayerEquipment } from "../types/types";
 
 const app = Realm.App.getApp('application-0-vgvqx');
 

@@ -9,7 +9,7 @@ const getItemGradeColor = (itemGrade: string) => {
 
     switch (itemGrade) {
         case 'common':
-            return '#FFFFFF';
+            return '#e8e8e8';
         case 'uncommon':
             return '#1EFF0C';
         case 'rare':

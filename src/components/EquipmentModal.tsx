@@ -18,6 +18,16 @@ interface IEquipmentModalProps {
 
 const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchaseItem, saleItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
 
+  const returnTextForAttackSpeed = (speed: number) => {
+    switch (speed) {
+      case 1800: return 'Very fast'
+      case 2400: return 'Fast'
+      case 3000: return 'Normal'
+      case 3600: return 'Slow'
+      case 4200: return 'Very slow'
+    }
+  }
+
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
       <div className="weapon-modal-title">
@@ -43,18 +53,19 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
               </IonRow>
 
               <IonRow>
-                <span style={{ fontSize: 50, fontWeight: 900 }}>
+                <div style={{ fontSize: 50, fontWeight: 900 }}>
                   {item.type === 'weapon' ? (
-                    <>
-                      {item.stats.minAttack} ~ {item.stats.maxAttack}
-                    </>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span>{item.stats.minAttack} ~ {item.stats.maxAttack}</span>
+                      <span style={{ fontSize: 14, fontWeight: 400 }}> Speed: {returnTextForAttackSpeed(item.stats.attackSpeed)}</span>
+                    </div>
                   ) : (
                     <>
                       DP: {item.stats.defense}<br />
                       <span style={{ fontSize: 16 }}>Evasion: {item.stats.evasion}</span>
                     </>
                   )}
-                </span>
+                </div>
               </IonRow>
             </IonCol>
           </IonRow>

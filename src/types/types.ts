@@ -129,6 +129,7 @@ export type IEquipment_stats = {
   evasion?: number;
   maxAttack?: number;
   minAttack?: number;
+  attackSpeed?: number;
   modifier?: string;
 };
 
@@ -441,6 +442,7 @@ export type IWeapon = {
 export type IWeapon_stats = {
   maxAttack: number;
   minAttack: number;
+  attackSpeed: number;
   modifier: string;
 };
 

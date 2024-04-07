@@ -131,8 +131,11 @@ const GuardianPage: React.FC = () => {
   useEffect(() => {
     loadInventory();
     loadEquippedDetails();
-    loadAttributePoints();
   }, [player?.inventory, player?.equipmentInventory, player?.level]);
+
+  useEffect(() => {
+    loadAttributePoints();
+  }, [player?.attributePoints])
 
 
   if (loading) {

@@ -20,20 +20,26 @@ export const getSaleItem = async (item: IPlayerOwnedItem, quantityToSell: number
 
         try {
             if (item.quantity == quantityToSell) {
-                await playerOwnedItemsCollection.deleteOne({ _id: item._id });
+                await playerOwnedItemsCollection.deleteOne({ _id: item._id }).then(async () => {
+                    await updatePlayerData({
+                        ...player,
+                        inventory: player.inventory.filter(i => i !== item._id),
+                        gold: player.gold + (quantityToSell * item.cost)
+                    });
+                });
             } else {
-                await playerOwnedItemsCollection.updateOne({ _id: item._id }, { $inc: { quantity: -quantityToSell } })
+                await playerOwnedItemsCollection.updateOne({ _id: item._id }, { $inc: { quantity: -quantityToSell } }).then(async () => {
+                    await updatePlayerData({
+                        ...player,
+                        gold: player.gold + (quantityToSell * item.cost)
+                    });
+                })
             }
 
-            await updatePlayerData({
-                ...player,
-                gold: player.gold + (quantityToSell * item.cost)
-            });
 
         } catch (e) {
             console.error('Error selling player owned items');
         }
-
 
     }
 }

@@ -4,6 +4,7 @@ import { useRouteMatch } from "react-router";
 import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
+import GetBaseItem from "../../functions/GetBaseItem";
 import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEquipmentStatsDetails";
 import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
@@ -15,7 +16,6 @@ import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import getXpReward from "../../functions/GetXpReward";
 import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
-import GetBaseItem from "../../functions/GetBaseItem";
 
 interface IFightResult {
   hitChance: number;
@@ -50,7 +50,18 @@ const style = {
 };
 
 
+
 const BattleTrain = () => {
+
+  const BASE_ATTACK_SPEED = 2400; // default milliseconds
+  const DEX_MODIFIER = 0.01; // Amount dex effects attack speed
+  const MIN_ATTACK_INTERVAL = 850; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
+  const BASE_HIT_CHANCE = 0.7;
+  const STR_ATTACK_MODIFIER = 0.2;
+  const BASE_DAMAGE_INCREASE = 1;
+  const DEX_ACCURACY_MODIFIER = 0.01; // Incase something affects dex
+
+
   const { player, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
   const [playerWeapon, setPlayerWeapon] = useState<IPlayerOwnedWeapon | any>();
   const [currentEnemy, setCurrentEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
@@ -61,9 +72,10 @@ const BattleTrain = () => {
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
   const [hiddenEnemyConcluded, setHiddenEnemyConcluded] = useState<boolean>(true);
   const [battleActive, setBattleActive] = useState<boolean>(false);
-  const turnRef = useRef<boolean>(true); // true indicates it's the player's turn, false for the enemy's turn
-  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const match = useRouteMatch<{ id: string }>();
+  const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
+  const [enemyNextAttack, setEnemyNextAttack] = useState(BASE_ATTACK_SPEED);
+
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
     hits: 0,
@@ -107,6 +119,7 @@ const BattleTrain = () => {
     if (!player || !currentEnemy) return;
     const playerMaxHealth = calculateMaxHealth(player);
     const enemyMaxHealth = calculateMaxHealth(currentEnemy);
+    const calculateAttackSpeed = (dex: number) => BASE_ATTACK_SPEED / (1 + (dex * DEX_MODIFIER));
 
     // reset stats
     //
@@ -122,16 +135,24 @@ const BattleTrain = () => {
     });
 
     setEnemyIntimidation('');
+    setPlayerNextAttack(calculateAttackSpeed(player?.dex));
+    setEnemyNextAttack(calculateAttackSpeed(currentEnemy?.dex));
   }
 
   const getPlayerEquipment = async () => {
     if (player && player.equipment && player.equipment.weapon) {
       setLoading(true);
       const weapon = await GetCombinedEquipmentStatsDetails(player?._id, player?.equipment?.weapon);
-      if (weapon) setPlayerWeapon(weapon);
+      if (weapon) {
+        setPlayerWeapon(weapon);
+      }
       setLoading(false);
     };
   }
+
+  useEffect(() => {
+    getPlayerEquipment();
+  }, [player])
 
   useIonViewWillEnter(() => {
     console.log("[Battle]: View will enter")
@@ -191,19 +212,15 @@ const BattleTrain = () => {
       return;
     }
 
-    const baseHitChance = 0.7;
-    const dexDifference = attacker.dex - defender.dex;
-    const dexModifier = 0.01; // Incase something affects dex
-    const hitChance = baseHitChance + (dexDifference * dexModifier) + 0.05;
-    const strModifierFromAttack = 0.2;
-    const baseDamageIncrease = 1;
 
+    const dexDifference = attacker.dex - defender.dex;
+    const hitChance = BASE_HIT_CHANCE + (dexDifference * DEX_ACCURACY_MODIFIER) + 0.05;
 
     const minAttackBase = isPlayerAttack ? playerWeapon?.stats?.minAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.minAttack ?? 0;
     const maxAttackBase = isPlayerAttack ? playerWeapon?.stats?.maxAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.maxAttack ?? 0;
 
-    const minAttack = Math.round(minAttackBase + (attacker.str * strModifierFromAttack) + baseDamageIncrease);
-    const maxAttack = Math.round(maxAttackBase + (attacker.str * strModifierFromAttack) + baseDamageIncrease);
+    const minAttack = Math.round(minAttackBase + (attacker.str * STR_ATTACK_MODIFIER) + BASE_DAMAGE_INCREASE);
+    const maxAttack = Math.round(maxAttackBase + (attacker.str * STR_ATTACK_MODIFIER) + BASE_DAMAGE_INCREASE);
 
     applyFightResults({
       hitChance,
@@ -264,8 +281,7 @@ const BattleTrain = () => {
 
 
       if (isPlayerAttack) {
-
-        // Add to log
+        // Add to log if hit
         setBattleStats(prevStats => ({
           ...prevStats,
           attempts: prevStats.attempts + 1,
@@ -276,6 +292,7 @@ const BattleTrain = () => {
       }
 
     } else {
+      // If miss
       const missMessage = (
         <div style={style.fightNarrative}>
           <span style={isPlayerAttack ? style.playerName : style.enemyName}>{attacker.name} </span>
@@ -285,6 +302,7 @@ const BattleTrain = () => {
           </span>
         </div>
       );
+
       setFightNarrative(prevNarrative => [...prevNarrative, missMessage]);
 
       // Add to log
@@ -341,36 +359,7 @@ const BattleTrain = () => {
 
     setFightNarrative([]);
     setBattleActive(true);
-    attack(player, currentEnemy, true);
     setLoading(false);
-  };
-
-  const alternateAttack = () => {
-    if (battleActive && player && currentEnemy) {
-      if (turnRef.current) {
-        if (playerHealth > 0 && enemyHealth > 0) {
-          attack(player, currentEnemy, true);
-        }
-      } else {
-        if (playerHealth > 0 && enemyHealth > 0) {
-          attack(currentEnemy, player, false);
-        }
-      }
-
-      if (playerHealth <= 0 || enemyHealth <= 0) {
-        clearInterval(intervalIdRef.current as NodeJS.Timeout);
-        setBattleActive(false);
-
-        if (playerHealth <= 0) {
-          fightEnd(false, currentEnemy, player);
-        } else {
-          fightEnd(true, currentEnemy, player);
-        }
-      }
-
-      // Toggle the turn for the next interval
-      turnRef.current = !turnRef.current;
-    }
   };
 
 
@@ -395,23 +384,24 @@ const BattleTrain = () => {
           // Check if the player's inventory already includes this playerOwnedItem.
           //
           const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === playerOwnedItem?._id.toString());
+          let amountToDrop = Math.floor(Math.random() * 5) + 1;
+
 
           if (itemInInventoryIndex >= 0 && playerOwnedItem) {
             // The player already owns this item, so increase its quantity.
-            await GetModifyOwnedItem(playerOwnedItem?._id, 10);
+            await GetModifyOwnedItem(playerOwnedItem?._id, amountToDrop);
           } else {
             // The player does not own this item, so add it to the inventory.
             // that will be pushed to the updatePlayerData
             //
             if (playerOwnedItem) {
               updatedInventory.push(playerOwnedItem._id);
+              amountToDrop = 1;
             }
-
-
           }
 
           if (baseItem) {
-            loot.push({ item: baseItem, quantity: 10 })
+            loot.push({ item: baseItem, quantity: amountToDrop })
           }
 
         } catch (e) {
@@ -509,18 +499,64 @@ const BattleTrain = () => {
     setLoading(false);
   }
 
-  // interval effect
-  useEffect(() => {
-    if (!player) return
 
-    if (battleActive && player && currentEnemy) {
-      intervalIdRef.current = setInterval(alternateAttack, 1000); // Set interval to 1 second
+  const calculateAttackSpeed = (dex: number, baseSpeed?: number) => {
+    const weaponAttackSpeed = baseSpeed ?? playerWeapon.stats.attackSpeed;
+    const rawSpeed = weaponAttackSpeed / (1 + (dex * DEX_MODIFIER));
+    // The attack speed is either the calculated speed or the minimum interval, whichever is greater
+    return Math.max(rawSpeed, MIN_ATTACK_INTERVAL);
+  };
+
+  // Attacking logic
+  // We use dex to determine who attacks at what speed
+  //
+  useEffect(() => {
+    if (!player || !currentEnemy || !battleActive) return;
+    const playerAttackSpeed = calculateAttackSpeed(player?.dex ?? 0);
+    const enemyAttackSpeed = calculateAttackSpeed(currentEnemy?.dex ?? 0, 2400);
+
+
+    // Schedule the next player attack
+    const schedulePlayerAttack = () => {
+      const delay = playerNextAttack - Date.now();
+      return setTimeout(() => {
+        attack(player, currentEnemy, true);
+        setPlayerNextAttack(Date.now() + playerAttackSpeed);
+      }, delay > 0 ? delay : 0); // Ensure delay is not negative
+    };
+
+    // Schedule the next enemy attack
+    const scheduleEnemyAttack = () => {
+      const delay = enemyNextAttack - Date.now();
+      return setTimeout(() => {
+        attack(currentEnemy, player, false);
+        setEnemyNextAttack(Date.now() + enemyAttackSpeed);
+      }, delay > 0 ? delay : 0); // Ensure delay is not negative
+    };
+
+    const playerTimer = schedulePlayerAttack();
+    const enemyTimer = scheduleEnemyAttack();
+
+    console.log(playerAttackSpeed)
+    if (playerHealth <= 0 || enemyHealth <= 0) {
+      setBattleActive(false);
+      clearTimeout(playerTimer);
+      clearTimeout(enemyTimer);
+      if (playerHealth <= 0) {
+        fightEnd(false, currentEnemy, player);
+      } else {
+        fightEnd(true, currentEnemy, player);
+      }
     }
 
+    // Cleanup function
     return () => {
-      if (intervalIdRef.current) clearInterval(intervalIdRef.current);
+      clearTimeout(playerTimer);
+      clearTimeout(enemyTimer);
     };
-  }, [battleActive, player, currentEnemy, playerHealth, enemyHealth]);
+  }, [playerNextAttack, enemyNextAttack, player, currentEnemy, battleActive]);
+
+
 
   // Automatically scroll to the latest narrative entry
   useEffect(() => {
