@@ -1,6 +1,6 @@
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { barbell, diamond, medal, planetOutline, search, walk } from 'ionicons/icons';
+import { diamondOutline, medalOutline, planetOutline, rocketOutline, trophyOutline, walkOutline } from 'ionicons/icons';
 import React from 'react';
 import { Redirect, Route } from 'react-router';
 import * as Realm from "realm-web";
@@ -63,37 +63,37 @@ const App: React.FC = () => {
               <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
               <Route path="/search" render={() => <GuardianPage />} exact={true} />
               <Route path="/search" render={() => <GuardianPage />} exact={true} />
-              <Route path="/search" render={() => <GuardianPage />} exact={true} />
+              <Route path="/ladder" render={() => <GuardianPage />} exact={true} />
             </IonRouterOutlet>
 
 
             <IonTabBar slot="bottom">
               <IonTabButton disabled={isSplashScreenActive} tab="home" href="/guardian">
-                <IonIcon icon={walk} />
+                <IonIcon icon={walkOutline} />
                 <IonLabel>Guardian</IonLabel>
               </IonTabButton>
 
               <IonTabButton disabled={isSplashScreenActive} tab="radio" href="/explore">
-                <IonIcon icon={barbell} />
+                <IonIcon icon={planetOutline} />
                 <IonLabel>Explore</IonLabel>
               </IonTabButton>
 
               <IonTabButton disabled={isSplashScreenActive} tab="library" href="/library">
-                <IonIcon icon={medal} />
+                <IonIcon icon={medalOutline} />
                 <IonLabel>Fight</IonLabel>
               </IonTabButton>
 
               <IonTabButton disabled={isSplashScreenActive} tab="shop" href="/shop">
-                <IonIcon icon={diamond} />
+                <IonIcon icon={diamondOutline} />
                 <IonLabel>Shop</IonLabel>
               </IonTabButton>
               <IonTabButton disabled={isSplashScreenActive} tab="travel" href="/travel">
-                <IonIcon icon={planetOutline} />
-                <IonLabel>Galaxy</IonLabel>
+                <IonIcon icon={rocketOutline} />
+                <IonLabel>Travel</IonLabel>
               </IonTabButton>
               <IonTabButton disabled={isSplashScreenActive} tab="search" href="/search">
-                <IonIcon icon={search} />
-                <IonLabel>Search</IonLabel>
+                <IonIcon icon={trophyOutline} />
+                <IonLabel>Ladder</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs>

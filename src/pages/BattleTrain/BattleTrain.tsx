@@ -55,11 +55,11 @@ const BattleTrain = () => {
 
   const BASE_ATTACK_SPEED = 2400; // default milliseconds
   const DEX_MODIFIER = 0.01; // Amount dex effects attack speed
-  const MIN_ATTACK_INTERVAL = 850; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
+  const MIN_ATTACK_INTERVAL = 1500; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
   const BASE_HIT_CHANCE = 0.7;
   const STR_ATTACK_MODIFIER = 0.2;
   const BASE_DAMAGE_INCREASE = 1;
-  const DEX_ACCURACY_MODIFIER = 0.01; // Incase something affects dex
+  const DEX_ACCURACY_MODIFIER = 0.02; // Incase something affects dex
 
 
   const { player, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
@@ -154,7 +154,7 @@ const BattleTrain = () => {
     getPlayerEquipment();
   }, [player])
 
-  useIonViewWillEnter(() => {
+  useEffect(() => {
     console.log("[Battle]: View will enter")
     getEnemy();
     setFightNarrative([]);
@@ -164,7 +164,7 @@ const BattleTrain = () => {
       setPlayerHealth(playerMaxHealth);
       getPlayerEquipment();
     }
-  });
+  }, []);
 
   // Returns some text to describe the enemy's health status
   //
@@ -499,7 +499,6 @@ const BattleTrain = () => {
     setLoading(false);
   }
 
-
   const calculateAttackSpeed = (dex: number, baseSpeed?: number) => {
     const weaponAttackSpeed = baseSpeed ?? playerWeapon.stats.attackSpeed;
     const rawSpeed = weaponAttackSpeed / (1 + (dex * DEX_MODIFIER));
@@ -557,7 +556,6 @@ const BattleTrain = () => {
   }, [playerNextAttack, enemyNextAttack, player, currentEnemy, battleActive]);
 
 
-
   // Automatically scroll to the latest narrative entry
   useEffect(() => {
     (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
@@ -569,6 +567,11 @@ const BattleTrain = () => {
       setFightNarrative([]);
     }
   })
+
+  const runAway = () => {
+    getEnemy();
+    resetStats();
+  }
 
   return (
     <IonPage>
@@ -595,7 +598,7 @@ const BattleTrain = () => {
                   <div>
                     Type: <span style={{ color: currentEnemy?.type === 'boss' ? 'orange' : '#A335EE' }}>{currentEnemy?.type.toLocaleUpperCase()} </span><br />
                     Level: <span style={{ fontWeight: 700, marginBottom: 36 }}>{currentEnemy?.level}</span> <br />
-                    <IonCardSubtitle>This enemy has a chance to drop rare loot.</IonCardSubtitle>
+                    <IonCardSubtitle style={{ color: 'gold' }}>This enemy has a chance to drop rare loot.</IonCardSubtitle>
                     <p style={{ color: 'red', fontSize: 16, fontWeight: 700 }}>{enemyIntimidation ?? ''}</p>
                   </div>
                 ) : <></>}
@@ -603,9 +606,21 @@ const BattleTrain = () => {
               </div>
 
               {!loading ? (
-                <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
-                  {currentEnemy?.hidden && hiddenEnemyConcluded ? <>Back to original enemy</> : <>Fight</>}
-                </IonButton>
+                <>
+                  <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
+                    {currentEnemy?.hidden && hiddenEnemyConcluded ? <>Back to original enemy</> : <>Fight</>}
+                  </IonButton>
+
+                  {currentEnemy?.hidden && !hiddenEnemyConcluded ? (
+                    <IonButton onClick={runAway} color={'success'} style={{ width: '100%', marginTop: 36 }}>
+                      Run away
+                    </IonButton>
+                  ) : <></>}
+                </>
+
+
+
+
               ) : (<IonSpinner />)}
 
             </>

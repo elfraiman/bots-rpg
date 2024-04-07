@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonCard, IonCardContent, IonContent, IonInput, IonItem, IonLabel, IonPage } from "@ionic/react";
+import { IonAlert, IonButton, IonCard, IonCardContent, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonPage } from "@ionic/react";
 import { FormEvent, useState } from 'react'; // Import FormEvent
 import { useHistory } from "react-router";
 import * as Realm from 'realm-web';
@@ -57,8 +57,13 @@ const LoginPage = () => {
     return (
         <IonPage>
             <IonContent className="ion-padding login-bg">
-                <IonCard className="card-fade login-card">
+
+                <IonCard className="card-fade login-card ion-padding">
+                    <IonCardTitle>
+                        Alpha {import.meta.env.VITE_REACT_APP_VERSION}
+                    </IonCardTitle>
                     <IonCardContent>
+
                         <form onSubmit={handleSubmit}> {/* Wrap inputs and buttons with a form */}
                             <IonItem>
                                 <IonInput label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>

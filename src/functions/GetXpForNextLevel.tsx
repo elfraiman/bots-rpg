@@ -11,9 +11,8 @@ interface ICalculateXpForNextLevelProps {
 
 
 
-const GetXpForNextLevel = ({ level, baseXp = 100, n = 1.5, difficultyFactor = 20 }: ICalculateXpForNextLevelProps) => {
+const GetXpForNextLevel = ({ level, baseXp = 100, n = 1.5, difficultyFactor = 10 }: ICalculateXpForNextLevelProps) => {
     let xpRequired = (baseXp * Math.pow(level, n)) + (difficultyFactor * level);
-
 
     return Math.round(xpRequired);
 }

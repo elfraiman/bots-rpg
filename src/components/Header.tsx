@@ -98,6 +98,8 @@ const Header = () => {
                                 <IonCol>
                                     <IonCardSubtitle>XP: {player?.experience.toLocaleString()} / {xpToNextLevel.toLocaleString()}  ({Math.round(((player?.experience ?? 0) / xpToNextLevel) * 100)}%)</IonCardSubtitle>
                                 </IonCol>
+
+                                <IonCardSubtitle style={{ color: 'deeppink' }}>Alpha {import.meta.env.VITE_REACT_APP_VERSION}</IonCardSubtitle>
                             </IonRow>
                         </IonGrid>
                         <IonProgressBar value={playerXpBar}></IonProgressBar>
