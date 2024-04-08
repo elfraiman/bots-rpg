@@ -54,7 +54,7 @@ const style = {
 const BattleTrain = () => {
 
   const BASE_ATTACK_SPEED = 2400; // default milliseconds
-  const DEX_MODIFIER = 0.01; // Amount dex effects attack speed
+  const DEX_MODIFIER = 0.006; // Amount dex effects attack speed
   const MIN_ATTACK_INTERVAL = 1500; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
   const BASE_HIT_CHANCE = 0.7;
   const STR_ATTACK_MODIFIER = 0.2;
@@ -257,8 +257,7 @@ const BattleTrain = () => {
             {attacker.name}
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
-          </span> with its
-          <span style={{ ...style.weaponName, color: getItemGradeColor(isPlayerAttack ? playerWeapon?.grade : 'common' ?? 'common') }}>
+          </span> with its <span style={{ ...style.weaponName, color: getItemGradeColor(isPlayerAttack ? playerWeapon?.grade : 'common' ?? 'common') }}>
             {isPlayerAttack ? playerWeapon?.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.name}.
           </span>
           <br />
@@ -492,11 +491,10 @@ const BattleTrain = () => {
         setHiddenEnemyConcluded(true);
       }
 
-
       resetStats();
-
     }
     setLoading(false);
+
   }
 
   const calculateAttackSpeed = (dex: number, baseSpeed?: number) => {
@@ -513,7 +511,7 @@ const BattleTrain = () => {
     if (!player || !currentEnemy || !battleActive) return;
     const playerAttackSpeed = calculateAttackSpeed(player?.dex ?? 0);
     const enemyAttackSpeed = calculateAttackSpeed(currentEnemy?.dex ?? 0, 2400);
-
+    console.log(playerAttackSpeed)
 
     // Schedule the next player attack
     const schedulePlayerAttack = () => {
@@ -536,7 +534,6 @@ const BattleTrain = () => {
     const playerTimer = schedulePlayerAttack();
     const enemyTimer = scheduleEnemyAttack();
 
-    console.log(playerAttackSpeed)
     if (playerHealth <= 0 || enemyHealth <= 0) {
       setBattleActive(false);
       clearTimeout(playerTimer);
@@ -606,20 +603,17 @@ const BattleTrain = () => {
               </div>
 
               {!loading ? (
-                <>
+                <div>
                   <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
                     {currentEnemy?.hidden && hiddenEnemyConcluded ? <>Back to original enemy</> : <>Fight</>}
                   </IonButton>
 
                   {currentEnemy?.hidden && !hiddenEnemyConcluded ? (
-                    <IonButton onClick={runAway} color={'success'} style={{ width: '100%', marginTop: 36 }}>
+                    <IonButton onClick={runAway} color={'success'} style={{ width: '100%', marginTop: 16 }}>
                       Run away
                     </IonButton>
                   ) : <></>}
-                </>
-
-
-
+                </div>
 
               ) : (<IonSpinner />)}
 

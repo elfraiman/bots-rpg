@@ -230,6 +230,7 @@ export type IPlayer = {
   name: string;
   str: number;
   unlockedLocations: Array<Realm.BSON.ObjectId>;
+  faction: Realm.BSON.ObjectId;
 };
 export type IPlayer_equipment = {
   armor?: Realm.BSON.ObjectId;

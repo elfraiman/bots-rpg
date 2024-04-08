@@ -28,9 +28,6 @@ export const SplashScreenProvider = ({ children }: { children: ReactNode }) => {
         }, milliseconds)
     }
 
-
-    console.log(isSplashScreenActive, 'is splash active? #')
-
     return (
         <SplashScreenContext.Provider value={{ isSplashScreenActive, triggerSplashScreen }}>
             {children}

@@ -1,4 +1,4 @@
-import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonActionSheet } from "@ionic/react";
+import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonActionSheet, useIonToast } from "@ionic/react";
 import { useContext, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import getItemGradeColor from "../functions/GetItemGradeColor";
@@ -14,6 +14,8 @@ interface IBootsCardProps {
 const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
+  const [loading, setLoading] = useState(false);
+  const [present] = useIonToast();
 
   if (item._id === undefined) {
     console.error("No id on item");
@@ -23,9 +25,12 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
 
   const saleItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
     if (player) {
+      setLoading(true);
       await getSaleItem(item, sellQuantity, updatePlayerData, player);
+      present({ message: `Gold + ${sellQuantity * item.cost}`, color: 'primary', duration: 1500, position: 'top' });
 
       setShowModal(false);
+      setLoading(false);
     }
   }
 
@@ -52,7 +57,7 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
                     {item.name}
                   </div>
                   <div style={{ color: getItemGradeColor(item?.grade ?? "common"), fontSize: '14px', marginBottom: 6 }}>
-                    Quantity: {item?.quantity}
+                    {loading ? <IonSpinner /> : (<>Quantity: {item?.quantity} </>)}
                   </div>
 
                   {isForSale ? (<span>
@@ -74,13 +79,12 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
 
 
 
-
           {<ItemModal
             saleItem={saleItem}
             showModal={showModal}
             setShowModal={setShowModal}
             imgString={`/images/item/item-${item.imgId}.webp`}
-            item={item} loading={false} />}
+            item={item} loading={loading} />}
         </>
       ) : <IonSpinner />}
 

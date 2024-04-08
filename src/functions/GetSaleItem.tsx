@@ -11,27 +11,30 @@ export const getSaleItem = async (item: IPlayerOwnedItem, quantityToSell: number
     }
     if (!player) return;
 
+
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
     const playerOwnedItemsCollection = mongodb.db("bots_rpg").collection<IPlayerOwnedItem>("playerItems");
 
 
     if (playerOwnedItemsCollection && quantityToSell) {
-
-
         try {
+            const gold = (quantityToSell * item.cost)
             if (item.quantity == quantityToSell) {
                 await playerOwnedItemsCollection.deleteOne({ _id: item._id }).then(async () => {
+
+
                     await updatePlayerData({
                         ...player,
                         inventory: player.inventory.filter(i => i !== item._id),
-                        gold: player.gold + (quantityToSell * item.cost)
+                        gold: player.gold + gold
                     });
                 });
             } else {
                 await playerOwnedItemsCollection.updateOne({ _id: item._id }, { $inc: { quantity: -quantityToSell } }).then(async () => {
+
                     await updatePlayerData({
                         ...player,
-                        gold: player.gold + (quantityToSell * item.cost)
+                        gold: player.gold + gold
                     });
                 })
             }

@@ -8,13 +8,11 @@ const app = Realm.App.getApp('application-0-vgvqx');
 
 interface IPlayerContext {
   player: IPlayer | null;
-  setPlayer: (player: IPlayer | null) => void;
   updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>;
 }
 
 const defaultState: IPlayerContext = {
   player: null,
-  setPlayer: () => { },
   updatePlayerData: async () => { }
 };
 
@@ -96,7 +94,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   }, [player]); // Dependency on 'player' to prevent refetching if it's already set
 
   return (
-    <PlayerContext.Provider value={{ player, setPlayer, updatePlayerData }}>
+    <PlayerContext.Provider value={{ player, updatePlayerData }}>
       {children}
     </PlayerContext.Provider>
   );

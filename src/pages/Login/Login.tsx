@@ -1,7 +1,9 @@
-import { IonAlert, IonButton, IonCard, IonCardContent, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonPage } from "@ionic/react";
+import { IonAlert, IonButton, IonCard, IonCardContent, IonCardTitle, IonContent, IonInput, IonItem, IonPage } from "@ionic/react";
 import { FormEvent, useState } from 'react'; // Import FormEvent
 import { useHistory } from "react-router";
 import * as Realm from 'realm-web';
+import { useSplashScreen } from "../../context/SplashScreenContxt";
+import SplashScreen from "../SplashScreen/SplashScreen";
 import './Login.css';
 
 const app = Realm.App.getApp('application-0-vgvqx');
@@ -13,6 +15,10 @@ const LoginPage = () => {
     const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
     const [isLogin, setIsLogin] = useState(true);
+    const { isSplashScreenActive, triggerSplashScreen } = useSplashScreen();
+
+    const app = Realm.App.getApp('application-0-vgvqx');
+
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault(); // Prevent default form submission
@@ -32,22 +38,27 @@ const LoginPage = () => {
             }
             try {
                 await app.emailPasswordAuth.registerUser({ email, password });
-                const user: Realm.User = await app.logIn(Realm.Credentials.emailPassword(email, password));
+                await app.logIn(Realm.Credentials.emailPassword(email, password));
+                history.replace('/initialstory');
 
-                if (user) {
-                    history?.push('/guardian')
-                }
+                window.location.reload();
+
+
             } catch (error) {
                 console.error("Error registering new user:", error);
             }
         } else {
             // Handle login
             try {
-                const user: Realm.User = await app.logIn(Realm.Credentials.emailPassword(email, password));
+                await app.logIn(Realm.Credentials.emailPassword(email, password));
+                triggerSplashScreen(3000)
+                setTimeout(() => {
+                    history.replace('/guardian');
 
-                if (user) {
-                    history.push('/guardian'); // Refresh or redirect upon successful login
-                }
+                    window.location.reload();
+                }, 3000)
+
+
             } catch (error) {
                 console.error("Error logging in:", error);
             }
@@ -56,51 +67,59 @@ const LoginPage = () => {
 
     return (
         <IonPage>
-            <IonContent className="ion-padding login-bg">
 
-                <IonCard className="card-fade login-card ion-padding">
-                    <IonCardTitle>
-                        Alpha {import.meta.env.VITE_REACT_APP_VERSION}
-                    </IonCardTitle>
-                    <IonCardContent>
+            {isSplashScreenActive ? (
+                <SplashScreen />
+            ) : (
+                <>
+                    <IonContent className="ion-padding login-bg">
 
-                        <form onSubmit={handleSubmit}> {/* Wrap inputs and buttons with a form */}
-                            <IonItem>
-                                <IonInput label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
-                            </IonItem>
-                            <IonItem>
-                                <IonInput label="Password" value={password} onIonChange={e => setPassword(e.detail.value!)} type="password" name="password"></IonInput>
-                            </IonItem>
+                        <IonCard className="card-fade login-card ion-padding">
+                            <IonCardTitle>
+                                Alpha {import.meta.env.VITE_REACT_APP_VERSION}
+                            </IonCardTitle>
+                            <IonCardContent>
 
-                            {!isLogin && (
-                                <IonItem>
-                                    <IonInput label="Verify password" value={verifyPassword} onIonChange={e => setVerifyPassword(e.detail.value!)} type="password" name="verifyPassword"></IonInput>
-                                </IonItem>
-                            )}
+                                <form onSubmit={(e) => handleSubmit(e)}> {/* Wrap inputs and buttons with a form */}
+                                    <IonItem>
+                                        <IonInput label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
+                                    </IonItem>
+                                    <IonItem>
+                                        <IonInput label="Password" value={password} onIonChange={e => setPassword(e.detail.value!)} type="password" name="password"></IonInput>
+                                    </IonItem>
 
-                            <IonButton type="submit" expand="block" style={{ marginTop: 26 }}>
-                                {isLogin ? 'Login' : 'Register'}
-                            </IonButton>
-                        </form>
+                                    {!isLogin && (
+                                        <IonItem>
+                                            <IonInput label="Verify password" value={verifyPassword} onIonChange={e => setVerifyPassword(e.detail.value!)} type="password" name="verifyPassword"></IonInput>
+                                        </IonItem>
+                                    )}
 
-                        <div style={{ marginTop: 26 }}>
-                            {isLogin ? (
-                                <span onClick={() => setIsLogin(false)}>Don't have an account? <a>Register here</a></span>
-                            ) : (
-                                <span onClick={() => setIsLogin(true)}>Already have an account? <a>Sign in</a></span>
-                            )}
-                        </div>
-                    </IonCardContent>
-                </IonCard>
+                                    <IonButton type="submit" expand="block" style={{ marginTop: 26 }}>
+                                        {isLogin ? 'Login' : 'Register'}
+                                    </IonButton>
+                                </form>
 
-                <IonAlert
-                    isOpen={showAlert}
-                    onDidDismiss={() => setShowAlert(false)}
-                    header={'Error'}
-                    message={'Passwords do not match'}
-                    buttons={['OK']}
-                />
-            </IonContent>
+                                <div style={{ marginTop: 26 }}>
+                                    {isLogin ? (
+                                        <span onClick={() => setIsLogin(false)}>Don't have an account? <a>Register here</a></span>
+                                    ) : (
+                                        <span onClick={() => setIsLogin(true)}>Already have an account? <a>Sign in</a></span>
+                                    )}
+                                </div>
+                            </IonCardContent>
+                        </IonCard>
+
+                        <IonAlert
+                            isOpen={showAlert}
+                            onDidDismiss={() => setShowAlert(false)}
+                            header={'Error'}
+                            message={'Passwords do not match'}
+                            buttons={['OK']}
+                        />
+                    </IonContent>
+                </>
+            )}
+
         </IonPage>
     );
 }

@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: fadeInOut 5s ease-in-out infinite;
+    animation: fadeIn 2s ease-in forwards; /* Updated to use fadeIn and added "forwards" */
     overflow: hidden;
 }
 
@@ -14,7 +14,11 @@
     object-fit: cover; /* Adjust if necessary to ensure the image covers the whole screen without distortion */
 }
 
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }

@@ -1,7 +1,5 @@
-
-
 .shop-bg {
-    --background: url('/images/ShopTest.webp') no-repeat center center / cover;
+    --background: url("/images/shop.webp") no-repeat center center / cover;
 }
 
 .card-fade {

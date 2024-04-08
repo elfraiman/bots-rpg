@@ -2,7 +2,7 @@ import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, Io
 import { IonReactRouter } from '@ionic/react-router';
 import { diamondOutline, medalOutline, planetOutline, rocketOutline, trophyOutline, walkOutline } from 'ionicons/icons';
 import React from 'react';
-import { Redirect, Route } from 'react-router';
+import { Redirect, Route, useHistory } from 'react-router';
 import * as Realm from "realm-web";
 
 
@@ -25,12 +25,15 @@ import '@ionic/react/css/text-transformation.css';
 /* Theme variables */
 import { useSplashScreen } from './context/SplashScreenContxt';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
-import GuardianPage from './pages/GuardianPage';
+import GuardianPage from './pages/Guardian/GuardianPage';
+import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import Login from './pages/Login/Login';
 import Shop from './pages/Shop/Shop';
 import ExplorePage from './pages/Train/ExplorePage';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
+import InitialStoryPage from './pages/Story/InitialStoryPage';
+import EnterEarthStoryPage from './pages/Story/EnterEarthStoryPage';
 
 setupIonicReact();
 
@@ -43,10 +46,10 @@ const App: React.FC = () => {
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
   const { isSplashScreenActive } = useSplashScreen(); // Use the custom hook
 
-
   React.useEffect(() => {
     setUser(app.currentUser)
   }, [app.currentUser]);
+
 
 
   return (
@@ -55,15 +58,16 @@ const App: React.FC = () => {
         {user ? (
           <IonTabs>
             <IonRouterOutlet>
-              <Redirect exact path="/" to="/home" />
+              <Redirect exact path="/" to="/guardian" />
               <Route path="/guardian" render={() => <GuardianPage />} exact={true} />
               <Route path="/explore" render={() => <ExplorePage />} exact={true} />
               <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
               <Route path="/shop" render={() => <Shop />} exact={true} />
               <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
-              <Route path="/search" render={() => <GuardianPage />} exact={true} />
-              <Route path="/search" render={() => <GuardianPage />} exact={true} />
-              <Route path="/ladder" render={() => <GuardianPage />} exact={true} />
+              <Route path="/leaderboard" render={() => <LeaderboardPage />} exact={true} />
+              <Route path="/login" render={() => <Login />} exact={true} />
+              <Route path="/initialstory" render={() => <InitialStoryPage />} exact={true} />
+              <Route path="/earthstory" render={() => <EnterEarthStoryPage />} exact={true} />
             </IonRouterOutlet>
 
 
@@ -91,9 +95,9 @@ const App: React.FC = () => {
                 <IonIcon icon={rocketOutline} />
                 <IonLabel>Travel</IonLabel>
               </IonTabButton>
-              <IonTabButton disabled={isSplashScreenActive} tab="search" href="/search">
+              <IonTabButton disabled={isSplashScreenActive} tab="leaderboard" href="/leaderboard">
                 <IonIcon icon={trophyOutline} />
-                <IonLabel>Ladder</IonLabel>
+                <IonLabel>Leaderboard</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs>

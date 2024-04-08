@@ -61,7 +61,7 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
     try {
       if (!player) return;
       await GetSalePlayerEquipment(equipmentToSale, player, updatePlayerData);
-      present({ message: `Gold + ${equipmentToSale.cost / 2}`, color: 'primary', duration: 1500 });
+      present({ message: `Gold + ${equipmentToSale.cost / 2}`, color: 'primary', duration: 1500, position: 'top' });
       setLoading(false);
       setShowModal(false);
     } catch (e) {
@@ -77,9 +77,9 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
 
     try {
       // Fetches the IPlayerEquipment reference for the item
-      // reason for this is that the player owned equipments are unique and 
+      // reason for this is that the player owned equipments are unique and
       // separate from the list of armors and weapons.
-      // 
+      //
       const playerEquipmentItem = await GetPlayerOwnedEquipment(player._id, itemId);
 
       if (!playerEquipmentItem) {

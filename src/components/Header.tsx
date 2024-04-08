@@ -86,7 +86,7 @@ const Header = () => {
                             <IonRow>
                                 <IonCol size="9">
                                     <IonText style={{ display: 'block', marginBottom: '0', fontSize: 14 }}>{player?.name}</IonText>
-                                    <IonCardSubtitle style={{ display: 'block', marginBottom: '0', fontSize: 11 }}>[NoClan]</IonCardSubtitle>
+                                    <IonCardSubtitle style={{ display: 'block', marginBottom: '0', fontSize: 11 }}>[NoFaction]</IonCardSubtitle>
                                     <IonText style={{ display: 'block', marginBottom: '0', fontSize: 14 }}>Level: {player?.level}</IonText>
                                 </IonCol>
                                 <IonCol size="3" style={{ textAlign: 'right', fontSize: 13 }}>

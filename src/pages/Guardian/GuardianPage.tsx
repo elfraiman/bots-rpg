@@ -24,15 +24,15 @@ import {
 import { add } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
-import BotOutline from '../../public/images/BotOutline.webp';
-import EquipmentCard from '../components/EquipmentCard';
-import GeneralItemCard from '../components/GeneralItemCard';
-import Header from '../components/Header';
-import { PlayerContext } from '../context/PlayerContext';
-import { GetCombinedEquipmentStatsDetails } from '../functions/GetCombinedEquipmentStatsDetails';
-import { GetCombinedItemDetails } from '../functions/GetCombinedItemDetails';
-import getItemGradeColor from '../functions/GetItemGradeColor';
-import { IEquipment, IPlayer, IPlayerOwnedItem } from '../types/types';
+import BotOutline from '/images/BotOutline.webp';
+import EquipmentCard from '../../components/EquipmentCard';
+import GeneralItemCard from '../../components/GeneralItemCard';
+import Header from '../../components/Header';
+import { PlayerContext } from '../../context/PlayerContext';
+import { GetCombinedEquipmentStatsDetails } from '../../functions/GetCombinedEquipmentStatsDetails';
+import { GetCombinedItemDetails } from '../../functions/GetCombinedItemDetails';
+import getItemGradeColor from '../../functions/GetItemGradeColor';
+import { IEquipment, IPlayer, IPlayerItem, IPlayerOwnedItem } from '../../types/types';
 import './GuardianPage.css';
 
 const styles = {
@@ -48,6 +48,7 @@ const GuardianPage: React.FC = () => {
   const [inventoryEquipments, setEquipmentInventoryItems] = useState<IEquipment[]>([]);
   const [inventoryItems, setInventoryItems] = useState<IPlayerOwnedItem[]>([]);
   const [equippedDetails, setEquippedDetails] = useState<any>({});
+
 
 
   const handleIncreaseStat = async (statName: keyof IPlayer) => {
@@ -70,7 +71,6 @@ const GuardianPage: React.FC = () => {
 
     }
   };
-
 
   const loadInventory = async () => {
     if (!player) {
@@ -129,13 +129,16 @@ const GuardianPage: React.FC = () => {
   }
 
   useEffect(() => {
+    if (!player) return;
     loadInventory();
     loadEquippedDetails();
-  }, [player?.inventory, player?.equipmentInventory, player?.level]);
+  }, [player]);
 
   useEffect(() => {
     loadAttributePoints();
   }, [player?.attributePoints])
+
+
 
 
   if (loading) {
