@@ -1,6 +1,6 @@
-import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewDidLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
-import { useRouteMatch } from "react-router";
+import { useHistory, useRouteMatch } from "react-router";
 import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
@@ -75,7 +75,7 @@ const BattleTrain = () => {
   const match = useRouteMatch<{ id: string }>();
   const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
   const [enemyNextAttack, setEnemyNextAttack] = useState(BASE_ATTACK_SPEED);
-
+  const history = useHistory();
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
     hits: 0,
@@ -604,15 +604,23 @@ const BattleTrain = () => {
 
               {!loading ? (
                 <div>
-                  <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
-                    {currentEnemy?.hidden && hiddenEnemyConcluded ? <>Back to original enemy</> : <>Fight</>}
+                  <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'success'} style={{ width: '100%', marginTop: 36 }}>
+                    <>Fight</>
                   </IonButton>
 
-                  {currentEnemy?.hidden && !hiddenEnemyConcluded ? (
-                    <IonButton onClick={runAway} color={'success'} style={{ width: '100%', marginTop: 16 }}>
-                      Run away
-                    </IonButton>
-                  ) : <></>}
+                  <IonButton
+                    style={{
+                      width: '100%', marginTop: 8
+                    }}
+                    fill="solid"
+                    color="light"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      history.push(`/explore`);
+                    }}
+                  >
+                    Return
+                  </IonButton>
                 </div>
 
               ) : (<IonSpinner />)}

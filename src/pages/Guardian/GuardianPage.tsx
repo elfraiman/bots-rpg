@@ -161,7 +161,8 @@ const GuardianPage: React.FC = () => {
     <>
       <IonPage id="main-content">
         <Header />
-        <IonContent className="ion-padding home-bg">
+        <IonContent className="home-bg">
+
 
           <IonCard className="ion-padding card-fade ion-bot-card">
             {loading ? <IonSpinner /> : (
@@ -171,187 +172,187 @@ const GuardianPage: React.FC = () => {
                 <IonCardContent className="bot-card-content">
                   <IonImg src={BotOutline} className="bot-outline-img" />
 
-                  <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.weapon ? (
-                      <IonPopover alignment='center' trigger="left-weapon-click" triggerAction="click">
+                  <div className="gear">
+                    <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.weapon ? (
+                        <IonPopover alignment='center' trigger="left-weapon-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  AP: {equippedDetails?.weapon?.stats.minAttack} ~ {equippedDetails?.weapon?.stats.maxAttack}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.weapon?.name} with beautiful details`} src={`/images/weapon/weapon-${equippedDetails?.weapon?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      ) : <></>}
+
+                    </IonButton>
+
+                    <IonButton fill="clear" id="right-weapon-click" className="right-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.weapon ? (
+                        <IonPopover alignment='center' trigger="right-weapon-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  AP: {equippedDetails?.weapon?.stats.minAttack} ~ {equippedDetails?.weapon?.stats.maxAttack}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.weapon?.name} with beautiful details`} src={`/images/weapon/weapon-${equippedDetails?.weapon?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      ) : <></>}
+
+                    </IonButton>
+
+                    <IonButton fill="clear" id="armor-click" className="armor-block" style={equippedDetails?.armor ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.armor ? (
+                        <IonPopover alignment='center' trigger="armor-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  DP: {equippedDetails?.armor?.stats?.defense} <br />
+                                  Evasion: {equippedDetails?.armor?.stats?.evasion}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.armor?.name} with beautiful details`} src={`/images/armor/armor-${equippedDetails?.armor?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      ) : <></>}
+                    </IonButton>
+
+                    <IonButton fill="clear" id="helmet-click" className="helmet-block" style={equippedDetails?.helmet ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.helmet ? (
+                        <IonPopover alignment='center' trigger="helmet-click" triggerAction="click">
+                          <IonContent>
+                            <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
+                              <IonCol size="8" className="ion-padding">
+                                <IonText>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.name}</span>
+                                </IonText>
+                                <IonCardSubtitle>
+                                  <span style={{ color: getItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.grade}</span>
+                                </IonCardSubtitle>
+                                <IonText>
+                                  DP: {equippedDetails?.helmet?.stats.defense} <br />
+                                  Evasion: {equippedDetails?.helmet?.stats?.evasion}
+                                </IonText>
+                              </IonCol>
+                              <IonCol size="4" style={{ padding: 0 }}>
+                                <div style={{ display: 'flex' }}>
+                                  <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
+                                    <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.helmet?.name} with beautiful details`} src={`/images/helmet/helmet-${equippedDetails?.armor?.imgId}.webp`} />
+                                  </IonThumbnail>
+                                </div>
+                              </IonCol>
+                            </IonRow>
+                          </IonContent>
+                        </IonPopover>
+                      ) : <></>}
+                    </IonButton>
+
+                    <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
+                      <IonPopover alignment='center' trigger="right-boot-click" triggerAction="click">
                         <IonContent>
                           <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                             <IonCol size="8" className="ion-padding">
                               <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
+                                <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
                               </IonText>
                               <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
+                                <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
                               </IonCardSubtitle>
                               <IonText>
-                                AP: {equippedDetails?.weapon?.stats.minAttack} ~ {equippedDetails?.weapon?.stats.maxAttack}
+                                DP: {equippedDetails?.boots?.stats.defense} <br />
+                                Evasion: {equippedDetails?.boots?.stats?.evasion}
                               </IonText>
                             </IonCol>
                             <IonCol size="4" style={{ padding: 0 }}>
                               <div style={{ display: 'flex' }}>
                                 <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                  <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.weapon?.name} with beautiful details`} src={`/images/weapon/weapon-${equippedDetails?.weapon?.imgId}.webp`} />
+                                  <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.boots?.name} with beautiful details`} src={`/images/boots/boots-${equippedDetails?.armor?.imgId}.webp`} />
                                 </IonThumbnail>
                               </div>
                             </IonCol>
                           </IonRow>
                         </IonContent>
                       </IonPopover>
-                    ) : <></>}
+                    </IonButton>
 
-                  </IonButton>
-
-                  <IonButton fill="clear" id="right-weapon-click" className="right-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.weapon ? (
-                      <IonPopover alignment='center' trigger="right-weapon-click" triggerAction="click">
+                    <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
+                      <IonPopover alignment='center' trigger="left-boot-click" triggerAction="click">
                         <IonContent>
                           <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
                             <IonCol size="8" className="ion-padding">
                               <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.name}</span>
+                                <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
                               </IonText>
                               <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.weapon?.grade ?? "common") }}>{equippedDetails?.weapon?.grade}</span>
+                                <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
                               </IonCardSubtitle>
                               <IonText>
-                                AP: {equippedDetails?.weapon?.stats.minAttack} ~ {equippedDetails?.weapon?.stats.maxAttack}
+                                DP: {equippedDetails?.boots?.stats.defense} <br />
+                                Evasion: {equippedDetails?.boots?.stats?.evasion}
                               </IonText>
                             </IonCol>
                             <IonCol size="4" style={{ padding: 0 }}>
                               <div style={{ display: 'flex' }}>
                                 <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                  <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.weapon?.name} with beautiful details`} src={`/images/weapon/weapon-${equippedDetails?.weapon?.imgId}.webp`} />
+                                  <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.boots?.name} with beautiful details`} src={`/images/boots/boots-${equippedDetails?.armor?.imgId}.webp`} />
                                 </IonThumbnail>
                               </div>
                             </IonCol>
                           </IonRow>
                         </IonContent>
                       </IonPopover>
-                    ) : <></>}
+                    </IonButton>
 
-                  </IonButton>
-
-
-                  <IonButton fill="clear" id="armor-click" className="armor-block" style={equippedDetails?.armor ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.armor ? (
-                      <IonPopover alignment='center' trigger="armor-click" triggerAction="click">
-                        <IonContent>
-                          <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
-                            <IonCol size="8" className="ion-padding">
-                              <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.name}</span>
-                              </IonText>
-                              <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.armor?.grade ?? "common") }}>{equippedDetails?.armor?.grade}</span>
-                              </IonCardSubtitle>
-                              <IonText>
-                                DP: {equippedDetails?.armor?.stats?.defense} <br />
-                                Evasion: {equippedDetails?.armor?.stats?.evasion}
-                              </IonText>
-                            </IonCol>
-                            <IonCol size="4" style={{ padding: 0 }}>
-                              <div style={{ display: 'flex' }}>
-                                <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                  <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.armor?.name} with beautiful details`} src={`/images/armor/armor-${equippedDetails?.armor?.imgId}.webp`} />
-                                </IonThumbnail>
-                              </div>
-                            </IonCol>
-                          </IonRow>
-                        </IonContent>
-                      </IonPopover>
-                    ) : <></>}
-                  </IonButton>
-
-                  <IonButton fill="clear" id="helmet-click" className="helmet-block" style={equippedDetails?.helmet ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.helmet ? (
-                      <IonPopover alignment='center' trigger="helmet-click" triggerAction="click">
-                        <IonContent>
-                          <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
-                            <IonCol size="8" className="ion-padding">
-                              <IonText>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.name}</span>
-                              </IonText>
-                              <IonCardSubtitle>
-                                <span style={{ color: getItemGradeColor(equippedDetails?.helmet?.grade ?? "common") }}>{equippedDetails?.helmet?.grade}</span>
-                              </IonCardSubtitle>
-                              <IonText>
-                                DP: {equippedDetails?.helmet?.stats.defense} <br />
-                                Evasion: {equippedDetails?.helmet?.stats?.evasion}
-                              </IonText>
-                            </IonCol>
-                            <IonCol size="4" style={{ padding: 0 }}>
-                              <div style={{ display: 'flex' }}>
-                                <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                  <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.helmet?.name} with beautiful details`} src={`/images/helmet/helmet-${equippedDetails?.armor?.imgId}.webp`} />
-                                </IonThumbnail>
-                              </div>
-                            </IonCol>
-                          </IonRow>
-                        </IonContent>
-                      </IonPopover>
-                    ) : <></>}
-                  </IonButton>
-
-
-                  <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
-                    <IonPopover alignment='center' trigger="right-boot-click" triggerAction="click">
-                      <IonContent>
-                        <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
-                          <IonCol size="8" className="ion-padding">
-                            <IonText>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
-                            </IonText>
-                            <IonCardSubtitle>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
-                            </IonCardSubtitle>
-                            <IonText>
-                              DP: {equippedDetails?.boots?.stats.defense} <br />
-                              Evasion: {equippedDetails?.boots?.stats?.evasion}
-                            </IonText>
-                          </IonCol>
-                          <IonCol size="4" style={{ padding: 0 }}>
-                            <div style={{ display: 'flex' }}>
-                              <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.boots?.name} with beautiful details`} src={`/images/boots/boots-${equippedDetails?.armor?.imgId}.webp`} />
-                              </IonThumbnail>
-                            </div>
-                          </IonCol>
-                        </IonRow>
-                      </IonContent>
-                    </IonPopover>
-                  </IonButton>
-
-
-                  <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
-                    <IonPopover alignment='center' trigger="left-boot-click" triggerAction="click">
-                      <IonContent>
-                        <IonRow class="ion-align-items-stretch" style={{ height: '100%' }}> {/* Ensures row fills parent height */}
-                          <IonCol size="8" className="ion-padding">
-                            <IonText>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.name}</span>
-                            </IonText>
-                            <IonCardSubtitle>
-                              <span style={{ color: getItemGradeColor(equippedDetails?.boots?.grade ?? "common") }}>{equippedDetails?.boots?.grade}</span>
-                            </IonCardSubtitle>
-                            <IonText>
-                              DP: {equippedDetails?.boots?.stats.defense} <br />
-                              Evasion: {equippedDetails?.boots?.stats?.evasion}
-                            </IonText>
-                          </IonCol>
-                          <IonCol size="4" style={{ padding: 0 }}>
-                            <div style={{ display: 'flex' }}>
-                              <IonThumbnail style={{ width: '100%', height: '100%', margin: 0 }}>
-                                <IonImg style={{ objectFit: 'cover' }} alt={`A ${equippedDetails?.boots?.name} with beautiful details`} src={`/images/boots/boots-${equippedDetails?.armor?.imgId}.webp`} />
-                              </IonThumbnail>
-                            </div>
-                          </IonCol>
-                        </IonRow>
-                      </IonContent>
-                    </IonPopover>
-                  </IonButton>
+                  </div>
                 </IonCardContent>
               </div>)}
-          </IonCard>2
+          </IonCard>
 
           <IonCard>
             <div>
@@ -366,7 +367,7 @@ const GuardianPage: React.FC = () => {
                         return (
                           <div key={index}>
                             {item ? (
-                              <EquipmentCard equipment={item} key={index} isForSale={false} />
+                              <EquipmentCard equipment={item} key={index} isForSell={false} />
                             ) : (<></>)}
                           </div>
                         );
@@ -388,7 +389,7 @@ const GuardianPage: React.FC = () => {
                         return (
                           <div key={index}>
                             {item ? (
-                              <GeneralItemCard item={item} key={index} isForSale={false} />
+                              <GeneralItemCard item={item} key={index} isForSell={false} />
                             ) : (<></>)}
                           </div>
                         );
@@ -409,7 +410,7 @@ const GuardianPage: React.FC = () => {
                 <IonGrid>
                   <IonRow>
                     <IonCol>
-                      <IonText>STR: {player?.str}</IonText>
+                      <h2>STR: {player?.str}</h2>
                     </IonCol>
                     <IonCol>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('str')}>
@@ -418,7 +419,7 @@ const GuardianPage: React.FC = () => {
                     </IonCol>
 
                     <IonCol>
-                      <IonText>CON: {player?.con}</IonText>
+                      <h2>CON: {player?.con}</h2>
                     </IonCol>
                     <IonCol>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('con')}>
@@ -428,7 +429,7 @@ const GuardianPage: React.FC = () => {
                   </IonRow>
                   <IonRow>
                     <IonCol>
-                      <IonText>DEX: {player?.dex}</IonText>
+                      <h2>DEX: {player?.dex}</h2>
                     </IonCol>
                     <IonCol>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('dex')}>
@@ -436,7 +437,7 @@ const GuardianPage: React.FC = () => {
                       </IonButton>
                     </IonCol>
                     <IonCol>
-                      <IonText>INT: {player?.int}</IonText>
+                      <h2>INT: {player?.int}</h2>
                     </IonCol>
 
                     <IonCol>

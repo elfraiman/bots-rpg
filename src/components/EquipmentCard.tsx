@@ -4,7 +4,7 @@ import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import { GetCreatePlayerOwnedEquipment } from "../functions/GetCreatePlayerOwnedEquipment";
 import { GetPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
-import { GetSalePlayerEquipment } from "../functions/GetSalePlayerEquipment";
+import { GetSellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
 import getItemGradeColor from "../functions/GetItemGradeColor";
 import { IEquipment, IPlayer } from "../types/types";
 import EquipmentModal from "./EquipmentModal";
@@ -12,10 +12,10 @@ import EquipmentModal from "./EquipmentModal";
 
 interface IEquipmentCardProps {
   equipment: IEquipment;
-  isForSale: boolean;
+  isForSell: boolean;
 }
 
-const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps) => {
+const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
   const [present] = useIonToast();
@@ -23,7 +23,7 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
 
   const checkRequirements = () => {
     if (!player) return false;
-    if (isForSale) {
+    if (isForSell) {
       return player.gold >= equipment.cost;
     }
     if (!equipment.requirements) return false;
@@ -33,7 +33,7 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
 
   const handleArmorAction = async () => {
     if (!player) return;
-    if (isForSale) {
+    if (isForSell) {
       await purchaseEquipment(equipment as IEquipment);
     } else {
       await equipItem(equipment._id);
@@ -56,12 +56,12 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
     }
   };
 
-  const saleEquipment = async (equipmentToSale: IEquipment) => {
+  const sellEquipment = async (equipmentToSell: IEquipment) => {
     setLoading(true);
     try {
       if (!player) return;
-      await GetSalePlayerEquipment(equipmentToSale, player, updatePlayerData);
-      present({ message: `Gold + ${equipmentToSale.cost / 2}`, color: 'primary', duration: 1500, position: 'top' });
+      await GetSellPlayerEquipment(equipmentToSell, player, updatePlayerData);
+      present({ message: `Gold + ${equipmentToSell.cost / 2}`, color: 'primary', duration: 1500, position: 'top' });
       setLoading(false);
       setShowModal(false);
     } catch (e) {
@@ -166,12 +166,12 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
                     {equipment.name}
                   </div>
 
-                  {isForSale ? (<span>
+                  {isForSell ? (<span>
                     Cost:<span style={{ color: 'gold' }}> {equipment.cost.toLocaleString()} G</span>
                   </span>
                   ) : (
                     <span>
-                      Sale: <span style={{ color: 'gold' }}> {(equipment.cost / 2).toLocaleString()} G</span>
+                      Sell: <span style={{ color: 'gold' }}> {(equipment.cost / 2).toLocaleString()} G</span>
                     </span>
                   )}
                 </IonCol>
@@ -212,10 +212,10 @@ const EquipmentCard = ({ equipment: equipment, isForSale }: IEquipmentCardProps)
 
       <EquipmentModal
         equipItem={() => handleArmorAction()}
-        isForSale={isForSale}
+        isForSell={isForSell}
         canPurchase={checkRequirements()}
         purchaseItem={() => handleArmorAction()}
-        saleItem={() => saleEquipment(equipment)}
+        sellItem={() => sellEquipment(equipment)}
         showModal={showModal}
         setShowModal={setShowModal}
         loading={loading}

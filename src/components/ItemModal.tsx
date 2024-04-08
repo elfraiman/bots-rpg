@@ -7,13 +7,13 @@ interface IEquipmentModalProps {
   showModal: boolean;
   item: IPlayerOwnedItem;
   imgString: string;
-  saleItem: (item: IPlayerOwnedItem, sellQuantity: number) => void;
+  sellItem: (item: IPlayerOwnedItem, sellQuantity: number) => void;
   setShowModal: (boolean: boolean) => void;
   loading: boolean;
 }
 
 
-const ItemModal = ({ showModal, item, saleItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
+const ItemModal = ({ showModal, item, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
   const [totalSellValue, setTotalSellValue] = useState(item.cost);
   const [sellQuantity, setSellQuantity] = useState(1);
 
@@ -88,7 +88,7 @@ const ItemModal = ({ showModal, item, saleItem, setShowModal, imgString, loading
 
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
         <>
-          <IonButton fill="solid" disabled={loading} onClick={() => saleItem(item, sellQuantity)}>Sale</IonButton>
+          <IonButton fill="solid" disabled={loading} onClick={() => sellItem(item, sellQuantity)}>Sell</IonButton>
           <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
         </>
       </div>

@@ -91,14 +91,17 @@ const App: React.FC = () => {
                 <IonIcon icon={diamondOutline} />
                 <IonLabel>Shop</IonLabel>
               </IonTabButton>
+
               <IonTabButton disabled={isSplashScreenActive} tab="travel" href="/travel">
                 <IonIcon icon={rocketOutline} />
                 <IonLabel>Travel</IonLabel>
               </IonTabButton>
+
               <IonTabButton disabled={isSplashScreenActive} tab="leaderboard" href="/leaderboard">
                 <IonIcon icon={trophyOutline} />
                 <IonLabel>Leaderboard</IonLabel>
               </IonTabButton>
+
             </IonTabBar>
           </IonTabs>
         ) : <Login />}

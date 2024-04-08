@@ -5,18 +5,18 @@ import './EquipmentModal.css';
 interface IEquipmentModalProps {
   showModal: boolean;
   item: any;
-  isForSale: boolean;
+  isForSell: boolean;
   canPurchase: boolean;
   imgString: string;
   purchaseItem: (item: any) => void;
   equipItem: (item: any) => void;
-  saleItem: (item: any) => void;
+  sellItem: (item: any) => void;
   setShowModal: (boolean: boolean) => void;
   loading: boolean;
 }
 
 
-const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, purchaseItem, saleItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
+const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, purchaseItem, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
 
   const returnTextForAttackSpeed = (speed: number) => {
     switch (speed) {
@@ -75,7 +75,7 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
 
           <IonRow className="ion-padding">
             <IonCol>
-              {isForSale ? (
+              {isForSell ? (
                 <>
                   <h2>Cost</h2>
                   <p>{item.cost} <span style={{ color: 'gold' }}>Gold</span></p>
@@ -91,7 +91,7 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
       )}
 
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {isForSale ? (
+        {isForSell ? (
           <>
             <IonButton fill="solid" disabled={!canPurchase || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
             <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
@@ -100,7 +100,7 @@ const EquipmentModal = ({ showModal, item, isForSale, equipItem, canPurchase, pu
           <>
             <IonButton fill="solid" disabled={loading} onClick={() => equipItem(item._id)}>Equip</IonButton>
             <div>
-              <IonButton fill="solid" disabled={loading} color="warning" onClick={() => saleItem(item)}>Sale</IonButton>
+              <IonButton fill="solid" disabled={loading} color="warning" onClick={() => sellItem(item)}>Sell</IonButton>
               <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
             </div>
           </>

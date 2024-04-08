@@ -2,16 +2,16 @@ import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonActionShe
 import { useContext, useRef, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import getItemGradeColor from "../functions/GetItemGradeColor";
-import { getSaleItem } from "../functions/GetSaleItem";
+import { getSellItem } from "../functions/GetSellItem";
 import { IItem, IPlayerOwnedItem } from "../types/types";
 import ItemModal from "./ItemModal";
 
 interface IBootsCardProps {
   item: IPlayerOwnedItem;
-  isForSale?: boolean;
+  isForSell?: boolean;
 }
 
-const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
+const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
   const [loading, setLoading] = useState(false);
@@ -23,10 +23,10 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
   }
 
 
-  const saleItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
+  const sellItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
     if (player) {
       setLoading(true);
-      await getSaleItem(item, sellQuantity, updatePlayerData, player);
+      await getSellItem(item, sellQuantity, updatePlayerData, player);
       present({ message: `Gold + ${sellQuantity * item.cost}`, color: 'primary', duration: 1500, position: 'top' });
 
       setShowModal(false);
@@ -60,18 +60,18 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
                     {loading ? <IonSpinner /> : (<>Quantity: {item?.quantity} </>)}
                   </div>
 
-                  {isForSale ? (<span>
+                  {isForSell ? (<span>
                     Cost:<span style={{ color: 'gold' }}> {item.cost.toLocaleString()} G</span>
                   </span>
                   ) : (
                     <span>
-                      Sale: <span style={{ color: 'gold' }}> {(item.cost).toLocaleString()} G</span>
+                      Sell: <span style={{ color: 'gold' }}> {(item.cost).toLocaleString()} G</span>
                     </span>
                   )}
                 </IonCol>
 
                 <IonCol style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                  <IonButton fill="clear" id="sale-modal">Sale</IonButton>
+                  <IonButton fill="clear" id="sell-modal">Sell</IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -80,7 +80,7 @@ const GeneralItemCard = ({ item, isForSale }: IBootsCardProps) => {
 
 
           {<ItemModal
-            saleItem={saleItem}
+            sellItem={sellItem}
             showModal={showModal}
             setShowModal={setShowModal}
             imgString={`/images/item/item-${item.imgId}.webp`}

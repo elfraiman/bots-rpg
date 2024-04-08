@@ -1,15 +1,20 @@
 ion-menu::part(backdrop) {
-    background-color: rgba(255, 0, 255, 0.5);
-  }
-  
-  ion-menu::part(container) {
-    border-radius: 0 20px 20px 0;
-  
-    box-shadow: 4px 0px 16px rgba(255, 0, 255, 0.18);
-  }
+  background-color: rgba(255, 0, 255, 0.5);
+}
 
-  .home-bg {
-    --background: url('/images/Home.webp') no-repeat center center / cover;
+.bg-video video {
+  min-height: 100%;
+  min-width: 100%;
+  width: auto;
+  object-fit: cover;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.home-bg {
+  --background: url("/images/home.webp") no-repeat center center / cover;
 }
 
 .left-arm-block {
@@ -63,11 +68,13 @@ ion-menu::part(backdrop) {
   height: 25px;
   z-index: 100;
   top: 250px;
-  left: 90px;;
+  left: 90px;
 }
 
 .bot-card-content {
+  margin-right: auto;
   position: relative;
+  justify-content: center;
   width: 100%;
 }
 

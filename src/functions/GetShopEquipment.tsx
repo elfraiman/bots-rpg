@@ -19,7 +19,7 @@ const getShopArmors = async () => {
     }
 
     try {
-        const armorsResult = await shopArmorsCollection.find({ forSale: true }); // Or just use userId if it's a string
+        const armorsResult = await shopArmorsCollection.find({ forSell: true }); // Or just use userId if it's a string
         return armorsResult
     } catch (err) {
         console.error("Failed to fetch shop weapons data:", err);

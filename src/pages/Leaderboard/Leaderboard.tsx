@@ -8,98 +8,99 @@ import { trophyOutline } from "ionicons/icons";
 
 
 const LeaderboardPage = () => {
-    const [whatToShow, setWhatToShow] = useState('players');
-    const [playersData, setPlayersData] = useState<IPlayer[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [whatToShow, setWhatToShow] = useState('players');
+  const [playersData, setPlayersData] = useState<IPlayer[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    const getAllPlayers = async () => {
-        setLoading(true);
-        const playersFetched = await GetPlayers();
+  const getAllPlayers = async () => {
+    setLoading(true);
+    const playersFetched = await GetPlayers();
 
-        if (playersFetched) {
-            // sort based on level
-            //
-            setPlayersData(playersFetched.sort((a, b) => a.level + b.level));
-        }
-        setLoading(false);
+    if (playersFetched) {
+      // sort based on level
+      //
+      setPlayersData(playersFetched.sort((a, b) => a.level + b.level));
     }
+    setLoading(false);
+  }
 
-    useEffect(() => {
-        getAllPlayers();
-    }, [])
+  useEffect(() => {
+    getAllPlayers();
+  }, [])
 
-    const getTrophyColor = (rank: number) => {
-        switch (rank) {
-            case 1:
-                return 'gold';
-            case 2:
-                return 'silver';
-            case 3:
-                return 'brown';
-            default:
-                return undefined; // No trophy for ranks other than 1, 2, or 3
-        }
-    };
+  const getTrophyColor = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return 'gold';
+      case 2:
+        return 'silver';
+      case 3:
+        return 'brown';
+      default:
+        return undefined; // No trophy for ranks other than 1, 2, or 3
+    }
+  };
 
 
-    return (
-        <IonPage>
-            <Header />
-            <IonContent>
-                <IonSegment
-                    value={whatToShow}
-                    onIonChange={(e: CustomEvent) => setWhatToShow(e.detail.value)}
-                >
-                    <IonSegmentButton value="players">
-                        <IonLabel>Players</IonLabel>
-                    </IonSegmentButton>
-                    <IonSegmentButton value="factions">
-                        <IonLabel>Factions</IonLabel>
-                    </IonSegmentButton>
-                </IonSegment>
+  return (
+    <IonPage>
+      <Header />
+      <IonContent className="galaxy-bg">
+        <IonSegment
+          className="card-fade"
+          value={whatToShow}
+          onIonChange={(e: CustomEvent) => setWhatToShow(e.detail.value)}
+        >
+          <IonSegmentButton value="players">
+            <IonLabel>Players</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value="factions">
+            <IonLabel>Factions</IonLabel>
+          </IonSegmentButton>
+        </IonSegment>
 
-                {loading ? (<IonSpinner />) : (
-                    <>
-                        {whatToShow === 'players' && (
-                            <IonList>
-                                {playersData.map((player, index) => (
-                                    <IonItem key={player._id}>
+        {loading ? (<IonSpinner />) : (
+          <>
+            {whatToShow === 'players' && (
+              <IonList >
+                {playersData.map((player, index) => (
+                  <IonItem key={player._id}  >
 
-                                        <IonAvatar slot="start">
-                                            <img src={`images/player-placeholder.webp`} alt={`${player.name}`} />
-                                        </IonAvatar>
+                    <IonAvatar slot="start">
+                      <img src={`images/player-placeholder.webp`} alt={`${player.name}`} />
+                    </IonAvatar>
 
-                                        <IonLabel>
+                    <IonLabel>
 
-                                            <h2>
-                                                <span style={{ marginRight: 6 }}>{index + 1}.</span>
-                                                {index < 3 && (
-                                                    <IonIcon
-                                                        icon={trophyOutline}
-                                                        style={{ color: getTrophyColor(index + 1), marginRight: 6 }}
-                                                    />
-                                                )} {player.name}</h2>
-                                            <p>Level: {player.level}</p>
-                                        </IonLabel>
-                                        <IonText slot="end">
-                                            {player?.faction?.toString() ?? "No Faction"}
-                                        </IonText>
-                                    </IonItem>
-                                ))}
-                            </IonList>
-                        )}
+                      <h2>
+                        <span style={{ marginRight: 6 }}>{index + 1}.</span>
+                        {index < 3 && (
+                          <IonIcon
+                            icon={trophyOutline}
+                            style={{ color: getTrophyColor(index + 1), marginRight: 6 }}
+                          />
+                        )} {player.name}</h2>
+                      <p>Level: {player.level}</p>
+                    </IonLabel>
+                    <IonText slot="end">
+                      {player?.faction?.toString() ?? "No Faction"}
+                    </IonText>
+                  </IonItem>
+                ))}
+              </IonList>
+            )}
 
-                        {whatToShow === 'factions' && (
-                            <div>
-                                Not yet available
-                            </div>
-                        )}
-                    </>
-                )}
+            {whatToShow === 'factions' && (
+              <div>
+                Not yet available
+              </div>
+            )}
+          </>
+        )}
 
-            </IonContent>
-        </IonPage>
-    )
+      </IonContent>
+    </IonPage>
+  )
 }
 
 export default LeaderboardPage

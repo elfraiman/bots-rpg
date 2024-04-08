@@ -5,12 +5,14 @@ import React, { ReactNode, createContext, useContext, useState } from 'react';
 interface ISplashScreenContextValue {
     isSplashScreenActive: boolean;
     triggerSplashScreen: (milliseconds: number) => void;
+    setIsSplashScreenActive: React.Dispatch<React.SetStateAction<boolean>>
     // Add any function to change this state if needed
 }
 
 const defaultContext: ISplashScreenContextValue = {
     isSplashScreenActive: false,
-    triggerSplashScreen: () => 5000
+    triggerSplashScreen: () => 5000,
+    setIsSplashScreenActive: () => false
 }
 
 // Create the context
@@ -29,7 +31,7 @@ export const SplashScreenProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <SplashScreenContext.Provider value={{ isSplashScreenActive, triggerSplashScreen }}>
+        <SplashScreenContext.Provider value={{ isSplashScreenActive, triggerSplashScreen, setIsSplashScreenActive }}>
             {children}
         </SplashScreenContext.Provider>
     );

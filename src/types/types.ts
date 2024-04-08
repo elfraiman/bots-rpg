@@ -107,12 +107,12 @@ export type IEquipment = {
   _id: Realm.BSON.ObjectId;
   cost: number;
   description: string;
-  forSale: boolean;
+  forSell: boolean;
   grade: string;
   imgId: number;
   name: string;
   requirements: IEquipment_requirements;
-  sale?: boolean;
+  sell?: boolean;
   stats?: IEquipment_stats;
   type: string;
 };
@@ -141,7 +141,7 @@ export type IArmor = {
   imgId: number;
   name: string;
   requirements: IArmor_requirements;
-  forSale?: boolean;
+  forSell?: boolean;
   stats: IArmor_stats;
   type: string;
 };
@@ -161,7 +161,7 @@ export type IPlayerOwnedArmor = {
   imgId: number;
   name: string;
   requirements: IArmor_requirements;
-  sale?: boolean;
+  sell?: boolean;
   type: string;
   baseItemId: Realm.BSON.ObjectId;
   itemType: string;
@@ -178,7 +178,7 @@ export type IPlayerOwnedWeapon = {
   imgId: number;
   name: string;
   requirements: IWeapon_requirements;
-  sale?: boolean;
+  sell?: boolean;
   type: string;
   baseItemId: Realm.BSON.ObjectId;
   itemType: string;
@@ -283,7 +283,7 @@ export type IShopBoots = {
   imgId: number;
   name: string;
   requirements: IShopBoots_requirements;
-  sale: boolean;
+  sell: boolean;
 };
 export type IShopBoots_requirements = {
   con: number;
@@ -300,7 +300,7 @@ export type IShopHelmet = {
   imgId: number;
   name: string;
   requirements: IShopHelmet_requirements;
-  sale: boolean;
+  sell: boolean;
 };
 export type IShopHelmet_requirements = {
   con: number;
@@ -318,7 +318,7 @@ export type IHelmet = {
   imgId: number;
   name: string;
   requirements: IHelmet_requirements;
-  sale?: boolean;
+  sell?: boolean;
   type: string;
 };
 
@@ -391,7 +391,7 @@ export type IShopWeapon = {
   minDamage: number;
   name: string;
   requirements: IShopWeapon_requirements;
-  sale: boolean;
+  sell: boolean;
 };
 
 export const IShopWeaponSchema = {
@@ -436,7 +436,7 @@ export type IWeapon = {
   imgId: number;
   name: string;
   requirements: IWeapon_requirements;
-  forSale?: boolean;
+  forSell?: boolean;
   stats?: IWeapon_stats;
   type?: string;
 };
@@ -460,7 +460,7 @@ export const IWeaponSchema = {
     minDamage: 'int',
     name: 'string',
     requirements: 'IWeapon_requirements',
-    sale: 'bool?',
+    sell: 'bool?',
   },
   primaryKey: '_id',
 };
