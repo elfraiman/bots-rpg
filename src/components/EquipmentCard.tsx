@@ -245,7 +245,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
         showModal={showModal}
         setShowModal={setShowModal}
         loading={loading}
-        player={player}
+        player={player as IPlayer}
         imgString={`/images/${equipment.type}/${equipment.type}-${equipment.imgId}.webp`}
         item={equipment}
       />
