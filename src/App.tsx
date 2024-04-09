@@ -34,6 +34,7 @@ import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
 import InitialStoryPage from './pages/Story/InitialStoryPage';
 import EnterEarthStoryPage from './pages/Story/EnterEarthStoryPage';
+import FightPvpPage from './pages/Fighting/FightPvpPage';
 
 setupIonicReact({
   rippleEffect: false,
@@ -67,6 +68,7 @@ const App: React.FC = () => {
               <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
               <Route path="/shop" render={() => <Shop />} exact={true} />
               <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
+              <Route path="/pvp" render={() => <FightPvpPage />} exact={true} />
               <Route path="/leaderboard" render={() => <LeaderboardPage />} exact={true} />
               <Route path="/login" render={() => <Login />} exact={true} />
               <Route path="/initialstory" render={() => <InitialStoryPage />} exact={true} />
@@ -85,7 +87,7 @@ const App: React.FC = () => {
                 <IonLabel>Explore</IonLabel>
               </IonTabButton>
 
-              <IonTabButton disabled={isSplashScreenActive} tab="library" href="/library">
+              <IonTabButton disabled={isSplashScreenActive} tab="library" href="/pvp">
                 <IonIcon icon={medalOutline} />
                 <IonLabel>Fight</IonLabel>
               </IonTabButton>
