@@ -19,7 +19,7 @@ const LeaderboardPage = () => {
     if (playersFetched) {
       // sort based on level
       //
-      setPlayersData(playersFetched.sort((a, b) => a.level + b.level));
+      setPlayersData(playersFetched.sort((a, b) => a.level - b.level).reverse());
     }
     setLoading(false);
   }
