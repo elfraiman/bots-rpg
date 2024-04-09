@@ -1,10 +1,4 @@
-
-
-.shop-bg {
-    --background: url('/images/ShopTest.webp') no-repeat center center / cover;
-}
-
 .card-fade {
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 100 !important;
 }

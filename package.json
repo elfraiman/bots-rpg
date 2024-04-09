@@ -1,7 +1,7 @@
 {
-  "name": "bots-rpg",
+  "name": "mecha-guardians",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -47,5 +47,5 @@
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
-  "description": "An Ionic project"
+  "description": "Mecha-Guardians RPG"
 }

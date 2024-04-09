@@ -2,7 +2,7 @@ import { IonCardSubtitle, IonCol, IonGrid, IonHeader, IonProgressBar, IonRow, Io
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "../context/PlayerContext";
 import { getSinglePlanet } from "../functions/GetPlanet";
-import getXpForNextLevel from "../functions/GetXpForNextLevel";
+import GetXpForNextLevel from "../functions/GetXpForNextLevel";
 import { IPlanet } from "../types/types";
 import './Header.css';
 
@@ -14,38 +14,52 @@ const Header = () => {
     const [playerXpBar, setPlayerXpBar] = useState(0);
     const [xpToNextLevel, setXpToNextLevel] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [playerLocation, setPlayerLocation] = useState<IPlanet>();
     const { player } = useContext(PlayerContext);
+    const [playerLocation, setPlayerLocation] = useState<IPlanet>();
 
 
-
+    // This gets the planet the player is on to render a background on the header
+    //
     const getPlayerPlanet = async () => {
         if (!player) {
             return;
         }
+        // if player is in the same location no need to get planet
+        //
+        if (player?.location.toString() === playerLocation?._id.toString()) return;
+
+        console.log(player.location, playerLocation, 'player location')
+
+        setLoading(true);
         const playerLocationPlanet = await getSinglePlanet(player.location)
         if (playerLocationPlanet !== undefined) setPlayerLocation(playerLocationPlanet)
+        setLoading(false);
     }
 
-
-    useEffect(() => {
+    const handlePlayerXP = () => {
         setLoading(true);
         if (player) {
-            getPlayerPlanet();
             const playerXp = player.experience;
-            const xpNeededForNextLevel = getXpForNextLevel({ level: player.level });
+            const xpNeededForNextLevel = GetXpForNextLevel({ level: player.level });
 
             // Calculate the progress towards the next level
+            //
             let progress = playerXp / xpNeededForNextLevel;
 
-            // Ensure progress is between 0.1 and 1
+            // Ensure progress is between 0.1 and 1 for the loading bar
+            //
             progress = Math.max(0.0, Math.min(progress, 1));
 
             setXpToNextLevel(xpNeededForNextLevel);
             setPlayerXpBar(progress);
             setLoading(false);
         }
-        
+    }
+
+
+    useEffect(() => {
+        handlePlayerXP();
+        getPlayerPlanet();
     }, [player])
 
     return (
@@ -72,7 +86,7 @@ const Header = () => {
                             <IonRow>
                                 <IonCol size="9">
                                     <IonText style={{ display: 'block', marginBottom: '0', fontSize: 14 }}>{player?.name}</IonText>
-                                    <IonCardSubtitle style={{ display: 'block', marginBottom: '0', fontSize: 11 }}>[NoClan]</IonCardSubtitle>
+                                    <IonCardSubtitle style={{ display: 'block', marginBottom: '0', fontSize: 11 }}>[NoFaction]</IonCardSubtitle>
                                     <IonText style={{ display: 'block', marginBottom: '0', fontSize: 14 }}>Level: {player?.level}</IonText>
                                 </IonCol>
                                 <IonCol size="3" style={{ textAlign: 'right', fontSize: 13 }}>
@@ -84,6 +98,8 @@ const Header = () => {
                                 <IonCol>
                                     <IonCardSubtitle>XP: {player?.experience.toLocaleString()} / {xpToNextLevel.toLocaleString()}  ({Math.round(((player?.experience ?? 0) / xpToNextLevel) * 100)}%)</IonCardSubtitle>
                                 </IonCol>
+
+                                <IonCardSubtitle style={{ color: 'deeppink' }}>Alpha {import.meta.env.VITE_REACT_APP_VERSION}</IonCardSubtitle>
                             </IonRow>
                         </IonGrid>
                         <IonProgressBar value={playerXpBar}></IonProgressBar>

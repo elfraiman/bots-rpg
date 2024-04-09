@@ -1,23 +1,34 @@
-import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
-import { useRouteMatch } from "react-router";
+import { useHistory, useRouteMatch } from "react-router";
+import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
+import GetBaseItem from "../../functions/GetBaseItem";
+import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEquipmentStatsDetails";
+import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
+import getItemGradeColor from "../../functions/GetItemGradeColor";
 import calculateMaxHealth from "../../functions/GetMaxHealth";
-import getItemGradeColor from "../../functions/GetWeaponColor";
+import GetModifyOwnedItem from "../../functions/GetModifyBaseItem";
+import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import getXpReward from "../../functions/GetXpReward";
-import { IEnemy, IPlayer } from "../../types/types";
+import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
 
 interface IFightResult {
   hitChance: number;
-  maxDamage: number;
-  minDamage: number;
+  maxAttack: number;
+  minAttack: number;
   attacker: IPlayer | IEnemy;
   defender: IPlayer | IEnemy;
   isPlayerAttack: boolean;
+}
+
+interface ILootDrop {
+  item: IItem | IEquipment;
+  quantity: number;
 }
 
 // Example of an inline style for demonstration
@@ -39,18 +50,32 @@ const style = {
 };
 
 
+
 const BattleTrain = () => {
-  const { player, setPlayer, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
-  const [enemy, setEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
+
+  const BASE_ATTACK_SPEED = 2400; // default milliseconds
+  const DEX_MODIFIER = 0.006; // Amount dex effects attack speed
+  const MIN_ATTACK_INTERVAL = 1500; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
+  const BASE_HIT_CHANCE = 0.7;
+  const STR_ATTACK_MODIFIER = 0.2;
+  const BASE_DAMAGE_INCREASE = 1;
+  const DEX_ACCURACY_MODIFIER = 0.02; // Incase something affects dex
+
+
+  const { player, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
+  const [playerWeapon, setPlayerWeapon] = useState<IPlayerOwnedWeapon | any>();
+  const [currentEnemy, setCurrentEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(0);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
+  const [enemyIntimidation, setEnemyIntimidation] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
+  const [hiddenEnemyConcluded, setHiddenEnemyConcluded] = useState<boolean>(true);
   const [battleActive, setBattleActive] = useState<boolean>(false);
-  const turnRef = useRef<boolean>(true); // true indicates it's the player's turn, false for the enemy's turn
-  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const match = useRouteMatch<{ id: string }>();
-
-
+  const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
+  const [enemyNextAttack, setEnemyNextAttack] = useState(BASE_ATTACK_SPEED);
+  const history = useHistory();
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
     hits: 0,
@@ -60,28 +85,76 @@ const BattleTrain = () => {
     totalDamage: 0,
   });
 
-
   // Ref for scrolling
   const narrativeEndRef = useRef(null);
 
+
+  const setEnemyInState = (enemy: IEnemy) => {
+    const enemyMaxHealth = calculateMaxHealth(enemy);
+    setCurrentEnemy(enemy);
+    setEnemyHealth(enemyMaxHealth); // Setting enemy's health based on the loaded enemy data
+
+    if (enemy.hidden) {
+      setEnemyIntimidation(enemy.description ?? '');
+      setHiddenEnemyConcluded(false);
+    }
+  }
 
   const getEnemy = async () => {
     const params: any = match.params;
     const monsterId = params.id;
 
     if (monsterId) {
+      setLoading(true);
       const enemyData = await getSingleEnemy({ monsterId: monsterId });
 
       if (enemyData) {
-        const enemyMaxHealth = calculateMaxHealth(enemyData);
-        setEnemy(enemyData);
-        setEnemyHealth(enemyMaxHealth); // Setting enemy's health based on the loaded enemy data
+        setEnemyInState(enemyData);
       }
+      setLoading(false);
     }
-
   }
 
-  useIonViewWillEnter(() => {
+  const resetStats = () => {
+    if (!player || !currentEnemy) return;
+    const playerMaxHealth = calculateMaxHealth(player);
+    const enemyMaxHealth = calculateMaxHealth(currentEnemy);
+    const calculateAttackSpeed = (dex: number) => BASE_ATTACK_SPEED / (1 + (dex * DEX_MODIFIER));
+
+    // reset stats
+    //
+    setPlayerHealth(playerMaxHealth);
+    setEnemyHealth(enemyMaxHealth);
+    setBattleStats({
+      attempts: 0,
+      hits: 0,
+      maxHit: 0,
+      misses: 0,
+      totalDamage: 0,
+      dodges: 0,
+    });
+
+    setEnemyIntimidation('');
+    setPlayerNextAttack(calculateAttackSpeed(player?.dex));
+    setEnemyNextAttack(calculateAttackSpeed(currentEnemy?.dex));
+  }
+
+  const getPlayerEquipment = async () => {
+    if (player && player.equipment && player.equipment.weapon) {
+      setLoading(true);
+      const weapon = await GetCombinedEquipmentStatsDetails(player?._id, player?.equipment?.weapon);
+      if (weapon) {
+        setPlayerWeapon(weapon);
+      }
+      setLoading(false);
+    };
+  }
+
+  useEffect(() => {
+    getPlayerEquipment();
+  }, [player])
+
+  useEffect(() => {
     console.log("[Battle]: View will enter")
     getEnemy();
     setFightNarrative([]);
@@ -89,10 +162,12 @@ const BattleTrain = () => {
     if (player) {
       const playerMaxHealth = calculateMaxHealth(player);
       setPlayerHealth(playerMaxHealth);
+      getPlayerEquipment();
     }
+  }, []);
 
-  });
-
+  // Returns some text to describe the enemy's health status
+  //
   const returnEnemyShape = (enemy: IEnemy, health: number) => {
     let enemyNameStyled = <span style={style.enemyName}>{enemy.name}</span>;
     const enemyMaxHealth = calculateMaxHealth(enemy);
@@ -112,22 +187,23 @@ const BattleTrain = () => {
     }
   }
 
+  // This returns the color of the health left
+  //
   const returnPercentageColor = (health: number) => {
     if (!player) return;
     const playerMaxHealth = calculateMaxHealth(player);
-    const percentage = health * playerMaxHealth / 100;
-    if (percentage > 80) {
+    const percentage = (health / playerMaxHealth) * 100;
+    if (percentage > 75) {
       return style.goodShape;
-    } else if (percentage > 65) {
+    } else if (percentage > 55) {
       return style.reasonableShape;
-    } else if (percentage > 40) {
+    } else if (percentage > 35) {
       return style.notGoodShape;
-    } else if (percentage > 20) {
+    } else if (percentage > 15) {
       return style.badShape;
     } else {
       return style.barelyAlive;
     }
-
   }
 
   const attack = (attacker: IPlayer | IEnemy, defender: IPlayer | IEnemy, isPlayerAttack: boolean) => {
@@ -136,37 +212,33 @@ const BattleTrain = () => {
       return;
     }
 
-    const baseHitChance = 0.7;
+
     const dexDifference = attacker.dex - defender.dex;
-    const dexModifier = 0.01; // Incase something affects dex
-    const hitChance = baseHitChance + (dexDifference * dexModifier) + 0.05;
-    const strModifierForMinDamage = 0.2;
-    const baseDamageIncrease = 1;
+    const hitChance = BASE_HIT_CHANCE + (dexDifference * DEX_ACCURACY_MODIFIER) + 0.05;
 
-    const minDamageBase = attacker.equipment?.mainHand?.minDamage ?? 0;
-    const maxDamageBase = attacker.equipment?.mainHand?.maxDamage ?? 0;
+    const minAttackBase = isPlayerAttack ? playerWeapon?.stats?.minAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.minAttack ?? 0;
+    const maxAttackBase = isPlayerAttack ? playerWeapon?.stats?.maxAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.maxAttack ?? 0;
 
-    const minDamage = Math.round(minDamageBase + (attacker.str * strModifierForMinDamage) + baseDamageIncrease);
-    const maxDamage = Math.round(maxDamageBase + (attacker.str * strModifierForMinDamage) + baseDamageIncrease);
+    const minAttack = Math.round(minAttackBase + (attacker.str * STR_ATTACK_MODIFIER) + BASE_DAMAGE_INCREASE);
+    const maxAttack = Math.round(maxAttackBase + (attacker.str * STR_ATTACK_MODIFIER) + BASE_DAMAGE_INCREASE);
 
     applyFightResults({
       hitChance,
-      maxDamage,
-      minDamage,
-      attacker,
+      maxAttack,
+      minAttack,
+      attacker: attacker,
       defender,
       isPlayerAttack: isPlayerAttack
     });
   };
 
-  const applyFightResults = ({ hitChance, maxDamage, minDamage, attacker, defender, isPlayerAttack }: IFightResult) => {
-    if (!player || !enemy) return;
+  const applyFightResults = ({ hitChance, maxAttack, minAttack, attacker, defender, isPlayerAttack }: IFightResult) => {
+    if (!player || !currentEnemy) return;
     const playerMaxHealth = calculateMaxHealth(player);
     const randomNumber = Math.random();
 
-
     if (randomNumber <= hitChance) {
-      const damageDealt = Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);
+      const damageDealt = Math.floor(Math.random() * (maxAttack - minAttack + 1) + minAttack);
       let newPlayerHealth = playerHealth;
       let newEnemyHealth = enemyHealth;
 
@@ -179,15 +251,14 @@ const BattleTrain = () => {
         setPlayerHealth(newPlayerHealth);
       }
 
-
       const hitMessage = (
         <div style={style.fightNarrative}>
           <span style={isPlayerAttack ? style.playerName : style.enemyName}>
             {attacker.name}
           </span> hits
           <span style={!isPlayerAttack ? style.playerName : style.enemyName}> {defender.name}
-          </span> with its
-          <span style={{ ...style.weaponName, color: getItemGradeColor(player?.equipment?.mainHand?.grade ?? 'common') }}> {attacker.equipment?.mainHand?.name}.
+          </span> with its <span style={{ ...style.weaponName, color: getItemGradeColor(isPlayerAttack ? playerWeapon?.grade : 'common' ?? 'common') }}>
+            {isPlayerAttack ? playerWeapon?.name : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.name}.
           </span>
           <br />
           <span style={isPlayerAttack ? style.playerDamage : style.enemyDamage}>
@@ -195,7 +266,7 @@ const BattleTrain = () => {
           </span>
           <br />
           <span>
-            {isPlayerAttack ? returnEnemyShape(enemy, newEnemyHealth) :
+            {isPlayerAttack ? returnEnemyShape(currentEnemy, newEnemyHealth) :
               <span style={style.playerHealth}> damage report: {newPlayerHealth}/{playerMaxHealth}  <span style={returnPercentageColor(playerHealth)}>
                 {Math.round((newPlayerHealth / playerMaxHealth) * 100)} % left
               </span>
@@ -209,8 +280,7 @@ const BattleTrain = () => {
 
 
       if (isPlayerAttack) {
-
-        // Add to log
+        // Add to log if hit
         setBattleStats(prevStats => ({
           ...prevStats,
           attempts: prevStats.attempts + 1,
@@ -221,6 +291,7 @@ const BattleTrain = () => {
       }
 
     } else {
+      // If miss
       const missMessage = (
         <div style={style.fightNarrative}>
           <span style={isPlayerAttack ? style.playerName : style.enemyName}>{attacker.name} </span>
@@ -230,6 +301,7 @@ const BattleTrain = () => {
           </span>
         </div>
       );
+
       setFightNarrative(prevNarrative => [...prevNarrative, missMessage]);
 
       // Add to log
@@ -250,60 +322,108 @@ const BattleTrain = () => {
     }
   };
 
-  const startFight = () => {
-    if (enemy && player) {
+  const startFight = async () => {
+    if (!currentEnemy || !player) return;
+    setLoading(true);
+    if (currentEnemy.hidden && hiddenEnemyConcluded) {
+      getEnemy();
+      resetStats();
       setFightNarrative([]);
-      setBattleActive(true);
-      attack(player, enemy, true);
+      setLoading(false);
+      return;
+    } else {
+      // Try to spawn hidden enemies (Elites, Bosses) based on their spawn chance
+      // and the players planet location
+      //
+      const spawnHiddenEnemies = await GetSpawnHiddenEnemies(player);
+
+      if (spawnHiddenEnemies.length > 0 && !currentEnemy.hidden) {
+
+        // Find the enemy with the lowest chanceToEncounter, treating undefined as 1 (or another high value indicating very common)
+        const chooseRarestEnemy = spawnHiddenEnemies.reduce((rarest, current) => {
+          const rarestChance = rarest.chanceToEncounter !== undefined ? rarest.chanceToEncounter : 1;
+          const currentChance = current.chanceToEncounter !== undefined ? current.chanceToEncounter : 1;
+          return currentChance < rarestChance ? current : rarest;
+        }, spawnHiddenEnemies[0]);
+
+        setFightNarrative([]);
+        setEnemyInState(chooseRarestEnemy)
+        // if we manage to actually spawn a hidden enemy
+        // we want to return here so the player can make a decision to fight or not
+        //
+        setLoading(false);
+        return;
+      }
     }
+
+    setFightNarrative([]);
+    setBattleActive(true);
+    setLoading(false);
   };
 
-  const alternateAttack = () => {
-    if (battleActive && player && enemy) {
-      if (turnRef.current) {
-        if (playerHealth > 0 && enemyHealth > 0) {
-          attack(player, enemy, true);
-        }
-      } else {
-        if (playerHealth > 0 && enemyHealth > 0) {
-          attack(enemy, player, false);
-        }
-      }
 
-      if (playerHealth <= 0 || enemyHealth <= 0) {
-        clearInterval(intervalIdRef.current as NodeJS.Timeout);
-        setBattleActive(false);
+  const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
+    setLoading(true);
+    let loot: ILootDrop[] = [];
 
-        if (playerHealth <= 0) {
-          fightEnd(false, enemy, player);
-        } else {
-          fightEnd(true, enemy, player);
-        }
-      }
-
-      // Toggle the turn for the next interval
-      turnRef.current = !turnRef.current;
-    }
-  };
-
-  const fightEnd = (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
-    console.log('fight end')
-    const playerMaxHealth = calculateMaxHealth(player);
-    const enemyMaxHealth = calculateMaxHealth(enemy);
     if (playerWin) {
-      console.log('Player Wins!');
+      let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
+
+      // Create loot chance logic here
+      if (enemy.trashLoot) {
+        // This is the logic to create "basic item" loot from the fight
+        //
+        try {
+          // Step 1: Create or get the already owned item from the player owned items.
+          // reference the trash loot from the monster
+          //
+          const playerOwnedItem = await GetCreatePlayerOwnedItem(player, enemy.trashLoot);
+          const baseItem = await GetBaseItem(enemy.trashLoot);
+
+          // Check if the player's inventory already includes this playerOwnedItem.
+          //
+          const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === playerOwnedItem?._id.toString());
+          let amountToDrop = Math.floor(Math.random() * 5) + 1;
+
+
+          if (itemInInventoryIndex >= 0 && playerOwnedItem) {
+            // The player already owns this item, so increase its quantity.
+            await GetModifyOwnedItem(playerOwnedItem?._id, amountToDrop);
+          } else {
+            // The player does not own this item, so add it to the inventory.
+            // that will be pushed to the updatePlayerData
+            //
+            if (playerOwnedItem) {
+              updatedInventory.push(playerOwnedItem._id);
+              amountToDrop = 1;
+            }
+          }
+
+          if (baseItem) {
+            loot.push({ item: baseItem, quantity: amountToDrop })
+          }
+
+        } catch (e) {
+          console.error(e);
+        };
+      }
+
       const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
-      updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward })
+      // Update the player with all the new data
+      // this will update in context & back-end
+      //
+      await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
 
-
-      // Add new message and reset health
+      // Add average damage and hit rate to the battleStats logging.
+      // and set winnerMessage display
       //
       const averageDamage = battleStats.hits > 0 ? Math.round(battleStats.totalDamage / battleStats.hits) : 0;
       const hitRate = battleStats.attempts > 0 ? Math.round((battleStats.hits / battleStats.attempts) * 100) : 0;
-      console.log(battleStats)
-      const winnerMessage = (
+      // The battle stats log
+      //
+      const battleStatsLogMessage = (
         <div>
           <IonGrid>
             <IonRow>
@@ -346,33 +466,91 @@ const BattleTrain = () => {
               <IonCol>Gained XP</IonCol>
               <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
             </IonRow>
+            {loot.length > 0 ? (
+              <IonRow>
+                <IonCol>
+                  Loot:
+                  {loot.map((i, index) => {
+                    return (
+                      <p key={index}>{i.quantity}x <span style={{ color: getItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
+                    );
+                  })}
+                </IonCol>
+              </IonRow>
+            ) : <></>}
           </IonGrid>
         </div>
       );
-      setFightNarrative(prev => [...prev, winnerMessage]);
-      setPlayerHealth(playerMaxHealth);
-      setEnemyHealth(enemyMaxHealth);
-      setBattleStats({
-        attempts: 0,
-        hits: 0,
-        maxHit: 0,
-        misses: 0,
-        totalDamage: 0,
-        dodges: 0,
-      });
+
+      setFightNarrative(prev => [...prev, battleStatsLogMessage]);
+
+      // if we were fighting a hidden enemy
+      // we mark him as dead so that value can be used to spawn the original enemy
+      //
+      if (enemy.hidden) {
+        setHiddenEnemyConcluded(true);
+      }
+
+      resetStats();
     }
+    setLoading(false);
+
   }
 
-  // interval effect
+  const calculateAttackSpeed = (dex: number, baseSpeed?: number) => {
+    const weaponAttackSpeed = baseSpeed ?? playerWeapon.stats.attackSpeed;
+    const rawSpeed = weaponAttackSpeed / (1 + (dex * DEX_MODIFIER));
+    // The attack speed is either the calculated speed or the minimum interval, whichever is greater
+    return Math.max(rawSpeed, MIN_ATTACK_INTERVAL);
+  };
+
+  // Attacking logic
+  // We use dex to determine who attacks at what speed
+  //
   useEffect(() => {
-    if (battleActive && player && enemy) {
-      intervalIdRef.current = setInterval(alternateAttack, 1000); // Set interval to 1 second
+    if (!player || !currentEnemy || !battleActive) return;
+    const playerAttackSpeed = calculateAttackSpeed(player?.dex ?? 0);
+    const enemyAttackSpeed = calculateAttackSpeed(currentEnemy?.dex ?? 0, 2400);
+    console.log(playerAttackSpeed)
+
+    // Schedule the next player attack
+    const schedulePlayerAttack = () => {
+      const delay = playerNextAttack - Date.now();
+      return setTimeout(() => {
+        attack(player, currentEnemy, true);
+        setPlayerNextAttack(Date.now() + playerAttackSpeed);
+      }, delay > 0 ? delay : 0); // Ensure delay is not negative
+    };
+
+    // Schedule the next enemy attack
+    const scheduleEnemyAttack = () => {
+      const delay = enemyNextAttack - Date.now();
+      return setTimeout(() => {
+        attack(currentEnemy, player, false);
+        setEnemyNextAttack(Date.now() + enemyAttackSpeed);
+      }, delay > 0 ? delay : 0); // Ensure delay is not negative
+    };
+
+    const playerTimer = schedulePlayerAttack();
+    const enemyTimer = scheduleEnemyAttack();
+
+    if (playerHealth <= 0 || enemyHealth <= 0) {
+      setBattleActive(false);
+      clearTimeout(playerTimer);
+      clearTimeout(enemyTimer);
+      if (playerHealth <= 0) {
+        fightEnd(false, currentEnemy, player);
+      } else {
+        fightEnd(true, currentEnemy, player);
+      }
     }
 
+    // Cleanup function
     return () => {
-      if (intervalIdRef.current) clearInterval(intervalIdRef.current);
+      clearTimeout(playerTimer);
+      clearTimeout(enemyTimer);
     };
-  }, [battleActive, player, enemy, playerHealth, enemyHealth]);
+  }, [playerNextAttack, enemyNextAttack, player, currentEnemy, battleActive]);
 
 
   // Automatically scroll to the latest narrative entry
@@ -380,15 +558,17 @@ const BattleTrain = () => {
     (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
   }, [fightNarrative]);
 
-  useIonViewDidLeave(() => {
-    if (player && enemy) {
-      const playerMaxHealth = calculateMaxHealth(player);
-      const enemyMaxHealth = calculateMaxHealth(enemy);
-      setPlayerHealth(playerMaxHealth);
-      setEnemyHealth(enemyMaxHealth);
+  useIonViewWillLeave(() => {
+    if (player && currentEnemy) {
+      resetStats();
+      setFightNarrative([]);
     }
   })
 
+  const runAway = () => {
+    getEnemy();
+    resetStats();
+  }
 
   return (
     <IonPage>
@@ -396,20 +576,59 @@ const BattleTrain = () => {
 
       <IonToolbar>
         <IonTitle style={{ textAlign: 'center' }}>
-          <span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{enemy?.name}</span>
+          <span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{currentEnemy?.name}</span>
         </IonTitle>
       </IonToolbar>
 
       <IonContent>
-        <IonImg src={`/images/enemies/enemy-${enemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
+        <IonImg src={`/images/enemies/enemy-${currentEnemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
 
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (
             <div key={index}>{line}</div>
           ))}
-          {!battleActive ? (<IonButton onClick={startFight} style={{ width: '100%' }}>Fight</IonButton>) : (<></>)}
-          {/* Invisible element at the end of your narratives */}
 
+          {!battleActive ? (
+            <>
+              <div >
+                {currentEnemy?.hidden && !hiddenEnemyConcluded ? (
+                  <div>
+                    Type: <span style={{ color: currentEnemy?.type === 'boss' ? 'orange' : '#A335EE' }}>{currentEnemy?.type.toLocaleUpperCase()} </span><br />
+                    Level: <span style={{ fontWeight: 700, marginBottom: 36 }}>{currentEnemy?.level}</span> <br />
+                    <IonCardSubtitle style={{ color: 'gold' }}>This enemy has a chance to drop rare loot.</IonCardSubtitle>
+                    <p style={{ color: 'red', fontSize: 16, fontWeight: 700 }}>{enemyIntimidation ?? ''}</p>
+                  </div>
+                ) : <></>}
+
+              </div>
+
+              {!loading ? (
+                <div>
+                  <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'success'} style={{ width: '100%', marginTop: 36 }}>
+                    <>Fight</>
+                  </IonButton>
+
+                  <IonButton
+                    style={{
+                      width: '100%', marginTop: 8
+                    }}
+                    fill="solid"
+                    color="light"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      getEnemy();
+                      history.push(`/explore`);
+                    }}
+                  >
+                    Return
+                  </IonButton>
+                </div>
+
+              ) : (<IonSpinner />)}
+
+            </>
+          ) : (<></>)}
+          {/* Invisible element at the end of your narratives */}
           <div ref={narrativeEndRef} />
         </div>
 

@@ -2,7 +2,7 @@ import * as Realm from "realm-web";
 import { IEnemy } from "../types/types";
 
 interface IGetEnemiesProps {
-  location?: string;
+  location?: Realm.BSON.ObjectId;
   monsterId?: string; // Use string type assuming _id is a string in your schema
 }
 
@@ -21,7 +21,9 @@ export const getEnemies = async ({ location }: IGetEnemiesProps): Promise<IEnemy
     if (location) {
       // Use find() for location queries to get all matching documents
       const enemiesResult = await enemiesCollection.find({ location });
+
       console.log("Querying with location:", location);
+
       return enemiesResult;
     } else {
       // Optionally handle the case where neither _id nor location is provided

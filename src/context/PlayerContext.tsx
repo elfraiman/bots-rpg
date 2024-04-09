@@ -1,20 +1,18 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { IPlayer } from '../types/types';
 import * as Realm from 'realm-web';
-import getXpForNextLevel from '../functions/GetXpForNextLevel';
+import GetXpForNextLevel from '../functions/GetXpForNextLevel';
 
 // Assuming you've properly initialized the Realm app outside of this component
 const app = Realm.App.getApp('application-0-vgvqx');
 
 interface IPlayerContext {
   player: IPlayer | null;
-  setPlayer: (player: IPlayer | null) => void;
   updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>;
 }
 
 const defaultState: IPlayerContext = {
   player: null,
-  setPlayer: () => { },
   updatePlayerData: async () => { }
 };
 
@@ -31,7 +29,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    console.log(updates, 'updates')
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
     const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
     const userId = app.currentUser.id;
@@ -42,16 +39,15 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const xpToNextLevel = getXpForNextLevel({level: player?.level ?? 0,});
-      
+      const xpToNextLevel = GetXpForNextLevel({ level: player?.level ?? 0, });
+
       // Handle leveling up.
-      if (player && xpToNextLevel <= player?.experience ) {
+      if (player && xpToNextLevel <= player?.experience) {
         updates['level'] = player?.level + 1;
         updates['experience'] = 0;
         updates['attributePoints'] = player.attributePoints + 5;
       }
 
-      console.log(xpToNextLevel, 'xp to next level within the player context');
       // Assuming 'updates' is an object with fields you want to update and their new values
       await players.updateOne({ _id: userId }, { $set: updates });
 
@@ -98,8 +94,18 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   }, [player]); // Dependency on 'player' to prevent refetching if it's already set
 
   return (
-    <PlayerContext.Provider value={{ player, setPlayer, updatePlayerData }}>
+    <PlayerContext.Provider value={{ player, updatePlayerData }}>
       {children}
     </PlayerContext.Provider>
   );
+};
+
+
+// Custom hook to use the splash screen context
+export const usePlayerData = () => {
+  const context = useContext(PlayerContext);
+  if (context === undefined) {
+    throw new Error('useSplashScreen must be used within a SplashScreenProvider');
+  }
+  return context;
 };

@@ -1,0 +1,89 @@
+ion-menu::part(backdrop) {
+  background-color: rgba(255, 0, 255, 0.5);
+}
+
+.stats-btn {
+  padding: 0px;
+  margin: 0px;
+  font-size: 16px;
+}
+
+.bg-video video {
+  min-height: 100%;
+  min-width: 100%;
+  width: auto;
+  object-fit: cover;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.home-bg {
+  --background: url("/images/home.webp") no-repeat center center / cover !important;
+}
+
+.left-arm-block {
+  position: absolute;
+  width: 25px;
+  height: 35px;
+  background-color: rgba(0, 255, 30, 0.23);
+  border: 1px solid greenyellow;
+  z-index: 100;
+  top: 155px;
+  left: 85px;
+}
+
+.right-arm-block {
+  position: absolute;
+  width: 25px;
+  height: 35px;
+  z-index: 100;
+  top: 155px;
+  left: 205px;
+}
+
+.armor-block {
+  position: absolute;
+  width: 40px;
+  height: 60px;
+  z-index: 100;
+  top: 70px;
+  left: 136px;
+}
+
+.helmet-block {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  z-index: 100;
+  top: 10px;
+  left: 138px;
+}
+.right-boot-block {
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  z-index: 100;
+  top: 250px;
+  left: 178px;
+}
+.left-boot-block {
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  z-index: 100;
+  top: 250px;
+  left: 90px;
+}
+
+.bot-card-content {
+  margin-right: auto;
+  position: relative;
+  justify-content: center;
+  width: 100%;
+}
+
+.bot-outline-img {
+  width: 280px;
+}

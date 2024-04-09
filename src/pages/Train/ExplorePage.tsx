@@ -22,8 +22,13 @@ const ExplorePage: React.FC = () => {
           const enemyList = await getEnemies({ location: player.location });
 
           if (planet) setPlanetData(planet);
-          
-          setEnemies(enemyList ?? []);
+
+          // If the planet has hidden enemies we want to remove them from the default list
+          // these enemies will spawn with a % chance.
+          //
+          const filteredList = enemyList?.filter((enemy: IEnemy) => !enemy.hidden);
+
+          setEnemies(filteredList ?? []);
         } catch (e) {
           console.error('Error fetching planet or enemies', e);
         }
@@ -31,7 +36,7 @@ const ExplorePage: React.FC = () => {
     };
 
     fetchData();
-  }, [player]);
+  }, []);
 
   if (!planetData || !player) {
     return <IonSpinner />;

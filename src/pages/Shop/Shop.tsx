@@ -1,46 +1,43 @@
 import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonContent, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonText } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
-import ArmorCard from '../../components/ArmorCard';
+import EquipmentCard from '../../components/EquipmentCard';
 import Header from '../../components/Header';
-import HelmetCard from '../../components/HelmetCard';
-import WeaponCard from '../../components/WeaponCard';
 import { PlayerContext } from '../../context/PlayerContext';
-import getShopArmors from '../../functions/GetShopArmors';
-import getShopHelmets from '../../functions/GetShopHelmets';
-import getShopWeapons from '../../functions/GetShopWeapons';
-import { IBoots, IHelmet, IShopArmor, IShopBoots, IShopHelmet, IShopWeapon } from '../../types/types';
+import getShopArmors from '../../functions/GetShopEquipment';
+import { IEquipment } from '../../types/types';
 import './Shop.css';
-import getShopBoots from '../../functions/GetShopBoots';
-import BootsCard from '../../components/BootsCard';
 
 
 const Shop = () => {
   const { player } = useContext(PlayerContext);
-  const [weaponsData, setWeaponsData] = useState<IShopWeapon[]>([]);
-  const [armorsData, setArmorsData] = useState<IShopArmor[]>([]);
-  const [helmetsData, setHelmetsData] = useState<IShopHelmet[]>([]);
-  const [bootsData, setBootsData] = useState<IShopBoots[]>([])
+  const [weaponsData, setWeaponsData] = useState<IEquipment[]>([]);
+  const [armorsData, setArmorsData] = useState<IEquipment[]>([]);
+  const [helmetsData, setHelmetsData] = useState<IEquipment[]>([]);
+  const [bootsData, setBootsData] = useState<IEquipment[]>([]);
   const [loading, setLoading] = useState(false);
 
   const getData = async () => {
     setLoading(true);
-    const weaponsForShop = await getShopWeapons();
-    const armorsForShop = await getShopArmors();
-    const helmetsForShop = await getShopHelmets();
-    const bootsForShop = await getShopBoots();
+    const getEquipmentsToSell = await getShopArmors();
 
+    if (getEquipmentsToSell) {
+      const helmets: IEquipment[] = [];
+      const boots: IEquipment[] = [];
+      const armors: IEquipment[] = [];
+      const weapons: IEquipment[] = [];
 
-    if (armorsForShop) {
-      setArmorsData(armorsForShop);
-    }
-    if (weaponsForShop) {
-      setWeaponsData(weaponsForShop);
-    }
-    if (helmetsForShop) {
-      setHelmetsData(helmetsForShop);
-    }
-    if (bootsForShop) {
-      setBootsData(bootsForShop);
+      getEquipmentsToSell.map((equipment: IEquipment) => {
+        if (equipment.type !== 'weapon') {
+          equipment.type === 'helmet' ? helmets.push(equipment) : equipment.type === 'boots' ? boots.push(equipment) : armors.push(equipment);
+        } else {
+          weapons.push(equipment);
+        }
+      })
+
+      setArmorsData(armors);
+      setBootsData(boots);
+      setHelmetsData(helmets);
+      setWeaponsData(weapons);
     }
 
     setLoading(false);
@@ -58,7 +55,9 @@ const Shop = () => {
         <IonPage id="main-content" className="content">
           <Header />
           {player ? (
-            <IonContent className="ion-padding shop-bg">
+            <IonContent className="ion-padding" style={{
+              '--background': `url('/images/shop.webp') 0 0/cover no-repeat`,
+            }}>
               <IonText>
                 <div className="text-overlay">
                   <h2><strong>The shop</strong></h2>
@@ -75,9 +74,9 @@ const Shop = () => {
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {weaponsData.map((weapon: IShopWeapon, index: number) => { // Add type annotations for weapon and index
+                            {weaponsData.map((weapon: IEquipment, index: number) => { // Add type annotations for weapon and index
                               return (
-                                <WeaponCard weapon={weapon} initialPlayer={player} key={index} isForSale={true} />
+                                <EquipmentCard equipment={weapon} key={index} isForSell={true} />
                               );
                             })}
                           </IonList>
@@ -89,9 +88,9 @@ const Shop = () => {
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {armorsData?.map((armor: IShopArmor, index: number) => { // Add type annotations for weapon and index
+                            {armorsData?.map((armor: IEquipment, index: number) => { // Add type annotations for weapon and index
                               return (
-                                <ArmorCard armor={armor} initialPlayer={player} key={index} isForSale={true} />
+                                <EquipmentCard equipment={armor} key={index} isForSell={true} />
                               );
                             })}
                           </IonList>
@@ -103,9 +102,9 @@ const Shop = () => {
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {bootsData?.map((boots: IShopBoots, index: number) => { // Add type annotations for weapon and index
+                            {bootsData?.map((boot: IEquipment, index: number) => { // Add type annotations for weapon and index
                               return (
-                                <BootsCard boots={boots as IBoots} initialPlayer={player} key={index} isForSale={true} />
+                                <EquipmentCard equipment={boot} key={index} isForSell={true} />
                               );
                             })}
                           </IonList>
@@ -117,9 +116,9 @@ const Shop = () => {
                         </IonItem>
                         <div slot="content">
                           <IonList lines='full'>
-                            {helmetsData?.map((helmet: IShopHelmet, index: number) => { // Add type annotations for weapon and index
+                            {helmetsData?.map((helmet: IEquipment, index: number) => { // Add type annotations for weapon and index
                               return (
-                                <HelmetCard helmet={helmet as IHelmet} initialPlayer={player} key={index} isForSale={true} />
+                                <EquipmentCard equipment={helmet} key={index} isForSell={true} />
                               );
                             })}
                           </IonList>
