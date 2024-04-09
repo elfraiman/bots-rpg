@@ -17,9 +17,7 @@ import {
   IonPage,
   IonPopover,
   IonRow,
-  IonSpinner,
-  IonText,
-  IonThumbnail
+  IonSpinner
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
@@ -31,7 +29,6 @@ import Header from '../../components/Header';
 import { PlayerContext } from '../../context/PlayerContext';
 import { GetCombinedEquipmentStatsDetails } from '../../functions/GetCombinedEquipmentStatsDetails';
 import { GetCombinedItemDetails } from '../../functions/GetCombinedItemDetails';
-import getItemGradeColor from '../../functions/GetItemGradeColor';
 import { IEquipment, IPlayer, IPlayerOwnedItem } from '../../types/types';
 import './GuardianPage.css';
 import BotOutline from '/images/BotOutline.webp';
@@ -159,7 +156,9 @@ const GuardianPage: React.FC = () => {
     <>
       <IonPage id="main-content">
         <Header />
-        <IonContent className="home-bg">
+        <IonContent className="ion-padding" style={{
+          '--background': `url('/images/home.webp') 0 0/cover no-repeat`,
+        }}>
           <IonCard className="ion-padding card-fade ion-bot-card">
             {loading ? <IonSpinner /> : (
               <div>
@@ -256,12 +255,15 @@ const GuardianPage: React.FC = () => {
           <IonCard className="ion-padding card-fade">
             <div>
               <IonCardTitle>Stats</IonCardTitle>
-              <IonCardSubtitle>Level: {player?.level} |  Attribute Points: <span style={{ color: player?.attributePoints > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
-              <IonCardContent>
+              <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
+              <IonCardContent style={{ padding: 0 }}>
                 <IonGrid>
                   <IonRow>
-                    <IonCol>
-                      <h2>STR: {player?.str}</h2>
+                    <IonCol size='3'>
+                      <IonButton fill="clear" id="str-trigger" color="dark" className="stats-btn">STR: {player?.str}</IonButton>
+                      <IonPopover trigger="str-trigger" triggerAction="hover">
+                        <IonContent class="ion-padding">Strength increases your minimum and maximum physical damage.</IonContent>
+                      </IonPopover>
                     </IonCol>
                     <IonCol>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('str')}>
@@ -269,29 +271,38 @@ const GuardianPage: React.FC = () => {
                       </IonButton>
                     </IonCol>
 
-                    <IonCol>
-                      <h2>CON: {player?.con}</h2>
+                    <IonCol size='3'>
+                      <IonButton fill="clear" id="con-trigger" color="dark" className="stats-btn">CON: {player?.con}</IonButton>
+                      <IonPopover trigger="con-trigger" triggerAction="hover">
+                        <IonContent class="ion-padding">Constitution increases your maximum health.</IonContent>
+                      </IonPopover>
                     </IonCol>
-                    <IonCol>
+                    <IonCol size='3'>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('con')}>
                         {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                       </IonButton>
                     </IonCol>
                   </IonRow>
                   <IonRow>
-                    <IonCol>
-                      <h2>DEX: {player?.dex}</h2>
+                    <IonCol size='3'>
+                      <IonButton fill="clear" id="dex-trigger" color="dark" className="stats-btn">DEX: {player?.dex}</IonButton>
+                      <IonPopover trigger="dex-trigger" triggerAction="hover">
+                        <IonContent class="ion-padding">Dexterity increases your attack speed, accuracy and dodge chance.</IonContent>
+                      </IonPopover>
                     </IonCol>
-                    <IonCol>
+                    <IonCol size='3'>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('dex')}>
                         {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                       </IonButton>
                     </IonCol>
-                    <IonCol>
-                      <h2>INT: {player?.int}</h2>
+                    <IonCol size='3'>
+                      <IonButton fill="clear" id="int-trigger" color="dark" className="stats-btn">INT: {player?.int}</IonButton>
+                      <IonPopover trigger="int-trigger" triggerAction="hover">
+                        <IonContent class="ion-padding">Intelligence increases your rare loot chance and XXX</IonContent>
+                      </IonPopover>
                     </IonCol>
 
-                    <IonCol>
+                    <IonCol size='3'>
                       <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('int')}>
                         {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                       </IonButton>

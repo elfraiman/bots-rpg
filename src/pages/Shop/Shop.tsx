@@ -55,7 +55,9 @@ const Shop = () => {
         <IonPage id="main-content" className="content">
           <Header />
           {player ? (
-            <IonContent className="ion-padding shop-bg">
+            <IonContent className="ion-padding" style={{
+              '--background': `url('/images/shop.webp') 0 0/cover no-repeat`,
+            }}>
               <IonText>
                 <div className="text-overlay">
                   <h2><strong>The shop</strong></h2>
