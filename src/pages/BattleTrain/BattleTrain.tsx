@@ -369,10 +369,9 @@ const BattleTrain = () => {
     let loot: ILootDrop[] = [];
     let goldReward = 0;
     let xpReward = 0;
+    let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
 
     if (playerWin) {
-      let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
-
       // Create loot chance logic here
       if (enemy.trashLoot) {
         // This is the logic to create "basic item" loot from the fight
@@ -415,12 +414,6 @@ const BattleTrain = () => {
       goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
-      // Update the player with all the new data
-      // this will update in context & back-end
-      //
-      await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
-
-
       // if we were fighting a hidden enemy
       // we mark him as dead so that value can be used to spawn the original enemy
       //
@@ -432,7 +425,14 @@ const BattleTrain = () => {
     } else {
       goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 5);
       xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 6);
+
     }
+
+    // Update the player with all the new data
+    // this will update in context & back-end
+    //
+    await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
+
 
     // Add average damage and hit rate to the battleStats logging.
     // and set winnerMessage display
@@ -573,10 +573,6 @@ const BattleTrain = () => {
     }
   })
 
-  const runAway = () => {
-    getEnemy();
-    resetStats();
-  }
 
   return (
     <IonPage>
