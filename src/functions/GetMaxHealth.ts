@@ -12,7 +12,7 @@ const calculateMaxHealth = (character: IPlayer | IEnemy) => {
 
     // Additional health scaling with level; assuming players and enemies get stronger with level
     // This factor could be adjusted or made more complex based on game design needs
-    const levelHealthBonus = character.level * 2;
+    const levelHealthBonus = character.level * 3;
 
     const maxHealth = baseHealth + healthFromCon + levelHealthBonus;
 

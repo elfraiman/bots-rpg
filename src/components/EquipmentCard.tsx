@@ -73,6 +73,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
 
   const equipItem = async (itemId: Realm.BSON.ObjectId) => {
     if (!player) return;
+    const canEquip = checkRequirements();
     setLoading(true);
 
     try {
@@ -213,7 +214,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
       <EquipmentModal
         equipItem={() => handleArmorAction()}
         isForSell={isForSell}
-        canPurchase={checkRequirements()}
+        checkRequirements={checkRequirements()}
         purchaseItem={() => handleArmorAction()}
         sellItem={() => sellEquipment(equipment)}
         showModal={showModal}

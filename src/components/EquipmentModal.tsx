@@ -6,7 +6,7 @@ interface IEquipmentModalProps {
   showModal: boolean;
   item: any;
   isForSell: boolean;
-  canPurchase: boolean;
+  checkRequirements: boolean;
   imgString: string;
   purchaseItem: (item: any) => void;
   equipItem: (item: any) => void;
@@ -16,7 +16,7 @@ interface IEquipmentModalProps {
 }
 
 
-const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, purchaseItem, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
+const EquipmentModal = ({ showModal, item, isForSell, equipItem, checkRequirements, purchaseItem, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
 
   const returnTextForAttackSpeed = (speed: number) => {
     switch (speed) {
@@ -92,12 +92,12 @@ const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, pu
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {isForSell ? (
           <>
-            <IonButton fill="solid" disabled={!canPurchase || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
+            <IonButton fill="solid" disabled={!checkRequirements || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
             <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
           </>
         ) : (
           <>
-            <IonButton fill="solid" disabled={loading} onClick={() => equipItem(item._id)}>Equip</IonButton>
+            <IonButton fill="solid" disabled={loading || !checkRequirements} onClick={() => equipItem(item._id)}>Equip</IonButton>
             <div>
               <IonButton fill="solid" disabled={loading} color="warning" onClick={() => sellItem(item)}>Sell</IonButton>
               <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>

@@ -36,6 +36,7 @@ const LoginPage = () => {
                 setShowAlert(true);
                 return;
             }
+
             try {
                 await app.emailPasswordAuth.registerUser({ email, password });
                 await app.logIn(Realm.Credentials.emailPassword(email, password));
