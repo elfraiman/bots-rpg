@@ -192,14 +192,14 @@ const BattleTrain = () => {
   const returnPercentageColor = (health: number) => {
     if (!player) return;
     const playerMaxHealth = calculateMaxHealth(player);
-    const percentage = health * playerMaxHealth / 100;
-    if (percentage > 80) {
+    const percentage = (health / playerMaxHealth) * 100;
+    if (percentage > 75) {
       return style.goodShape;
-    } else if (percentage > 65) {
+    } else if (percentage > 55) {
       return style.reasonableShape;
-    } else if (percentage > 40) {
+    } else if (percentage > 35) {
       return style.notGoodShape;
-    } else if (percentage > 20) {
+    } else if (percentage > 15) {
       return style.badShape;
     } else {
       return style.barelyAlive;

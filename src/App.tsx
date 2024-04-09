@@ -35,7 +35,10 @@ import './theme/variables.css';
 import InitialStoryPage from './pages/Story/InitialStoryPage';
 import EnterEarthStoryPage from './pages/Story/EnterEarthStoryPage';
 
-setupIonicReact();
+setupIonicReact({
+  rippleEffect: false,
+  mode: 'md',
+});
 
 // Add your App ID
 const app = new Realm.App({ id: 'application-0-vgvqx' });
