@@ -325,6 +325,7 @@ const BattleTrain = () => {
   const startFight = async () => {
     if (!currentEnemy || !player) return;
     setLoading(true);
+
     if (currentEnemy.hidden && hiddenEnemyConcluded) {
       getEnemy();
       resetStats();
@@ -356,6 +357,7 @@ const BattleTrain = () => {
       }
     }
 
+    resetStats();
     setFightNarrative([]);
     setBattleActive(true);
     setLoading(false);
@@ -365,6 +367,8 @@ const BattleTrain = () => {
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
     setLoading(true);
     let loot: ILootDrop[] = [];
+    let goldReward = 0;
+    let xpReward = 0;
 
     if (playerWin) {
       let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
@@ -408,81 +412,14 @@ const BattleTrain = () => {
         };
       }
 
-      const goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
-      const xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
+      goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
+      xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
       // Update the player with all the new data
       // this will update in context & back-end
       //
       await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
 
-      // Add average damage and hit rate to the battleStats logging.
-      // and set winnerMessage display
-      //
-      const averageDamage = battleStats.hits > 0 ? Math.round(battleStats.totalDamage / battleStats.hits) : 0;
-      const hitRate = battleStats.attempts > 0 ? Math.round((battleStats.hits / battleStats.attempts) * 100) : 0;
-      // The battle stats log
-      //
-      const battleStatsLogMessage = (
-        <div>
-          <IonGrid>
-            <IonRow>
-              <IonCol>Attempts</IonCol>
-              <IonCol>{battleStats.attempts}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Hit Rate</IonCol>
-              <IonCol>{hitRate}%</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Max Hit</IonCol>
-              <IonCol>{battleStats.maxHit}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Misses</IonCol>
-              <IonCol>{battleStats.misses}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Dodges</IonCol>
-              <IonCol>{battleStats.dodges}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Average Damage</IonCol>
-              <IonCol>{averageDamage}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Total Damage</IonCol>
-              <IonCol>{battleStats.totalDamage}</IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Winner</IonCol>
-              <IonCol><span style={{ color: playerWin ? style.playerName.color : style.enemyName.color, fontWeight: 'bold' }}>{playerWin ? player.name : enemy.name}</span></IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Gold reward</IonCol>
-              <IonCol><span style={{ color: 'gold' }}>{goldReward}</span></IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>Gained XP</IonCol>
-              <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
-            </IonRow>
-            {loot.length > 0 ? (
-              <IonRow>
-                <IonCol>
-                  Loot:
-                  {loot.map((i, index) => {
-                    return (
-                      <p key={index}>{i.quantity}x <span style={{ color: getItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
-                    );
-                  })}
-                </IonCol>
-              </IonRow>
-            ) : <></>}
-          </IonGrid>
-        </div>
-      );
-
-      setFightNarrative(prev => [...prev, battleStatsLogMessage]);
 
       // if we were fighting a hidden enemy
       // we mark him as dead so that value can be used to spawn the original enemy
@@ -492,9 +429,80 @@ const BattleTrain = () => {
       }
 
       resetStats();
+    } else {
+      goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 5);
+      xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 6);
     }
-    setLoading(false);
 
+    // Add average damage and hit rate to the battleStats logging.
+    // and set winnerMessage display
+    //
+    const averageDamage = battleStats.hits > 0 ? Math.round(battleStats.totalDamage / battleStats.hits) : 0;
+    const hitRate = battleStats.attempts > 0 ? Math.round((battleStats.hits / battleStats.attempts) * 100) : 0;
+    // The battle stats log
+    //
+    const battleStatsLogMessage = (
+      <div>
+        <IonGrid>
+          <IonRow>
+            <IonCol>Attempts</IonCol>
+            <IonCol>{battleStats.attempts}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Hit Rate</IonCol>
+            <IonCol>{hitRate}%</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Max Hit</IonCol>
+            <IonCol>{battleStats.maxHit}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Misses</IonCol>
+            <IonCol>{battleStats.misses}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Dodges</IonCol>
+            <IonCol>{battleStats.dodges}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Average Damage</IonCol>
+            <IonCol>{averageDamage}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Total Damage</IonCol>
+            <IonCol>{battleStats.totalDamage}</IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Winner</IonCol>
+            <IonCol><span style={{ color: playerWin ? style.playerName.color : style.enemyName.color, fontWeight: 'bold' }}>{playerWin ? player.name : enemy.name}</span></IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Gold reward</IonCol>
+            <IonCol><span style={{ color: 'gold' }}>{goldReward}</span></IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>Gained XP</IonCol>
+            <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
+          </IonRow>
+          {loot.length > 0 ? (
+            <IonRow>
+              <IonCol>
+                Loot:
+                {loot.map((i, index) => {
+                  return (
+                    <p key={index}>{i.quantity}x <span style={{ color: getItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
+                  );
+                })}
+              </IonCol>
+            </IonRow>
+          ) : <></>}
+        </IonGrid>
+      </div>
+    );
+
+    setFightNarrative(prev => [...prev, battleStatsLogMessage]);
+
+    setLoading(false);
   }
 
   const calculateAttackSpeed = (dex: number, baseSpeed?: number) => {

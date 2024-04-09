@@ -7,7 +7,7 @@ import { IEnemy, IPlayer } from "../types/types";
 const calculateMaxHealth = (character: IPlayer | IEnemy) => {
 
     const healthPerCon = 5; // Additional health per Constitution point
-    const baseHealth = 25;
+    const baseHealth = 30;
     const healthFromCon = character.con * healthPerCon;
 
     // Additional health scaling with level; assuming players and enemies get stronger with level
