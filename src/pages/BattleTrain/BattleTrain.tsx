@@ -53,7 +53,7 @@ const style = {
 
 const BattleTrain = () => {
 
-  const BASE_ATTACK_SPEED = 2400; // default milliseconds
+  const BASE_ATTACK_SPEED = 3000; // default milliseconds
   const DEX_MODIFIER = 0.006; // Amount dex effects attack speed
   const MIN_ATTACK_INTERVAL = 1500; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
   const BASE_HIT_CHANCE = 0.7;
@@ -518,7 +518,7 @@ const BattleTrain = () => {
   useEffect(() => {
     if (!player || !currentEnemy || !battleActive) return;
     const playerAttackSpeed = calculateAttackSpeed(player?.dex ?? 0);
-    const enemyAttackSpeed = calculateAttackSpeed(currentEnemy?.dex ?? 0, 2400);
+    const enemyAttackSpeed = calculateAttackSpeed(currentEnemy?.dex ?? 0, currentEnemy.equipment?.weapon.stats.attackSpeed ?? BASE_ATTACK_SPEED);
     console.log(playerAttackSpeed)
 
     // Schedule the next player attack

@@ -93,6 +93,7 @@ export type IEnemy_equipment_weapon = {
 export type IEnemy_equipment_weapon_stats = {
   maxAttack: number;
   minAttack: number;
+  attackSpeed: number;
 };
 
 
