@@ -14,7 +14,7 @@ ion-menu::part(backdrop) {
 }
 
 .home-bg {
-  --background: url("/images/home.webp") no-repeat center center / cover;
+  --background: url("/images/home.webp") no-repeat center center / cover !important;
 }
 
 .left-arm-block {

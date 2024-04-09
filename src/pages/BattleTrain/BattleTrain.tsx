@@ -1,4 +1,4 @@
-import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewDidLeave } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import * as Realm from 'realm-web';
@@ -558,7 +558,7 @@ const BattleTrain = () => {
     (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
   }, [fightNarrative]);
 
-  useIonViewDidLeave(() => {
+  useIonViewWillLeave(() => {
     if (player && currentEnemy) {
       resetStats();
       setFightNarrative([]);
@@ -616,6 +616,7 @@ const BattleTrain = () => {
                     color="light"
                     onClick={(e) => {
                       e.preventDefault();
+                      getEnemy();
                       history.push(`/explore`);
                     }}
                   >

@@ -80,7 +80,6 @@ const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, pu
                   <h2>Cost</h2>
                   <p>{item.cost} <span style={{ color: 'gold' }}>Gold</span></p>
                 </>
-
               ) : <></>}
 
               <h2>Requirements</h2>

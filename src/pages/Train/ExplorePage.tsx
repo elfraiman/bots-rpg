@@ -36,7 +36,7 @@ const ExplorePage: React.FC = () => {
     };
 
     fetchData();
-  }, [player?.location]);
+  }, []);
 
   if (!planetData || !player) {
     return <IonSpinner />;
