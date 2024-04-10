@@ -90,7 +90,7 @@ const Header = () => {
                                     <IonText style={{ display: 'block', marginBottom: '0', fontSize: 14 }}>Level: {player?.level}</IonText>
                                 </IonCol>
                                 <IonCol size="3" style={{ textAlign: 'right', fontSize: 13 }}>
-                                    <IonText>Gold: <span style={{ color: 'gold' }}>{player?.gold.toLocaleString()}</span></IonText>
+                                    <IonText>🪙 <span style={{ color: 'gold' }}>{player?.gold.toLocaleString()}</span></IonText>
                                 </IonCol>
                             </IonRow>
 

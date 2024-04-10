@@ -64,7 +64,7 @@ const ItemModal = ({ showModal, item, sellItem, setShowModal, imgString, loading
         <IonRow className="ion-padding">
           <IonCol>
             <h2>Cost</h2>
-            <p>{item.cost} <span style={{ color: 'gold' }}>Gold</span></p> <></>
+            <p>{item.cost} <span style={{ color: 'gold' }}>🪙</span></p> <></>
           </IonCol>
         </IonRow>
 
@@ -77,7 +77,7 @@ const ItemModal = ({ showModal, item, sellItem, setShowModal, imgString, loading
                   </IonRange>
                 </IonRow>
                 <IonRow className="ion-padding">Total value: {totalSellValue.toLocaleString()}
-                  <span style={{ color: 'gold' }}>Gold</span>
+                  <span style={{ color: 'gold' }}>🪙</span>
                 </IonRow>
               </>
             )}

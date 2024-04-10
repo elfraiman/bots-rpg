@@ -16,6 +16,7 @@ import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import getXpReward from "../../functions/GetXpReward";
 import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
+import toast from "react-hot-toast";
 
 interface IFightResult {
   hitChance: number;
@@ -87,7 +88,6 @@ const BattleTrain = () => {
 
   // Ref for scrolling
   const narrativeEndRef = useRef(null);
-
 
   const setEnemyInState = (enemy: IEnemy) => {
     const enemyMaxHealth = calculateMaxHealth(enemy);
@@ -363,7 +363,6 @@ const BattleTrain = () => {
     setLoading(false);
   };
 
-
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
     setLoading(true);
     let loot: ILootDrop[] = [];
@@ -404,6 +403,15 @@ const BattleTrain = () => {
 
           if (baseItem) {
             loot.push({ item: baseItem, quantity: amountToDrop })
+            toast(`+ ${amountToDrop} ${baseItem.name}  `,
+              {
+                style: {
+                  borderRadius: '10px',
+                  background: '#333',
+                  color: '#fff',
+                },
+              }
+            );
           }
 
         } catch (e) {
@@ -425,14 +433,12 @@ const BattleTrain = () => {
     } else {
       goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 5);
       xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 6);
-
     }
 
     // Update the player with all the new data
     // this will update in context & back-end
     //
     await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
-
 
     // Add average damage and hit rate to the battleStats logging.
     // and set winnerMessage display
@@ -478,7 +484,7 @@ const BattleTrain = () => {
           </IonRow>
           <IonRow>
             <IonCol>Gold reward</IonCol>
-            <IonCol><span style={{ color: 'gold' }}>{goldReward}</span></IonCol>
+            <IonCol><span style={{ color: 'gold' }}>{goldReward} 🪙</span></IonCol>
           </IonRow>
           <IonRow>
             <IonCol>Gained XP</IonCol>
@@ -498,6 +504,16 @@ const BattleTrain = () => {
           ) : <></>}
         </IonGrid>
       </div>
+    );
+
+    toast(`+ ${goldReward} 🪙`,
+      {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }
     );
 
     setFightNarrative(prev => [...prev, battleStatsLogMessage]);

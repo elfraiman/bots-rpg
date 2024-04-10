@@ -29,6 +29,7 @@ const EquipmentModal = ({ showModal, item, isForSell, checkRequirements, player,
       case 4200: return 'Very slow'
     }
   }
+
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
       <div className="weapon-modal-title">
@@ -83,7 +84,7 @@ const EquipmentModal = ({ showModal, item, isForSell, checkRequirements, player,
               {isForSell ? (
                 <>
                   <h2>Cost</h2>
-                  <p>{item.cost} <span style={{ color: 'gold' }}>Gold</span></p>
+                  <p>{item.cost} <span style={{ color: 'gold' }}>🪙</span></p>
                 </>
               ) : <></>}
 

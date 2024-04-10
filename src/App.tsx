@@ -38,13 +38,14 @@ import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
 import { SplashScreen } from '@capacitor/splash-screen';
 import * as LiveUpdates from '@capacitor/live-updates';
+import { Toaster } from 'react-hot-toast';
 
 setupIonicReact({
   rippleEffect: false,
   mode: 'md',
 });
 
-const initializeApp = async () => {
+/* const initializeApp = async () => {
   const result = await LiveUpdates.sync();
   if (result.activeApplicationPathChanged) {
     await LiveUpdates.reload();
@@ -53,12 +54,12 @@ const initializeApp = async () => {
     await SplashScreen.hide();
   }
 }
-
+ */
 // Add your App ID
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const App: React.FC = () => {
-  initializeApp();
+  // initializeApp();
   // Keep the logged in Realm user in local state. This lets the app re-render
   // whenever the current user changes (e.g. logs in or logs out).
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
@@ -80,7 +81,10 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
 
-
+        <Toaster
+          position="top-right"
+          reverseOrder={true}
+        />
         {user && player?.name === 'noname' ? (<InitialStoryPage />) : (
           <>
             {!user ? (<Login />) : (

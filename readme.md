@@ -7,6 +7,7 @@ Weapon speeds:
       case 4200: return 'Very slow'
 
 Equipment grades:
+common | uncommon | rare | epic | legendary
 
   case 'common':
             return '#e8e8e8';
@@ -18,3 +19,6 @@ Equipment grades:
             return '#A335EE';
         case 'legendary':
             return '#FF8000';
+
+            Toasts:
+            https://react-hot-toast.com/

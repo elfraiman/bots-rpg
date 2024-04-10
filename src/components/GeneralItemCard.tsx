@@ -1,9 +1,10 @@
-import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonActionSheet, useIonToast } from "@ionic/react";
-import { useContext, useRef, useState } from 'react';
+import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonToast } from "@ionic/react";
+import { useContext, useState } from 'react';
+import toast from "react-hot-toast";
 import { PlayerContext } from '../context/PlayerContext';
 import getItemGradeColor from "../functions/GetItemGradeColor";
 import { getSellItem } from "../functions/GetSellItem";
-import { IItem, IPlayerOwnedItem } from "../types/types";
+import { IPlayerOwnedItem } from "../types/types";
 import ItemModal from "./ItemModal";
 
 interface IBootsCardProps {
@@ -15,7 +16,6 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
   const [loading, setLoading] = useState(false);
-  const [present] = useIonToast();
 
   if (item._id === undefined) {
     console.error("No id on item");
@@ -27,8 +27,16 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
     if (player) {
       setLoading(true);
       await getSellItem(item, sellQuantity, updatePlayerData, player);
-      present({ message: `Gold + ${sellQuantity * item.cost}`, color: 'primary', duration: 1500, position: 'top' });
-
+      toast(`Gold + ${sellQuantity * item.cost}`,
+        {
+          icon: '🪙',
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+      );
       setShowModal(false);
       setLoading(false);
     }

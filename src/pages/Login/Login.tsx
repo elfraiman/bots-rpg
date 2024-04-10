@@ -71,8 +71,7 @@ const LoginPage = () => {
                 <SplashScreen />
             ) : (
                 <>
-                    <IonContent className="ion-padding login-bg">
-
+                    <IonContent className="login-bg">
                         <IonCard className="card-fade login-card ion-padding">
                             <IonCardTitle>
                                 Alpha {import.meta.env.VITE_REACT_APP_VERSION}
