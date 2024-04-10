@@ -159,7 +159,7 @@ const GuardianPage: React.FC = () => {
         <IonContent className="ion-padding" style={{
           '--background': `url('/images/home.webp') 0 0/cover no-repeat`,
         }}>
-          <IonCard className="ion-padding card-fade ion-bot-card">
+          <IonCard className="ion-padding card-fade ion-bot-card corner-border">
             {loading ? <IonSpinner /> : (
               <div>
                 <IonCardTitle>{player.name}</IonCardTitle>
@@ -204,7 +204,7 @@ const GuardianPage: React.FC = () => {
               </div>)}
           </IonCard>
 
-          <IonCard>
+          <IonCard className="corner-border">
             <div>
               <IonAccordionGroup>
                 <IonAccordion value="items">
@@ -252,7 +252,7 @@ const GuardianPage: React.FC = () => {
           </IonCard>
 
 
-          <IonCard className="ion-padding card-fade">
+          <IonCard className="ion-padding card-fade corner-border">
             <div>
               <IonCardTitle>Stats</IonCardTitle>
               <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>

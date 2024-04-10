@@ -73,7 +73,7 @@ const FightPvpPage: React.FC = () => {
                   Win: 0 Lose: 0
                 </IonCol>
 
-                <IonButton fill="clear">Fight</IonButton>
+                <IonButton fill="clear" className="corner-border">Fight</IonButton>
 
               </IonItem>
             ))}

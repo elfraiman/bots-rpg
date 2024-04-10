@@ -63,7 +63,7 @@ const Header = () => {
     }, [player])
 
     return (
-        <IonHeader>
+        <IonHeader style={{ borderBottom: '2px solid black' }}>
             {!loading && player && playerLocation ? (
                 <IonToolbar style={{
                     '--background': `url('/images/planets/planet-ground-${playerLocation?.imgId}.webp') 0 0/cover no-repeat`,

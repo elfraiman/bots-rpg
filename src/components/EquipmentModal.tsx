@@ -127,14 +127,14 @@ const EquipmentModal = ({ showModal, item, isForSell, checkRequirements, player,
         {isForSell ? (
           <>
             <IonButton fill="solid" disabled={!checkRequirements || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
-            <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
+            <IonButton fill="clear" className="corner-border" onClick={() => setShowModal(false)}>Cancel</IonButton>
           </>
         ) : (
           <>
             <IonButton fill="solid" disabled={loading || !checkRequirements} onClick={() => equipItem(item._id)}>Equip</IonButton>
             <div>
               <IonButton fill="solid" disabled={loading} color="warning" onClick={() => sellItem(item)}>Sell</IonButton>
-              <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
+              <IonButton fill="clear" className="corner-border" onClick={() => setShowModal(false)}>Cancel</IonButton>
             </div>
           </>
         )}

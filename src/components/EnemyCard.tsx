@@ -50,11 +50,11 @@ const EnemyCard = ({ enemy }: IEnemyCardProps) => {
 
         <IonRow>
           <IonButton
+            className="corner-border"
             style={{
               width: '100%', marginTop: 8
             }}
-            fill="solid"
-            color="light"
+            fill="clear"
             onClick={(e) => {
               e.preventDefault();
               history.push(`/fight/${enemy._id}`);

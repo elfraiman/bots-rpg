@@ -72,7 +72,7 @@ const GalaxyPage = () => {
                             </div>
 
                             <span>
-                              <IonButton fill="clear" onClick={() => travelToPlanet(planet._id)}>Travel</IonButton>
+                              <IonButton fill="clear" className="corner-border" onClick={() => travelToPlanet(planet._id)}>Travel</IonButton>
                             </span>
 
 
