@@ -608,7 +608,7 @@ const BattleTrain = () => {
 
               {!loading ? (
                 <div>
-                  <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'success'} style={{ width: '100%', marginTop: 36 }}>
+                  <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 36 }}>
                     <>Fight</>
                   </IonButton>
 
@@ -617,6 +617,7 @@ const BattleTrain = () => {
                       width: '100%', marginTop: 8
                     }}
                     fill="solid"
+                    className="corner-border"
                     color="light"
                     onClick={(e) => {
                       e.preventDefault();

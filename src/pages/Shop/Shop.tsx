@@ -64,7 +64,7 @@ const Shop = () => {
                 </div>
               </IonText>
 
-              <IonCard className="card-fade">
+              <IonCard className="card-fade corner-border">
                 <IonCardContent>
                   {weaponsData && armorsData && player ? (
                     <IonAccordionGroup>

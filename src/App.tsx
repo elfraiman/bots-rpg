@@ -39,6 +39,11 @@ import './theme/variables.css';
 import { SplashScreen } from '@capacitor/splash-screen';
 import * as LiveUpdates from '@capacitor/live-updates';
 
+setupIonicReact({
+  rippleEffect: false,
+  mode: 'md',
+});
+
 const initializeApp = async () => {
   const result = await LiveUpdates.sync();
   if (result.activeApplicationPathChanged) {
@@ -48,11 +53,6 @@ const initializeApp = async () => {
     await SplashScreen.hide();
   }
 }
-
-setupIonicReact({
-  rippleEffect: false,
-  mode: 'md',
-});
 
 // Add your App ID
 const app = new Realm.App({ id: 'application-0-vgvqx' });

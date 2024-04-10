@@ -32,7 +32,7 @@ const InitialStoryPage = () => {
   const handleInputChange = (e: CustomEvent) => {
     const value = e.detail.value!;
     setNickname(value);
-    setIsNicknameValid(value.trim().length >= 6 && value.trim().length <= 12);
+    setIsNicknameValid(value.trim().length >= 5 && value.trim().length <= 12);
   };
 
   const handleNicknameSubmit = async () => {
@@ -90,8 +90,8 @@ const InitialStoryPage = () => {
       </IonContent>
 
 
-      <IonModal isOpen={showModal} backdropDismiss={false}> {/* Prevent modal from being dismissed by clicking outside */}
-        <IonHeader>
+      <IonModal isOpen={showModal} backdropDismiss={false} className="ion-padding"> {/* Prevent modal from being dismissed by clicking outside */}
+        <IonHeader >
           <IonToolbar>
             <IonTitle>Choose Nickname</IonTitle>
           </IonToolbar>
@@ -99,9 +99,9 @@ const InitialStoryPage = () => {
         <div className="ion-padding">
           <IonItem>
             <IonLabel position="floating">Nickname</IonLabel>
-            <IonInput value={nickname} onIonInput={handleInputChange} minlength={6} maxlength={12} required={true}></IonInput>
+            <IonInput value={nickname} onIonInput={handleInputChange} minlength={5} maxlength={12} required={true}></IonInput>
           </IonItem>
-          <IonButton expand="block" onClick={handleNicknameSubmit} disabled={!isNicknameValid}>
+          <IonButton expand="block" fill="outline" style={{ marginTop: 26 }} onClick={handleNicknameSubmit} disabled={!isNicknameValid}>
             Confirm
           </IonButton>
         </div>
