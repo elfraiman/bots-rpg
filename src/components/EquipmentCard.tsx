@@ -1,11 +1,11 @@
-import { IonCardSubtitle, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonToast } from "@ionic/react";
+import { IonCol, IonGrid, IonImg, IonItem, IonRow, IonSpinner, useIonToast } from "@ionic/react";
 import { useContext, useState } from 'react';
 import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import { GetCreatePlayerOwnedEquipment } from "../functions/GetCreatePlayerOwnedEquipment";
+import getItemGradeColor from "../functions/GetItemGradeColor";
 import { GetPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
 import { GetSellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
-import getItemGradeColor from "../functions/GetItemGradeColor";
 import { IEquipment, IPlayer } from "../types/types";
 import EquipmentModal from "./EquipmentModal";
 
@@ -73,6 +73,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
 
   const equipItem = async (itemId: Realm.BSON.ObjectId) => {
     if (!player) return;
+    const canEquip = checkRequirements();
     setLoading(true);
 
     try {
@@ -148,7 +149,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
   return (
     <>
       {equipment && player && (
-        <div onClick={() => setShowModal(true)} style={{ padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
+        <div onClick={() => setShowModal(true)} style={{ height: '100%', borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
           {loading ? <IonSpinner /> : (
             <IonGrid style={{ width: '100%', padding: 0 }}>
               <IonRow style={{ width: '100%' }}>
@@ -161,7 +162,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
                 </IonCol>
 
                 {/* Gold Column */}
-                <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <IonCol size="4" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 6 }}>
                   <div style={{ color: getItemGradeColor(equipment.grade), fontSize: '14px', marginBottom: 6 }}>
                     {equipment.name}
                   </div>
@@ -177,7 +178,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
                 </IonCol>
 
                 {/* Requirements Column */}
-                <IonCol size="5" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <IonCol size="5" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end', padding: 6 }}>
                   <div style={{ fontSize: '14px', color: 'white' }}>
                     {equipment.type !== "weapon" ? (
                       <>
@@ -188,21 +189,46 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
                       <>
                         AP: {(equipment as IEquipment)?.stats?.minAttack} ~ {(equipment as IEquipment)?.stats?.maxAttack}
                       </>)}
+
+
                   </div>
 
-                  <span style={{ fontSize: '12px' }}>
-                    Stats required:
-                  </span>
 
-                  <IonCardSubtitle style={{ fontSize: '12px' }}>
-                    DEX: <span style={{ color: player?.dex >= equipment.requirements.dex ? 'green' : 'red', marginRight: 6 }}>
-                      {equipment.requirements.dex}
-                    </span>
 
-                    STR: <span style={{ color: player?.str >= equipment.requirements.str ? 'green' : 'red', }}>
-                      {equipment.requirements.str}
-                    </span>
-                  </IonCardSubtitle>
+                  <IonCol >
+                    {/*     <span style={{ color: checkRequirements() ? 'green' : 'red', }}>
+                      {checkRequirements() ? "Yes" : "No"}
+                    </span> */}
+
+                    <IonRow style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <span style={{ marginRight: 3 }}>
+                        STR:<span style={{ color: player?.str >= equipment.requirements.str ? 'green' : 'red' }}>
+                          {equipment.requirements.str}
+                        </span>
+                      </span>
+
+                      <span>
+                        DEX: <span style={{ color: player?.dex >= equipment.requirements.dex ? 'green' : 'red', }}>
+                          {equipment.requirements.dex}
+                        </span>
+                      </span>
+                    </IonRow>
+                    <IonRow style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <span style={{ marginRight: 3 }}>
+                        CON: <span style={{ color: player?.con >= equipment.requirements.con ? 'green' : 'red' }}>
+                          {equipment.requirements.con}
+                        </span>
+                      </span>
+
+                      <span>
+                        INT: <span style={{ color: player?.int >= equipment.requirements.int ? 'green' : 'red' }}>
+                          {equipment.requirements.int}
+                        </span>
+                      </span>
+                    </IonRow>
+
+                  </IonCol>
+
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -213,12 +239,13 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
       <EquipmentModal
         equipItem={() => handleArmorAction()}
         isForSell={isForSell}
-        canPurchase={checkRequirements()}
+        checkRequirements={checkRequirements()}
         purchaseItem={() => handleArmorAction()}
         sellItem={() => sellEquipment(equipment)}
         showModal={showModal}
         setShowModal={setShowModal}
         loading={loading}
+        player={player as IPlayer}
         imgString={`/images/${equipment.type}/${equipment.type}-${equipment.imgId}.webp`}
         item={equipment}
       />

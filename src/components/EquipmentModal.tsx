@@ -1,12 +1,14 @@
 import { IonButton, IonCol, IonGrid, IonImg, IonModal, IonRow, IonSpinner } from "@ionic/react";
 import getItemGradeColor from "../functions/GetItemGradeColor";
 import './EquipmentModal.css';
+import { IPlayer } from "../types/types";
 
 interface IEquipmentModalProps {
   showModal: boolean;
   item: any;
   isForSell: boolean;
-  canPurchase: boolean;
+  player?: IPlayer;
+  checkRequirements: boolean;
   imgString: string;
   purchaseItem: (item: any) => void;
   equipItem: (item: any) => void;
@@ -16,7 +18,7 @@ interface IEquipmentModalProps {
 }
 
 
-const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, purchaseItem, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
+const EquipmentModal = ({ showModal, item, isForSell, checkRequirements, player, imgString, loading, equipItem, purchaseItem, sellItem, setShowModal }: IEquipmentModalProps) => {
 
   const returnTextForAttackSpeed = (speed: number) => {
     switch (speed) {
@@ -27,7 +29,6 @@ const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, pu
       case 4200: return 'Very slow'
     }
   }
-
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
       <div className="weapon-modal-title">
@@ -74,6 +75,10 @@ const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, pu
           </IonRow>
 
           <IonRow className="ion-padding">
+
+
+
+
             <IonCol>
               {isForSell ? (
                 <>
@@ -83,7 +88,36 @@ const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, pu
               ) : <></>}
 
               <h2>Requirements</h2>
-              <p>DEX {item?.requirements?.dex}, STR {item?.requirements?.str}</p>
+
+              {player ? (
+                <div>
+                  <span>
+                    STR:<span style={{ color: player?.str >= item.requirements.str ? 'green' : 'red', marginRight: 8 }}>
+                      {item?.requirements.str}
+                    </span>
+                  </span>
+
+                  <span>
+                    DEX: <span style={{ color: player?.dex >= item.requirements.dex ? 'green' : 'red', marginRight: 8 }}>
+                      {item?.requirements.dex}
+                    </span>
+                  </span>
+
+
+                  <span>
+                    CON: <span style={{ color: player?.con >= item.requirements.con ? 'green' : 'red', marginRight: 8 }}>
+                      {item?.requirements.con}
+                    </span>
+                  </span>
+
+                  <span>
+                    INT: <span style={{ color: player?.int >= item.requirements.int ? 'green' : 'red', marginRight: 8 }}>
+                      {item?.requirements.int}
+                    </span>
+                  </span>
+                </div>
+              ) : <IonSpinner />}
+
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -92,12 +126,12 @@ const EquipmentModal = ({ showModal, item, isForSell, equipItem, canPurchase, pu
       <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
         {isForSell ? (
           <>
-            <IonButton fill="solid" disabled={!canPurchase || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
+            <IonButton fill="solid" disabled={!checkRequirements || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
             <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
           </>
         ) : (
           <>
-            <IonButton fill="solid" disabled={loading} onClick={() => equipItem(item._id)}>Equip</IonButton>
+            <IonButton fill="solid" disabled={loading || !checkRequirements} onClick={() => equipItem(item._id)}>Equip</IonButton>
             <div>
               <IonButton fill="solid" disabled={loading} color="warning" onClick={() => sellItem(item)}>Sell</IonButton>
               <IonButton fill="clear" onClick={() => setShowModal(false)}>Cancel</IonButton>
