@@ -25,4 +25,25 @@ const GetPlayers = async () => {
 
 }
 
+
+export const checkNameIsValid = async (name: string) => {
+  if (!app.currentUser) {
+    console.error("No current user found");
+    return;
+  }
+
+  const mongodb = app.currentUser.mongoClient("mongodb-atlas");
+  const playersCollection = mongodb.db("bots_rpg").collection<IPlayer>("players");
+
+
+  try {
+    const player = await playersCollection.findOne({ name });
+
+    return player;
+  } catch (e) {
+    throw (e);
+  }
+
+}
+
 export default GetPlayers;

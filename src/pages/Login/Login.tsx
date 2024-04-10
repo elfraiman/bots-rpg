@@ -29,7 +29,6 @@ const LoginPage = () => {
         const password = form.password.value;
         const verifyPassword = !isLogin ? form.verifyPassword.value : password; // Only use verifyPassword in registration mode
 
-
         if (!isLogin) {
             // Handle registration
             if (password !== verifyPassword) {
@@ -43,7 +42,6 @@ const LoginPage = () => {
                 history.replace('/initialstory');
 
                 window.location.reload();
-
 
             } catch (error) {
                 console.error("Error registering new user:", error);
@@ -83,10 +81,10 @@ const LoginPage = () => {
 
                                 <form onSubmit={(e) => handleSubmit(e)}> {/* Wrap inputs and buttons with a form */}
                                     <IonItem>
-                                        <IonInput label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
+                                        <IonInput required={true} label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
                                     </IonItem>
                                     <IonItem>
-                                        <IonInput label="Password" value={password} onIonChange={e => setPassword(e.detail.value!)} type="password" name="password"></IonInput>
+                                        <IonInput required={true} label="Password" value={password} onIonChange={e => setPassword(e.detail.value!)} type="password" name="password"></IonInput>
                                     </IonItem>
 
                                     {!isLogin && (
