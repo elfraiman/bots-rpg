@@ -36,6 +36,18 @@ import InitialStoryPage from './pages/Story/InitialStoryPage';
 import ExplorePage from './pages/Train/ExplorePage';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
+import { SplashScreen } from '@capacitor/splash-screen';
+import * as LiveUpdates from '@capacitor/live-updates';
+
+const initializeApp = async () => {
+  const result = await LiveUpdates.sync();
+  if (result.activeApplicationPathChanged) {
+    await LiveUpdates.reload();
+  }
+  else {
+    await SplashScreen.hide();
+  }
+}
 
 setupIonicReact({
   rippleEffect: false,
@@ -46,6 +58,7 @@ setupIonicReact({
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const App: React.FC = () => {
+  initializeApp();
   // Keep the logged in Realm user in local state. This lets the app re-render
   // whenever the current user changes (e.g. logs in or logs out).
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
