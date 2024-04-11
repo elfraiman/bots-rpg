@@ -607,7 +607,7 @@ const BattleTrain = () => {
 
 
   return (
-    <IonPage>
+    <IonPage >
       <Header />
 
       <IonToolbar>
@@ -617,7 +617,7 @@ const BattleTrain = () => {
       </IonToolbar>
 
       <IonContent>
-        <IonImg src={`/images/enemies/enemy-${currentEnemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
+        <IonImg style={{ animation: 'fadeIn 2s ease-in' }} src={`/images/enemies/enemy-${currentEnemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
 
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (

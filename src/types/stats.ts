@@ -32,7 +32,7 @@ export const calculateAttackSpeed = (weaponAttackSpeed: number, dex: number) => 
 
 
 export const BASE_HIT_CHANCE = 0.7; // The base hit chance before modifications. 0.7 = 70%
-export const MINIMAL_HIT_CHANCE = 0.10 // a fixed bonus to the hit chance (e.g., 5% or 0.05 in decimal form) to ensure there's always a minimal chance of hitting.
+export const MINIMAL_HIT_CHANCE = 0.25; // a fixed bonus to the hit chance (e.g., 5% or 0.05 in decimal form) to ensure there's always a minimal chance of hitting.
 export const DEX_ACCURACY_MODIFIER = 0.02;
 export const EVASION_EFFECT_MODIFIER = 0.02;
 /**

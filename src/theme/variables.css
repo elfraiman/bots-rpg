@@ -17,6 +17,15 @@ ion-button {
   border-color: transparent rgb(92, 203, 203) rgb(92, 203, 203) transparent;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /** Ionic CSS Variables **/
 :root {
   --ion-font-family: Shentox;

@@ -18,7 +18,7 @@ const ExplorePage: React.FC = () => {
     const fetchData = async () => {
       if (player) {
         try {
-          if (enemies.length <= 0) {
+          if (enemies.length <= 0 || enemies[0]?.location.toString() !== player?.location.toString()) {
             const enemyList = await getEnemies({ location: player.location });
 
             // If the planet has hidden enemies we want to remove them from the default list
