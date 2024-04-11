@@ -447,8 +447,8 @@ const BattleTrain = () => {
 
       resetStats();
     } else {
-      goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 5);
-      xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 6);
+      goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 10);
+      xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 10);
     }
 
     // Update the player with all the new data

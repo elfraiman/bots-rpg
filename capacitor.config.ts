@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'Bots RPG',
+  appId: '3fb6cd5f',
+  appName: 'Mecha guardians',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
@@ -15,7 +15,7 @@ const config: CapacitorConfig = {
       maxVersions: 2
     },
     SplashScreen: {
-      launchAutoHide: false
+      launchAutoHide: true
     }
   }
 };

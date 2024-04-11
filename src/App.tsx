@@ -56,6 +56,10 @@ setupIonicReact({
 }
  */
 // Add your App ID
+
+SplashScreen.hide()
+
+
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const App: React.FC = () => {
@@ -70,7 +74,6 @@ const App: React.FC = () => {
     setUser(app.currentUser)
     console.log(isSplashScreenActive)
   }, [app.currentUser]);
-
 
 
   // If we have a user that doesn't have a nickname
