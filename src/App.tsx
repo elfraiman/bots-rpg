@@ -68,6 +68,7 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     setUser(app.currentUser)
+    console.log(isSplashScreenActive)
   }, [app.currentUser]);
 
 

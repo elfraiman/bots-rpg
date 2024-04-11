@@ -1,7 +1,7 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonImg, IonRouterLink, IonRow, IonThumbnail } from "@ionic/react";
 import { IEnemy } from '../types/types';
-import calculateMaxHealth from "../functions/GetMaxHealth";
 import { useHistory } from "react-router";
+import { calculateMaxHealth } from "../types/stats";
 
 interface IEnemyCardProps {
   enemy: IEnemy;

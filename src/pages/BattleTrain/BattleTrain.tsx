@@ -1,5 +1,6 @@
 import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useHistory, useRouteMatch } from "react-router";
 import * as Realm from 'realm-web';
 import Header from "../../components/Header";
@@ -10,13 +11,13 @@ import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedIt
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import getItemGradeColor from "../../functions/GetItemGradeColor";
-import calculateMaxHealth from "../../functions/GetMaxHealth";
 import GetModifyOwnedItem from "../../functions/GetModifyBaseItem";
 import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import getXpReward from "../../functions/GetXpReward";
-import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedWeapon } from "../../types/types";
+import { BASE_ATTACK_SPEED, calculateAttackSpeed, calculateDamage, calculateHitChance, calculateMaxHealth } from "../../types/stats";
+import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
-import toast from "react-hot-toast";
+import { useSplashScreen } from "../../context/SplashScreenContxt";
 
 interface IFightResult {
   hitChance: number;
@@ -32,6 +33,10 @@ interface ILootDrop {
   quantity: number;
 }
 
+interface IPlayerDefensiveStats {
+  evasion: number;
+  defense: number;
+}
 // Example of an inline style for demonstration
 const style = {
   fightNarrative: { color: '#99cc00', marginBottom: 16 },
@@ -53,18 +58,10 @@ const style = {
 
 
 const BattleTrain = () => {
-
-  const BASE_ATTACK_SPEED = 3000; // default milliseconds
-  const DEX_MODIFIER = 0.006; // Amount dex effects attack speed
-  const MIN_ATTACK_INTERVAL = 1500; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
-  const BASE_HIT_CHANCE = 0.7;
-  const STR_ATTACK_MODIFIER = 0.2;
-  const BASE_DAMAGE_INCREASE = 1;
-  const DEX_ACCURACY_MODIFIER = 0.02; // Incase something affects dex
-
-
+  const { setIsSplashScreenActive } = useSplashScreen(); // Use the custom hook
   const { player, updatePlayerData } = useContext(PlayerContext); // Assuming usePlayerHook returns player with health
   const [playerWeapon, setPlayerWeapon] = useState<IPlayerOwnedWeapon | any>();
+  const [playerDefensiveStats, setPlayerDefensiveStats] = useState<IPlayerDefensiveStats>({ evasion: 0, defense: 0 });
   const [currentEnemy, setCurrentEnemy] = useState<IEnemy>(); // Initialized to an empty object, populated upon view enter
   const [playerHealth, setPlayerHealth] = useState<number>(0);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
@@ -77,6 +74,10 @@ const BattleTrain = () => {
   const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
   const [enemyNextAttack, setEnemyNextAttack] = useState(BASE_ATTACK_SPEED);
   const history = useHistory();
+
+  const playerTimerRef = useRef<any>();
+  const enemyTimerRef = useRef<any>();
+
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
     hits: 0,
@@ -119,8 +120,6 @@ const BattleTrain = () => {
     if (!player || !currentEnemy) return;
     const playerMaxHealth = calculateMaxHealth(player);
     const enemyMaxHealth = calculateMaxHealth(currentEnemy);
-    const calculateAttackSpeed = (dex: number) => BASE_ATTACK_SPEED / (1 + (dex * DEX_MODIFIER));
-
     // reset stats
     //
     setPlayerHealth(playerMaxHealth);
@@ -135,35 +134,56 @@ const BattleTrain = () => {
     });
 
     setEnemyIntimidation('');
-    setPlayerNextAttack(calculateAttackSpeed(player?.dex));
-    setEnemyNextAttack(calculateAttackSpeed(currentEnemy?.dex));
   }
 
   const getPlayerEquipment = async () => {
-    if (player && player.equipment && player.equipment.weapon) {
-      setLoading(true);
-      const weapon = await GetCombinedEquipmentStatsDetails(player?._id, player?.equipment?.weapon);
-      if (weapon) {
-        setPlayerWeapon(weapon);
+    if (!player) return;
+    let totalDefense = 0;
+    let totalEvasion = 0;
+
+    if (player.equipment && player.equipment.weapon) {
+      if (player.equipment) {
+        setLoading(true);
+        type EquipmentType = 'armor' | 'helmet' | 'boots';
+        const equipmentTypes: EquipmentType[] = ['armor', 'helmet', 'boots'];
+        for (const type of equipmentTypes) {
+          if (player.equipment[type]) {
+            const details = await GetCombinedEquipmentStatsDetails(player._id, player.equipment[type] as any) as IPlayerOwnedArmor;
+            if (details && details.stats) {
+              totalDefense += details.stats.defense || 0;
+              totalEvasion += details.stats.evasion || 0;
+            }
+          }
+        }
       }
-      setLoading(false);
+
+      console.log(totalDefense, totalEvasion)
+      const weaponDetails = player.equipment.weapon ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.weapon) : null;
+
+      setLoading(true);
+      if (weaponDetails) {
+        setPlayerWeapon(weaponDetails);
+      }
+
+      setPlayerDefensiveStats({ evasion: totalEvasion, defense: totalDefense });
     };
+
+
+    setLoading(false);
   }
 
   useEffect(() => {
-    getPlayerEquipment();
+    if (player) {
+      getPlayerEquipment();
+      const playerMaxHealth = calculateMaxHealth(player);
+      setPlayerHealth(playerMaxHealth);
+    }
   }, [player])
 
   useEffect(() => {
     console.log("[Battle]: View will enter")
     getEnemy();
     setFightNarrative([]);
-
-    if (player) {
-      const playerMaxHealth = calculateMaxHealth(player);
-      setPlayerHealth(playerMaxHealth);
-      getPlayerEquipment();
-    }
   }, []);
 
   // Returns some text to describe the enemy's health status
@@ -206,33 +226,29 @@ const BattleTrain = () => {
     }
   }
 
-  const attack = (attacker: IPlayer | IEnemy, defender: IPlayer | IEnemy, isPlayerAttack: boolean) => {
-    if (!attacker || !defender) {
+  const attack = (isPlayerAttack: boolean) => {
+    if (!player || !currentEnemy) {
       setFightNarrative(prev => [...prev, <div>Player or enemy is missing.</div>]);
       return;
     }
+    const enemyWeapon = currentEnemy?.equipment?.weapon.stats ?? { minAttack: 0, maxAttack: 0, str: 0 };
 
+    const hitChance = isPlayerAttack ? calculateHitChance(player.dex, currentEnemy.dex) : calculateHitChance(currentEnemy.dex, player.dex, playerDefensiveStats.evasion);
+    const damageNumbers = isPlayerAttack ? calculateDamage(playerWeapon.stats.minAttack, playerWeapon.stats.maxAttack, player.str, 0) : calculateDamage(enemyWeapon?.minAttack, enemyWeapon?.maxAttack, currentEnemy.str, playerDefensiveStats.defense);
 
-    const dexDifference = attacker.dex - defender.dex;
-    const hitChance = BASE_HIT_CHANCE + (dexDifference * DEX_ACCURACY_MODIFIER) + 0.05;
-
-    const minAttackBase = isPlayerAttack ? playerWeapon?.stats?.minAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.minAttack ?? 0;
-    const maxAttackBase = isPlayerAttack ? playerWeapon?.stats?.maxAttack : (attacker?.equipment?.weapon as IEnemy_equipment_weapon)?.stats?.maxAttack ?? 0;
-
-    const minAttack = Math.round(minAttackBase + (attacker.str * STR_ATTACK_MODIFIER) + BASE_DAMAGE_INCREASE);
-    const maxAttack = Math.round(maxAttackBase + (attacker.str * STR_ATTACK_MODIFIER) + BASE_DAMAGE_INCREASE);
+    console.log(hitChance, damageNumbers, 'Hit chance, damage numbers', isPlayerAttack);
 
     applyFightResults({
       hitChance,
-      maxAttack,
-      minAttack,
-      attacker: attacker,
-      defender,
+      minAttack: damageNumbers.minAttack,
+      maxAttack: damageNumbers.maxAttack,
+      attacker: isPlayerAttack ? player : currentEnemy,
+      defender: isPlayerAttack ? currentEnemy : player,
       isPlayerAttack: isPlayerAttack
     });
   };
 
-  const applyFightResults = ({ hitChance, maxAttack, minAttack, attacker, defender, isPlayerAttack }: IFightResult) => {
+  const applyFightResults = ({ hitChance, minAttack, maxAttack, attacker, defender, isPlayerAttack }: IFightResult) => {
     if (!player || !currentEnemy) return;
     const playerMaxHealth = calculateMaxHealth(player);
     const randomNumber = Math.random();
@@ -325,7 +341,7 @@ const BattleTrain = () => {
   const startFight = async () => {
     if (!currentEnemy || !player) return;
     setLoading(true);
-
+    setIsSplashScreenActive(true);
     if (currentEnemy.hidden && hiddenEnemyConcluded) {
       getEnemy();
       resetStats();
@@ -519,29 +535,23 @@ const BattleTrain = () => {
     setFightNarrative(prev => [...prev, battleStatsLogMessage]);
 
     setLoading(false);
+    setIsSplashScreenActive(false);
   }
 
-  const calculateAttackSpeed = (dex: number, baseSpeed?: number) => {
-    const weaponAttackSpeed = baseSpeed ?? playerWeapon.stats.attackSpeed;
-    const rawSpeed = weaponAttackSpeed / (1 + (dex * DEX_MODIFIER));
-    // The attack speed is either the calculated speed or the minimum interval, whichever is greater
-    return Math.max(rawSpeed, MIN_ATTACK_INTERVAL);
-  };
 
   // Attacking logic
   // We use dex to determine who attacks at what speed
   //
   useEffect(() => {
     if (!player || !currentEnemy || !battleActive) return;
-    const playerAttackSpeed = calculateAttackSpeed(player?.dex ?? 0);
-    const enemyAttackSpeed = calculateAttackSpeed(currentEnemy?.dex ?? 0, currentEnemy.equipment?.weapon.stats.attackSpeed ?? BASE_ATTACK_SPEED);
-    console.log(playerAttackSpeed)
+    const playerAttackSpeed = calculateAttackSpeed(playerWeapon.stats.attackSpeed, player.dex);
+    const enemyAttackSpeed = calculateAttackSpeed(currentEnemy.equipment?.weapon.stats.attackSpeed ?? BASE_ATTACK_SPEED, currentEnemy.dex);
 
     // Schedule the next player attack
     const schedulePlayerAttack = () => {
       const delay = playerNextAttack - Date.now();
       return setTimeout(() => {
-        attack(player, currentEnemy, true);
+        attack(true);
         setPlayerNextAttack(Date.now() + playerAttackSpeed);
       }, delay > 0 ? delay : 0); // Ensure delay is not negative
     };
@@ -550,13 +560,16 @@ const BattleTrain = () => {
     const scheduleEnemyAttack = () => {
       const delay = enemyNextAttack - Date.now();
       return setTimeout(() => {
-        attack(currentEnemy, player, false);
+        attack(false);
         setEnemyNextAttack(Date.now() + enemyAttackSpeed);
       }, delay > 0 ? delay : 0); // Ensure delay is not negative
     };
 
     const playerTimer = schedulePlayerAttack();
     const enemyTimer = scheduleEnemyAttack();
+    // Assign timers to refs for later cleanup
+    playerTimerRef.current = playerTimer;
+    enemyTimerRef.current = enemyTimer;
 
     if (playerHealth <= 0 || enemyHealth <= 0) {
       setBattleActive(false);
@@ -569,25 +582,28 @@ const BattleTrain = () => {
       }
     }
 
-    // Cleanup function
     return () => {
-      clearTimeout(playerTimer);
-      clearTimeout(enemyTimer);
+      if (playerTimerRef.current) clearTimeout(playerTimerRef.current);
+      if (enemyTimerRef.current) clearTimeout(enemyTimerRef.current);
     };
   }, [playerNextAttack, enemyNextAttack, player, currentEnemy, battleActive]);
-
 
   // Automatically scroll to the latest narrative entry
   useEffect(() => {
     (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
   }, [fightNarrative]);
 
+
+  // Ionic lifecycle event for component will leave
   useIonViewWillLeave(() => {
     if (player && currentEnemy) {
       resetStats();
       setFightNarrative([]);
     }
-  })
+    // Clear timeouts when leaving the view
+    if (playerTimerRef.current) clearTimeout(playerTimerRef.current);
+    if (enemyTimerRef.current) clearTimeout(enemyTimerRef.current);
+  });
 
 
   return (

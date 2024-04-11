@@ -158,8 +158,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
       {equipment && player && (
         <div onClick={() => setShowModal(true)} style={{ height: '100%', borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
           {loading ? <IonSpinner /> : (
-            <IonGrid style={{ width: '100%', padding: 0 }}>
-
+            <IonGrid style={{ width: '100%', height: '100%', padding: 0 }}>
               <IonRow style={{ width: '100%' }}>
                 {/* Image Column */}
                 <IonCol size="3" style={{ padding: 0 }}>

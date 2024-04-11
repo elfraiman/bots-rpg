@@ -18,17 +18,22 @@ const ExplorePage: React.FC = () => {
     const fetchData = async () => {
       if (player) {
         try {
-          const planet = await getSinglePlanet(player.location);
-          const enemyList = await getEnemies({ location: player.location });
+          if (enemies.length <= 0) {
+            const enemyList = await getEnemies({ location: player.location });
 
-          if (planet) setPlanetData(planet);
+            // If the planet has hidden enemies we want to remove them from the default list
+            // these enemies will spawn with a % chance, this is handled in the battle page
+            //
+            const filteredList = enemyList?.filter((enemy: IEnemy) => !enemy.hidden);
 
-          // If the planet has hidden enemies we want to remove them from the default list
-          // these enemies will spawn with a % chance.
-          //
-          const filteredList = enemyList?.filter((enemy: IEnemy) => !enemy.hidden);
+            setEnemies(filteredList ?? []);
+          }
 
-          setEnemies(filteredList ?? []);
+          if (planetData && planetData?._id.toString() !== player.location.toString() || !planetData) {
+            const planet = await getSinglePlanet(player.location);
+            if (planet) setPlanetData(planet);
+          }
+
         } catch (e) {
           console.error('Error fetching planet or enemies', e);
         }

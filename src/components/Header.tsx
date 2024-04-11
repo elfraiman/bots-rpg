@@ -24,11 +24,11 @@ const Header = () => {
         if (!player) {
             return;
         }
+
+
         // if player is in the same location no need to get planet
         //
         if (player?.location.toString() === playerLocation?._id.toString()) return;
-
-        console.log(player.location, playerLocation, 'player location')
 
         setLoading(true);
         const playerLocationPlanet = await getSinglePlanet(player.location)
@@ -37,7 +37,6 @@ const Header = () => {
     }
 
     const handlePlayerXP = () => {
-        setLoading(true);
         if (player) {
             const playerXp = player.experience;
             const xpNeededForNextLevel = GetXpForNextLevel({ level: player.level });
@@ -52,7 +51,6 @@ const Header = () => {
 
             setXpToNextLevel(xpNeededForNextLevel);
             setPlayerXpBar(progress);
-            setLoading(false);
         }
     }
 

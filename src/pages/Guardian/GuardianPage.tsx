@@ -157,7 +157,7 @@ const GuardianPage: React.FC = () => {
       <IonPage id="main-content">
         <Header />
         <IonContent style={{
-          '--background': `url('/images/home.webp') 0 0/cover no-repeat`,
+          '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,
         }}>
           <IonCard className="ion-padding card-fade ion-bot-card corner-border">
             {loading ? <IonSpinner /> : (
@@ -205,28 +205,28 @@ const GuardianPage: React.FC = () => {
           </IonCard>
 
           <IonCard className="corner-border">
-            <div>
-              <IonAccordionGroup>
-                <IonAccordion value="items">
-                  <IonItem slot="header" color="light">
-                    <IonLabel>Equipment inventory</IonLabel>
-                  </IonItem>
-                  <div slot="content">
-                    <IonList lines='full'>
-                      {inventoryEquipments?.map((item: IEquipment, index: number) => {
-                        return (
-                          <div key={index}>
-                            {item ? (
-                              <EquipmentCard equipment={item} key={index} isForSell={false} />
-                            ) : (<></>)}
-                          </div>
-                        );
-                      })}
-                    </IonList>
-                  </div>
-                </IonAccordion>
-              </IonAccordionGroup>
-            </div>
+
+            <IonAccordionGroup >
+              <IonAccordion value="items" >
+                <IonItem slot="header" color="light" >
+                  <IonLabel>Equipment inventory</IonLabel>
+                </IonItem>
+                <div slot="content">
+                  <IonList lines='full'>
+                    {inventoryEquipments?.map((item: IEquipment, index: number) => {
+                      return (
+                        <div key={index}>
+                          {item ? (
+                            <EquipmentCard equipment={item} key={index} isForSell={false} />
+                          ) : (<></>)}
+                        </div>
+                      );
+                    })}
+                  </IonList>
+                </div>
+              </IonAccordion>
+            </IonAccordionGroup>
+
             <div>
               <IonAccordionGroup>
                 <IonAccordion value="items">
