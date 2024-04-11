@@ -2,7 +2,7 @@ import { IonButton, IonContent, IonHeader, IonImg, IonInput, IonItem, IonLabel, 
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { usePlayerData } from "../../context/PlayerContext";
-import { useSplashScreen } from "../../context/SplashScreenContxt";
+import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import { checkNameIsValid } from "../../functions/GetPlayers";
 import useTypewriter from "../../hooks/UseTypewritter";
 import './story.css';
@@ -11,7 +11,7 @@ import './story.css';
 const InitialStoryPage = () => {
   const history = useHistory();
   const { player, updatePlayerData } = usePlayerData();
-  const { setIsSplashScreenActive } = useSplashScreen();
+  const { setIsNavigationDisabled } = useNavigationDisable();
   const [pageExiting, setPageExiting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [nickname, setNickname] = useState('');
@@ -24,9 +24,9 @@ const InitialStoryPage = () => {
   };
 
   useEffect(() => {
-    setIsSplashScreenActive(true);
+    setIsNavigationDisabled(true);
 
-    return () => setIsSplashScreenActive(false);
+    return () => setIsNavigationDisabled(false);
   }, [])
 
   const handleInputChange = (e: CustomEvent) => {

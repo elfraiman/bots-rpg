@@ -24,7 +24,7 @@ import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
 import { usePlayerData } from './context/PlayerContext';
-import { useSplashScreen } from './context/SplashScreenContxt';
+import { useNavigationDisable } from './context/DisableNavigationContext';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 import FightPvpPage from './pages/Fighting/FightPvpPage';
 import GuardianPage from './pages/Guardian/GuardianPage';
@@ -67,12 +67,12 @@ const App: React.FC = () => {
   // Keep the logged in Realm user in local state. This lets the app re-render
   // whenever the current user changes (e.g. logs in or logs out).
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
-  const { isSplashScreenActive } = useSplashScreen(); // Use the custom hook
+  const { isNavigationDisabled } = useNavigationDisable(); // Use the custom hook
   const { player } = usePlayerData();
 
   React.useEffect(() => {
     setUser(app.currentUser)
-    console.log(isSplashScreenActive)
+    console.log(isNavigationDisabled)
   }, [app.currentUser]);
 
 
@@ -109,32 +109,32 @@ const App: React.FC = () => {
 
 
                 <IonTabBar slot="bottom">
-                  <IonTabButton disabled={isSplashScreenActive} tab="home" href="/guardian">
+                  <IonTabButton disabled={isNavigationDisabled} tab="home" href="/guardian">
                     <IonIcon icon={walkOutline} />
                     <IonLabel>Guardian</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="radio" href="/explore">
+                  <IonTabButton disabled={isNavigationDisabled} tab="radio" href="/explore">
                     <IonIcon icon={planetOutline} />
                     <IonLabel>Explore</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="library" href="/pvp">
+                  <IonTabButton disabled={isNavigationDisabled} tab="library" href="/pvp">
                     <IonIcon icon={medalOutline} />
                     <IonLabel>Fight</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="shop" href="/shop">
+                  <IonTabButton disabled={isNavigationDisabled} tab="shop" href="/shop">
                     <IonIcon icon={diamondOutline} />
                     <IonLabel>Shop</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="travel" href="/travel">
+                  <IonTabButton disabled={isNavigationDisabled} tab="travel" href="/travel">
                     <IonIcon icon={rocketOutline} />
                     <IonLabel>Travel</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="leaderboard" href="/leaderboard">
+                  <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">
                     <IonIcon icon={trophyOutline} />
                     <IonLabel>Leaderboard</IonLabel>
                   </IonTabButton>
