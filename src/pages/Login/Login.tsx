@@ -42,9 +42,9 @@ const LoginPage = () => {
                 history.replace('/initialstory');
 
                 window.location.reload();
-
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error registering new user:", error);
+                alert(error.error)
             }
         } else {
             // Handle login
@@ -58,8 +58,9 @@ const LoginPage = () => {
                 }, 5000)
 
 
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error logging in:", error);
+                alert(error.error)
             }
         }
     };

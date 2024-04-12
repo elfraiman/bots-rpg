@@ -70,7 +70,6 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
         const items = await Promise.all(itemPromises);
         const findSameItem = items.find(item => item?.baseItemId.toString() === baseItemObjective._id.toString());
 
-        console.log(findSameItem, 'same item', quest.objective);
         if (findSameItem?.quantity && findSameItem?.quantity >= quest.objective.targetAmount) {
           console.log('quest complete');
           setConditionsMet(true);
@@ -130,10 +129,14 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
         },
       );
 
-      setObjectiveInfo(null)
-      setPlayerInProgress(false);
-      setConditionsMet(false);
+      resetQuest();
     }
+  }
+
+  const resetQuest = () => {
+    setObjectiveInfo(null)
+    setPlayerInProgress(false);
+    setConditionsMet(false);
   }
 
   useEffect(() => {
