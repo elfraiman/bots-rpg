@@ -253,7 +253,7 @@ export type IPlayer = {
   level: number;
   location: Realm.BSON.ObjectId;
   name: string;
-  quests?: IPlayer_quests;
+  quests: IPlayer_quests;
   str: number;
   unlockedLocations: Array<Realm.BSON.ObjectId>;
 };

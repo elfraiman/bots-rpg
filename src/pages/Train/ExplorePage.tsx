@@ -41,28 +41,6 @@ const ExplorePage: React.FC = () => {
             if (planet) setPlanetData(planet);
           }
 
-          // Fetch the available quests for this planet
-          //
-          const availableQuests = await GetAvailableQuests(player.location);
-
-
-
-          if (availableQuests) {
-            const playerDoneQuests = player.quests?.completed;
-
-            // Filter out quests that are not done by the player
-            const questsAvailableToPlayer = availableQuests.filter((quest) => {
-              return !playerDoneQuests?.includes(quest._id);
-            });
-
-            // Find the lowest quest step among the filtered quests
-            const lowestQuestStep = Math.min(...questsAvailableToPlayer?.map((quest) => quest.questStep));
-
-            // Filter out quests with the lowest quest step
-            const questsWithLowestStep = questsAvailableToPlayer.filter((quest) => quest.questStep === lowestQuestStep);
-            setAvailableQuests(questsWithLowestStep);
-          }
-          console.log(availableQuests);
 
         } catch (e) {
           console.error('Error fetching planet or enemies', e);
@@ -72,6 +50,28 @@ const ExplorePage: React.FC = () => {
 
     fetchData();
   }, [player?.location]);
+
+  useEffect(() => {
+    if (!player) return;
+
+    const fetchQuests = async () => {
+
+      try {
+        const quests = await GetAvailableQuests(player.location);
+        if (quests) {
+          const completedQuestIds = new Set(player.quests?.completed.map(q => q.toString()));
+          const questsAvailable = quests.filter(quest => !completedQuestIds.has(quest._id.toString()));
+          const lowestQuestStep = Math.min(...questsAvailable.map(quest => quest.questStep));
+          setAvailableQuests(questsAvailable.filter(quest => quest.questStep === lowestQuestStep));
+        }
+      } catch (error) {
+        console.error("Failed to fetch quests:", error);
+      }
+    };
+
+    fetchQuests();
+  }, [player?.quests]);
+
 
   if (!planetData || !player) {
     return <IonSpinner />;

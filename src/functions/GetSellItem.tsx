@@ -22,7 +22,6 @@ export const getSellItem = async (item: IPlayerOwnedItem, quantityToSell: number
             if (item.quantity == quantityToSell) {
                 await playerOwnedItemsCollection.deleteOne({ _id: item._id }).then(async () => {
 
-
                     await updatePlayerData({
                         ...player,
                         inventory: player.inventory.filter(i => i !== item._id),
