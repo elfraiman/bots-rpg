@@ -23,8 +23,10 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
-import { usePlayerData } from './context/PlayerContext';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { Toaster } from 'react-hot-toast';
 import { useNavigationDisable } from './context/DisableNavigationContext';
+import { usePlayerData } from './context/PlayerContext';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 import FightPvpPage from './pages/Fighting/FightPvpPage';
 import GuardianPage from './pages/Guardian/GuardianPage';
@@ -36,9 +38,6 @@ import InitialStoryPage from './pages/Story/InitialStoryPage';
 import ExplorePage from './pages/Train/ExplorePage';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
-import { SplashScreen } from '@capacitor/splash-screen';
-import * as LiveUpdates from '@capacitor/live-updates';
-import { Toaster } from 'react-hot-toast';
 
 setupIonicReact({
   rippleEffect: false,

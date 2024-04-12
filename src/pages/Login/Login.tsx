@@ -15,7 +15,7 @@ const LoginPage = () => {
     const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
     const [isLogin, setIsLogin] = useState(true);
-    const { isSplashScreenActive, triggerSplashScreen } = useNavigationDisable();
+    const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
     const app = Realm.App.getApp('application-0-vgvqx');
 
@@ -50,12 +50,12 @@ const LoginPage = () => {
             // Handle login
             try {
                 await app.logIn(Realm.Credentials.emailPassword(email, password));
-                triggerSplashScreen(3000)
+                triggerDisableWithTimer(5000)
                 setTimeout(() => {
                     history.replace('/guardian');
 
                     window.location.reload();
-                }, 3000)
+                }, 5000)
 
 
             } catch (error) {
@@ -67,7 +67,7 @@ const LoginPage = () => {
     return (
         <IonPage>
 
-            {isSplashScreenActive ? (
+            {isNavigationDisabled ? (
                 <SplashScreen />
             ) : (
                 <>
