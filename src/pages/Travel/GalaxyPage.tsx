@@ -38,7 +38,7 @@ const GalaxyPage = () => {
             <Header />
             <IonContent >
               <div className='bg-video'>
-                <video playsInline autoPlay muted preload="auto" loop className="video" src="/videos/guardian-swirl-video.mp4"> </video>
+                <video playsInline autoPlay muted preload="auto" loop className="video" src="/videos/galaxy.mp4"> </video>
                 <div style={{
                   position: 'absolute',
                   top: 0,

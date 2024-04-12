@@ -534,7 +534,7 @@ const BattleTrain = () => {
   // We use dex to determine who attacks at what speed
   //
   useEffect(() => {
-    if (!player || !currentEnemy || !battleActive) return;
+    if (!player || !currentEnemy || !battleActive || !playerWeapon) return;
     const playerAttackSpeed = calculateAttackSpeed(playerWeapon.stats.attackSpeed, player.dex);
     const enemyAttackSpeed = calculateAttackSpeed(currentEnemy.equipment?.weapon.stats.attackSpeed ?? BASE_ATTACK_SPEED, currentEnemy.dex);
 

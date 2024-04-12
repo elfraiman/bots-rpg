@@ -80,16 +80,16 @@ const ExplorePage: React.FC = () => {
   return (
     <IonPage id="main-content">
       <Header />
+
       <IonContent
         className="explore-content"
         style={{
           '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
         }}
       >
-        <div className="text-overlay">
+        <div className="ion-padding">
           <h4>You've arrived at {planetData.name}</h4>
           <p>{planetData.description}</p>
-
         </div>
 
         {availableQuests?.map((q: IQuest, index) => (

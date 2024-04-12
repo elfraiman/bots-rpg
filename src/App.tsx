@@ -54,11 +54,8 @@ setupIonicReact({
   }
 }
  */
-// Add your App ID
 
 SplashScreen.hide()
-
-
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const App: React.FC = () => {
@@ -70,8 +67,9 @@ const App: React.FC = () => {
   const { player } = usePlayerData();
 
   React.useEffect(() => {
-    setUser(app.currentUser)
-    console.log(isNavigationDisabled)
+    if (app.currentUser) {
+      setUser(app.currentUser)
+    }
   }, [app.currentUser]);
 
 
