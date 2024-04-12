@@ -48,7 +48,6 @@ const Shop = () => {
   }, []);
 
 
-
   return (
     <React.Fragment>
       {player && !loading ? (

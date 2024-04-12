@@ -5,7 +5,7 @@ import { PlayerContext } from '../context/PlayerContext';
 import getItemGradeColor from "../functions/GetItemGradeColor";
 import { getSellItem } from "../functions/GetSellItem";
 import { IPlayerOwnedItem } from "../types/types";
-import ItemModal from "./ItemModal";
+import GeneralItemModal from "./GeneralItemModal";
 
 interface IBootsCardProps {
   item: IPlayerOwnedItem;
@@ -87,7 +87,7 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
 
 
 
-          {<ItemModal
+          {<GeneralItemModal
             sellItem={sellItem}
             showModal={showModal}
             setShowModal={setShowModal}

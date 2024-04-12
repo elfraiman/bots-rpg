@@ -13,7 +13,7 @@ interface IEquipmentModalProps {
 }
 
 
-const ItemModal = ({ showModal, item, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
+const GeneralItemModal = ({ showModal, item, sellItem, setShowModal, imgString, loading }: IEquipmentModalProps) => {
   const [totalSellValue, setTotalSellValue] = useState(item.cost);
   const [sellQuantity, setSellQuantity] = useState(1);
 
@@ -97,4 +97,4 @@ const ItemModal = ({ showModal, item, sellItem, setShowModal, imgString, loading
 }
 
 
-export default ItemModal;
+export default GeneralItemModal;
