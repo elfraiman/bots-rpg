@@ -57,6 +57,7 @@ const InitialStoryPage = () => {
     // Wait for the animation to complete before changing the route
     setTimeout(() => {
       history.push(`/earthstory`);
+
     }, 1000); // Adjust the timeout duration to match your CSS animation duration
   };
 

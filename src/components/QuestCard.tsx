@@ -70,12 +70,14 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
         const items = await Promise.all(itemPromises);
         const findSameItem = items.find(item => item?.baseItemId.toString() === baseItemObjective._id.toString());
 
-        if (findSameItem?.quantity ?? 0 >= quest.objective?.targetAmount) {
+        console.log(findSameItem, 'same item', quest.objective);
+        if (findSameItem?.quantity && findSameItem?.quantity >= quest.objective.targetAmount) {
           console.log('quest complete');
           setConditionsMet(true);
           return true;
         }
 
+        setConditionsMet(false);
         return false;
         // TO:DO New quest type - kill quest
         //
@@ -88,7 +90,6 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
   }
 
   const turnInQuest = async () => {
-
     if (conditionsMet && player?.quests) {
       await updatePlayerData({
         ...player,
@@ -130,6 +131,8 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
       );
 
       setObjectiveInfo(null)
+      setPlayerInProgress(false);
+      setConditionsMet(false);
     }
   }
 
@@ -141,7 +144,7 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
       setPlayerInProgress(true);
     }
 
-  }, [quest])
+  }, [quest, player?.inventory])
 
   const upperCaseFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -156,18 +159,18 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
           <IonCardContent>
             {quest.description}
           </IonCardContent>
-          <IonButtons>
 
+
+          <IonButtons style={{ paddingTop: 16 }}>
             <div style={{ fontSize: 16, fontWeight: 600, width: '100%' }}>
               <span>{upperCaseFirstLetter(quest?.objective?.type ?? "")} </span>
-              <span style={{ color: conditionsMet ? 'green' : 'red' }}>{quest.objective?.targetAmount} </span>
+              <span style={{ color: conditionsMet ? 'var(--ion-color-success)' : 'var(--ion-color-warning)' }}>{quest.objective?.targetAmount} </span>
               <span>{objectiveInfo?.name}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-              {playerInProgress ? <IonButton fill="outline" color="success" onClick={() => turnInQuest()}>Complete</IonButton> : <IonButton fill="outline" onClick={() => acceptQuest()}>Accept</IonButton>}
+              {playerInProgress ? <IonButton fill="outline" color={conditionsMet ? "success" : "gray"} disabled={!conditionsMet} onClick={() => turnInQuest()}>Complete</IonButton> : <IonButton fill="outline" onClick={() => acceptQuest()}>Accept</IonButton>}
             </div>
-
           </IonButtons>
         </>
       )}
