@@ -3,13 +3,13 @@
 import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonText } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { useSplashScreen } from "../../context/SplashScreenContxt";
+import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import useTypewriter from "../../hooks/UseTypewritter";
 import './story.css';
 
 const EnterEarthStoryPage = () => {
   const history = useHistory();
-  const { setIsSplashScreenActive } = useSplashScreen();
+  const { setIsNavigationDisabled } = useNavigationDisable();
   const [pageExiting, setPageExiting] = useState(false);
 
   const Typewriter = ({ text, speed }: any) => {
@@ -19,7 +19,7 @@ const EnterEarthStoryPage = () => {
   };
 
   useEffect(() => {
-    setIsSplashScreenActive(true);
+    setIsNavigationDisabled(true);
   }, [])
 
   const handleSkip = () => {
@@ -29,7 +29,7 @@ const EnterEarthStoryPage = () => {
     // Wait for the animation to complete before changing the route
     setTimeout(() => {
       history.push(`/guardian`);
-      setIsSplashScreenActive(false);
+      setIsNavigationDisabled(false);
     }, 1000); // Adjust the timeout duration to match your CSS animation duration
   };
 

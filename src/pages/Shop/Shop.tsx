@@ -48,14 +48,13 @@ const Shop = () => {
   }, []);
 
 
-
   return (
     <React.Fragment>
       {player && !loading ? (
-        <IonPage id="main-content" className="content">
+        <IonPage>
           <Header />
           {player ? (
-            <IonContent className="ion-padding" style={{
+            <IonContent style={{
               '--background': `url('/images/shop.webp') 0 0/cover no-repeat`,
             }}>
               <IonText>

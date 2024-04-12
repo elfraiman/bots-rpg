@@ -2,7 +2,7 @@ import { IonAlert, IonButton, IonCard, IonCardContent, IonCardTitle, IonContent,
 import { FormEvent, useState } from 'react'; // Import FormEvent
 import { useHistory } from "react-router";
 import * as Realm from 'realm-web';
-import { useSplashScreen } from "../../context/SplashScreenContxt";
+import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './Login.css';
 
@@ -15,7 +15,7 @@ const LoginPage = () => {
     const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
     const [isLogin, setIsLogin] = useState(true);
-    const { isSplashScreenActive, triggerSplashScreen } = useSplashScreen();
+    const { isSplashScreenActive, triggerSplashScreen } = useNavigationDisable();
 
     const app = Realm.App.getApp('application-0-vgvqx');
 
@@ -71,8 +71,7 @@ const LoginPage = () => {
                 <SplashScreen />
             ) : (
                 <>
-                    <IonContent className="ion-padding login-bg">
-
+                    <IonContent className="login-bg">
                         <IonCard className="card-fade login-card ion-padding">
                             <IonCardTitle>
                                 Alpha {import.meta.env.VITE_REACT_APP_VERSION}

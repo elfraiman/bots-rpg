@@ -24,7 +24,7 @@ import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
 import { usePlayerData } from './context/PlayerContext';
-import { useSplashScreen } from './context/SplashScreenContxt';
+import { useNavigationDisable } from './context/DisableNavigationContext';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 import FightPvpPage from './pages/Fighting/FightPvpPage';
 import GuardianPage from './pages/Guardian/GuardianPage';
@@ -38,13 +38,14 @@ import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
 import { SplashScreen } from '@capacitor/splash-screen';
 import * as LiveUpdates from '@capacitor/live-updates';
+import { Toaster } from 'react-hot-toast';
 
 setupIonicReact({
   rippleEffect: false,
   mode: 'md',
 });
 
-const initializeApp = async () => {
+/* const initializeApp = async () => {
   const result = await LiveUpdates.sync();
   if (result.activeApplicationPathChanged) {
     await LiveUpdates.reload();
@@ -53,22 +54,26 @@ const initializeApp = async () => {
     await SplashScreen.hide();
   }
 }
-
+ */
 // Add your App ID
+
+SplashScreen.hide()
+
+
 const app = new Realm.App({ id: 'application-0-vgvqx' });
 
 const App: React.FC = () => {
-  initializeApp();
+  // initializeApp();
   // Keep the logged in Realm user in local state. This lets the app re-render
   // whenever the current user changes (e.g. logs in or logs out).
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
-  const { isSplashScreenActive } = useSplashScreen(); // Use the custom hook
+  const { isNavigationDisabled } = useNavigationDisable(); // Use the custom hook
   const { player } = usePlayerData();
 
   React.useEffect(() => {
     setUser(app.currentUser)
+    console.log(isNavigationDisabled)
   }, [app.currentUser]);
-
 
 
   // If we have a user that doesn't have a nickname
@@ -80,7 +85,10 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
 
-
+        <Toaster
+          position="top-right"
+          reverseOrder={true}
+        />
         {user && player?.name === 'noname' ? (<InitialStoryPage />) : (
           <>
             {!user ? (<Login />) : (
@@ -101,32 +109,32 @@ const App: React.FC = () => {
 
 
                 <IonTabBar slot="bottom">
-                  <IonTabButton disabled={isSplashScreenActive} tab="home" href="/guardian">
+                  <IonTabButton disabled={isNavigationDisabled} tab="home" href="/guardian">
                     <IonIcon icon={walkOutline} />
                     <IonLabel>Guardian</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="radio" href="/explore">
+                  <IonTabButton disabled={isNavigationDisabled} tab="radio" href="/explore">
                     <IonIcon icon={planetOutline} />
                     <IonLabel>Explore</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="library" href="/pvp">
+                  <IonTabButton disabled={isNavigationDisabled} tab="library" href="/pvp">
                     <IonIcon icon={medalOutline} />
                     <IonLabel>Fight</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="shop" href="/shop">
+                  <IonTabButton disabled={isNavigationDisabled} tab="shop" href="/shop">
                     <IonIcon icon={diamondOutline} />
                     <IonLabel>Shop</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="travel" href="/travel">
+                  <IonTabButton disabled={isNavigationDisabled} tab="travel" href="/travel">
                     <IonIcon icon={rocketOutline} />
                     <IonLabel>Travel</IonLabel>
                   </IonTabButton>
 
-                  <IonTabButton disabled={isSplashScreenActive} tab="leaderboard" href="/leaderboard">
+                  <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">
                     <IonIcon icon={trophyOutline} />
                     <IonLabel>Leaderboard</IonLabel>
                   </IonTabButton>

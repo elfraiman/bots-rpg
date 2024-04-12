@@ -48,7 +48,7 @@ const FightPvpPage: React.FC = () => {
     <>
       <IonPage id="main-content">
         <Header />
-        <IonContent className="ion-padding">
+        <IonContent>
           pvp
 
           Fight against other players

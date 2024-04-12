@@ -21,7 +21,7 @@ export const GetSellPlayerEquipment = async (equipment: IEquipment, player: IPla
 
             await updatePlayerData({
                 ...player,
-                gold: player.gold + (equipment.cost / 2),
+                gold: player.gold + (equipment.cost / 2.5),
                 equipmentInventory: updatedEquipInventory
             });
             return true;

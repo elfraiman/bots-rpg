@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { SplashScreenProvider } from './context/SplashScreenContxt';
+import { DisableNavigationProvider } from './context/DisableNavigationContext';
 import { PlayerProvider } from './context/PlayerContext';
 
 
@@ -12,9 +12,9 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <PlayerProvider>
-      <SplashScreenProvider>
+      <DisableNavigationProvider>
         <App />
-      </SplashScreenProvider>
+      </DisableNavigationProvider>
     </PlayerProvider>
   </React.StrictMode>
 );

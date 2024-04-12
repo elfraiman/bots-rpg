@@ -3,7 +3,7 @@ import { useContext } from "react";
 import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { PlayerContext } from "../../context/PlayerContext";
-import { useSplashScreen } from "../../context/SplashScreenContxt";
+import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import { getTravel } from "../../functions/GetTravel";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
 import SplashScreen from "../SplashScreen/SplashScreen";
@@ -13,7 +13,7 @@ import './GalaxyPage.css'
 const GalaxyPage = () => {
   const planets = usePlanetsHook();
   const { player, updatePlayerData } = useContext(PlayerContext)
-  const { isSplashScreenActive, triggerSplashScreen } = useSplashScreen();
+  const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
   if (!player) {
     return;
@@ -22,7 +22,7 @@ const GalaxyPage = () => {
   const travelToPlanet = async (destination: Realm.BSON.ObjectId) => {
     try {
       await getTravel({ destination, player, updatePlayerData });
-      triggerSplashScreen(5000);
+      triggerDisableWithTimer(5000);
     } catch (e) {
       console.error(e);
     }
@@ -31,7 +31,7 @@ const GalaxyPage = () => {
   return (
     <>
       <IonPage id="main-content" className="content">
-        {isSplashScreenActive ? (
+        {isNavigationDisabled ? (
           <SplashScreen />
         ) : (
           <>

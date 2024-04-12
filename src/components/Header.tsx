@@ -7,9 +7,6 @@ import { IPlanet } from "../types/types";
 import './Header.css';
 
 
-
-
-
 const Header = () => {
     const [playerXpBar, setPlayerXpBar] = useState(0);
     const [xpToNextLevel, setXpToNextLevel] = useState(0);
@@ -24,11 +21,11 @@ const Header = () => {
         if (!player) {
             return;
         }
+
+
         // if player is in the same location no need to get planet
         //
         if (player?.location.toString() === playerLocation?._id.toString()) return;
-
-        console.log(player.location, playerLocation, 'player location')
 
         setLoading(true);
         const playerLocationPlanet = await getSinglePlanet(player.location)
@@ -37,7 +34,6 @@ const Header = () => {
     }
 
     const handlePlayerXP = () => {
-        setLoading(true);
         if (player) {
             const playerXp = player.experience;
             const xpNeededForNextLevel = GetXpForNextLevel({ level: player.level });
@@ -52,7 +48,6 @@ const Header = () => {
 
             setXpToNextLevel(xpNeededForNextLevel);
             setPlayerXpBar(progress);
-            setLoading(false);
         }
     }
 
@@ -90,7 +85,7 @@ const Header = () => {
                                     <IonText style={{ display: 'block', marginBottom: '0', fontSize: 14 }}>Level: {player?.level}</IonText>
                                 </IonCol>
                                 <IonCol size="3" style={{ textAlign: 'right', fontSize: 13 }}>
-                                    <IonText>Gold: <span style={{ color: 'gold' }}>{player?.gold.toLocaleString()}</span></IonText>
+                                    <IonText><span style={{ color: 'gold' }}>{player?.gold.toLocaleString()}</span>🪙</IonText>
                                 </IonCol>
                             </IonRow>
 

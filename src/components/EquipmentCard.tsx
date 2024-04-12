@@ -1,5 +1,6 @@
-import { IonCol, IonGrid, IonImg, IonItem, IonRow, IonSpinner, useIonToast } from "@ionic/react";
+import { IonCol, IonGrid, IonImg, IonRow, IonSpinner } from "@ionic/react";
 import { useContext, useState } from 'react';
+import toast from "react-hot-toast";
 import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import { GetCreatePlayerOwnedEquipment } from "../functions/GetCreatePlayerOwnedEquipment";
@@ -9,7 +10,6 @@ import { GetSellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
 import { IEquipment, IPlayer } from "../types/types";
 import EquipmentModal from "./EquipmentModal";
 
-
 interface IEquipmentCardProps {
   equipment: IEquipment;
   isForSell: boolean;
@@ -18,7 +18,6 @@ interface IEquipmentCardProps {
 const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { player, updatePlayerData } = useContext(PlayerContext);
-  const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
 
   const checkRequirements = () => {
@@ -61,7 +60,16 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
     try {
       if (!player) return;
       await GetSellPlayerEquipment(equipmentToSell, player, updatePlayerData);
-      present({ message: `Gold + ${equipmentToSell.cost / 2}`, color: 'primary', duration: 1500, position: 'top' });
+      toast(`Gold + ${equipmentToSell.cost / 2}`,
+        {
+          icon: '🪙',
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+      );
       setLoading(false);
       setShowModal(false);
     } catch (e) {
@@ -69,7 +77,6 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
     }
 
   };
-
 
   const equipItem = async (itemId: Realm.BSON.ObjectId) => {
     if (!player) return;
@@ -151,7 +158,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
       {equipment && player && (
         <div onClick={() => setShowModal(true)} style={{ height: '100%', borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
           {loading ? <IonSpinner /> : (
-            <IonGrid style={{ width: '100%', padding: 0 }}>
+            <IonGrid style={{ width: '100%', height: '100%', padding: 0 }}>
               <IonRow style={{ width: '100%' }}>
                 {/* Image Column */}
                 <IonCol size="3" style={{ padding: 0 }}>
@@ -168,11 +175,11 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
                   </div>
 
                   {isForSell ? (<span>
-                    Cost:<span style={{ color: 'gold' }}> {equipment.cost.toLocaleString()} G</span>
+                    Cost:<span style={{ color: 'gold' }}> {equipment.cost.toLocaleString()} 🪙</span>
                   </span>
                   ) : (
                     <span>
-                      Sell: <span style={{ color: 'gold' }}> {(equipment.cost / 2).toLocaleString()} G</span>
+                      Sell: <span style={{ color: 'gold' }}> {(equipment.cost / 2).toLocaleString()} 🪙</span>
                     </span>
                   )}
                 </IonCol>
@@ -193,10 +200,8 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
 
                   </div>
 
-
-
                   <IonCol >
-                    {/*     <span style={{ color: checkRequirements() ? 'green' : 'red', }}>
+                    {/* <span style={{ color: checkRequirements() ? 'green' : 'red', }}>
                       {checkRequirements() ? "Yes" : "No"}
                     </span> */}
 

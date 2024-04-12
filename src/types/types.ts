@@ -66,8 +66,6 @@ export type IPlayerEquipment_modifications = {
   enhancementLevel?: number;
 };
 
-
-
 export const IItemSchema = {
   name: 'IItem',
   properties: {
@@ -84,6 +82,31 @@ export const IItemSchema = {
 export type IEnemy_equipment = {
   weapon: IEnemy_equipment_weapon;
 };
+
+export type IQuest = {
+  _id: Realm.BSON.ObjectId;
+  description: string;
+  npcName: string;
+  location?: Realm.BSON.ObjectId;
+  name: string;
+  objective: IQuest_objective;
+  rewards?: IQuest_rewards;
+  questStep: number;
+};
+
+export type IQuest_objective = {
+  target?: Realm.BSON.ObjectId;
+  targetAmount: number;
+  type?: string;
+};
+
+export type IQuest_rewards = {
+  equipmentReward?: Realm.BSON.ObjectId;
+  experience?: number;
+  gold?: number;
+  itemReward?: Realm.BSON.ObjectId;
+};
+
 
 export type IEnemy_equipment_weapon = {
   name: string;
@@ -223,16 +246,23 @@ export type IPlayer = {
   equipment?: IPlayer_equipment;
   equipmentInventory: Array<Realm.BSON.ObjectId>;
   experience: number;
+  faction?: Realm.BSON.ObjectId;
   gold: number;
   int: number;
   inventory: Array<Realm.BSON.ObjectId>;
   level: number;
   location: Realm.BSON.ObjectId;
   name: string;
+  quests: IPlayer_quests;
   str: number;
   unlockedLocations: Array<Realm.BSON.ObjectId>;
-  faction: Realm.BSON.ObjectId;
 };
+
+export type IPlayer_quests = {
+  completed: Array<Realm.BSON.ObjectId>;
+  inProgress: Array<Realm.BSON.ObjectId>;
+};
+
 export type IPlayer_equipment = {
   armor?: Realm.BSON.ObjectId;
   boots?: Realm.BSON.ObjectId;
