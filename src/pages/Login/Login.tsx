@@ -13,11 +13,10 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [verifyPassword, setVerifyPassword] = useState('');
     const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
     const history = useHistory();
     const [isLogin, setIsLogin] = useState(true);
-    const { isSplashScreenActive, triggerSplashScreen } = useNavigationDisable();
-
-    const app = Realm.App.getApp('application-0-vgvqx');
+    const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
 
     const handleSubmit = async (e: FormEvent) => {
@@ -32,6 +31,7 @@ const LoginPage = () => {
         if (!isLogin) {
             // Handle registration
             if (password !== verifyPassword) {
+                setAlertMessage("Passwords do not match");
                 setShowAlert(true);
                 return;
             }
@@ -42,24 +42,27 @@ const LoginPage = () => {
                 history.replace('/initialstory');
 
                 window.location.reload();
-
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error registering new user:", error);
+                setAlertMessage(error.error)
+                setShowAlert(true);
             }
         } else {
             // Handle login
             try {
                 await app.logIn(Realm.Credentials.emailPassword(email, password));
-                triggerSplashScreen(3000)
+                triggerDisableWithTimer(5000)
                 setTimeout(() => {
                     history.replace('/guardian');
 
                     window.location.reload();
-                }, 3000)
+                }, 5000)
 
 
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error logging in:", error);
+                setAlertMessage(error.error)
+                setShowAlert(true);
             }
         }
     };
@@ -67,7 +70,7 @@ const LoginPage = () => {
     return (
         <IonPage>
 
-            {isSplashScreenActive ? (
+            {isNavigationDisabled ? (
                 <SplashScreen />
             ) : (
                 <>
@@ -111,7 +114,7 @@ const LoginPage = () => {
                             isOpen={showAlert}
                             onDidDismiss={() => setShowAlert(false)}
                             header={'Error'}
-                            message={'Passwords do not match'}
+                            message={alertMessage}
                             buttons={['OK']}
                         />
                     </IonContent>

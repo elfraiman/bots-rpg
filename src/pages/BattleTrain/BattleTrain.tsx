@@ -618,7 +618,6 @@ const BattleTrain = () => {
 
           {!battleActive ? (
             <>
-
               <div>
                 {currentEnemy?.hidden && playerHealth > 0 ? (
                   <div>
@@ -628,7 +627,6 @@ const BattleTrain = () => {
                     <p style={{ color: 'red', fontSize: 16, fontWeight: 700 }}>{enemyIntimidation ?? ''}</p>
                   </div>
                 ) : <></>}
-
               </div>
 
               {!loading ? (
@@ -667,10 +665,10 @@ const BattleTrain = () => {
 
             </>
           ) : (<></>)}
-          {/* Invisible element at the end of your narratives */}
-          <div ref={narrativeEndRef} />
-        </div>
 
+        </div>
+        {/* Invisible element at the end of your narratives */}
+        <div ref={narrativeEndRef} />
       </IonContent>
     </IonPage>
   );

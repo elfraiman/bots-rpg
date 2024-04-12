@@ -1,11 +1,10 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonSpinner } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSpinner } from "@ionic/react";
 import { useContext, useEffect, useState } from 'react';
 import toast from "react-hot-toast";
 import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import GetBaseItem from "../functions/GetBaseItem";
 import { GetCombinedItemDetails } from "../functions/GetCombinedItemDetails";
-import { getSingleEnemy } from "../functions/GetEnemies";
 import { IEnemy, IItem, IQuest } from "../types/types";
 
 interface IQuestCardProps {
@@ -70,12 +69,13 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
         const items = await Promise.all(itemPromises);
         const findSameItem = items.find(item => item?.baseItemId.toString() === baseItemObjective._id.toString());
 
-        if (findSameItem?.quantity ?? 0 >= quest.objective?.targetAmount) {
+        if (findSameItem?.quantity && findSameItem?.quantity >= quest.objective.targetAmount) {
           console.log('quest complete');
           setConditionsMet(true);
           return true;
         }
 
+        setConditionsMet(false);
         return false;
         // TO:DO New quest type - kill quest
         //
@@ -88,7 +88,6 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
   }
 
   const turnInQuest = async () => {
-
     if (conditionsMet && player?.quests) {
       await updatePlayerData({
         ...player,
@@ -129,8 +128,14 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
         },
       );
 
-      setObjectiveInfo(null)
+      resetQuest();
     }
+  }
+
+  const resetQuest = () => {
+    setObjectiveInfo(null)
+    setPlayerInProgress(false);
+    setConditionsMet(false);
   }
 
   useEffect(() => {
@@ -141,33 +146,39 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
       setPlayerInProgress(true);
     }
 
-  }, [quest])
+  }, [quest, player?.inventory])
 
   const upperCaseFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   return (
-    <IonCard className="ion-padding" style={{ minHeight: 180 }}>
+    <IonCard style={{ minHeight: 180 }} className='corner-border'>
       {loading ? <IonSpinner /> : (
         <>
-          <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{quest.npcName} <span style={{ color: playerInProgress ? 'var(--ion-color-primary)' : 'var(--ion-color-success)' }}>{playerInProgress ? 'In progress' : 'Available'}</span></IonCardTitle>
-          <IonCardSubtitle>{quest.name}</IonCardSubtitle>
-          <IonCardContent>
+          <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/npc-earth-1.webp`} sizes="small" />
+          <IonCardHeader>
+            <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{quest.npcName} <span style={{ color: playerInProgress ? 'var(--ion-color-primary)' : 'var(--ion-color-success)' }}>{playerInProgress ? 'In progress' : 'Available'}</span></IonCardTitle>
+            <IonCardSubtitle>{quest.name}</IonCardSubtitle>
+
+          </IonCardHeader>
+
+
+          <IonCardContent className="ion-padding">
             {quest.description}
           </IonCardContent>
-          <IonButtons>
 
+
+          <IonButtons style={{ paddingTop: 16 }} className="ion-padding">
             <div style={{ fontSize: 16, fontWeight: 600, width: '100%' }}>
               <span>{upperCaseFirstLetter(quest?.objective?.type ?? "")} </span>
-              <span style={{ color: conditionsMet ? 'green' : 'red' }}>{quest.objective?.targetAmount} </span>
+              <span style={{ color: conditionsMet ? 'var(--ion-color-success)' : 'var(--ion-color-warning)' }}>{quest.objective?.targetAmount} </span>
               <span>{objectiveInfo?.name}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-              {playerInProgress ? <IonButton fill="outline" color="success" onClick={() => turnInQuest()}>Complete</IonButton> : <IonButton fill="outline" onClick={() => acceptQuest()}>Accept</IonButton>}
+              {playerInProgress ? <IonButton fill="clear" className="corner-border" color={conditionsMet ? "success" : "gray"} disabled={!conditionsMet} onClick={() => turnInQuest()}>Complete</IonButton> : <IonButton fill="clear" className="corner-border" color="success" onClick={() => acceptQuest()}>Accept</IonButton>}
             </div>
-
           </IonButtons>
         </>
       )}
