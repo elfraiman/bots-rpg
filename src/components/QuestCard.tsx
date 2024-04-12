@@ -5,7 +5,6 @@ import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import GetBaseItem from "../functions/GetBaseItem";
 import { GetCombinedItemDetails } from "../functions/GetCombinedItemDetails";
-import { getSingleEnemy } from "../functions/GetEnemies";
 import { IEnemy, IItem, IQuest } from "../types/types";
 
 interface IQuestCardProps {

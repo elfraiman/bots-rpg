@@ -13,11 +13,10 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [verifyPassword, setVerifyPassword] = useState('');
     const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
     const history = useHistory();
     const [isLogin, setIsLogin] = useState(true);
     const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
-
-    const app = Realm.App.getApp('application-0-vgvqx');
 
 
     const handleSubmit = async (e: FormEvent) => {
@@ -32,6 +31,7 @@ const LoginPage = () => {
         if (!isLogin) {
             // Handle registration
             if (password !== verifyPassword) {
+                setAlertMessage("Passwords do not match");
                 setShowAlert(true);
                 return;
             }
@@ -44,7 +44,8 @@ const LoginPage = () => {
                 window.location.reload();
             } catch (error: any) {
                 console.error("Error registering new user:", error);
-                alert(error.error)
+                setAlertMessage(error.error)
+                setShowAlert(true);
             }
         } else {
             // Handle login
@@ -60,7 +61,8 @@ const LoginPage = () => {
 
             } catch (error: any) {
                 console.error("Error logging in:", error);
-                alert(error.error)
+                setAlertMessage(error.error)
+                setShowAlert(true);
             }
         }
     };
@@ -112,7 +114,7 @@ const LoginPage = () => {
                             isOpen={showAlert}
                             onDidDismiss={() => setShowAlert(false)}
                             header={'Error'}
-                            message={'Passwords do not match'}
+                            message={alertMessage}
                             buttons={['OK']}
                         />
                     </IonContent>

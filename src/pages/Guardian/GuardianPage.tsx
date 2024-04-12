@@ -38,6 +38,9 @@ const styles = {
   equipped: { backgroundColor: 'rgba(0, 255, 30, 0.23)', border: '1px solid greenyellow' }
 }
 
+const app = Realm.App.getApp('application-0-vgvqx');
+
+
 const GuardianPage: React.FC = () => {
   const { player, updatePlayerData } = useContext(PlayerContext); // Assuming updatePlayerStats is a method provided by your context
   const [playerHasPoints, setPlayerHasPoints] = useState<boolean>(false);
@@ -151,6 +154,15 @@ const GuardianPage: React.FC = () => {
       </IonPage>
     );
   }
+
+  const logout = async () => {
+    const user = app.currentUser;
+    if (user) {
+      await app.removeUser(user);
+      window.location.reload();
+    }
+  }
+
 
   return (
     <>
@@ -312,6 +324,10 @@ const GuardianPage: React.FC = () => {
                 </IonGrid>
               </IonCardContent>
             </div>
+          </IonCard>
+          <IonCard>
+            <IonCardSubtitle className="ion-padding">This placement is temporary</IonCardSubtitle>
+            <IonButton style={{ width: '100%' }} onClick={() => logout()}>Logout</IonButton>
           </IonCard>
         </IonContent>
 
