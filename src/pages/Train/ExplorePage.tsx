@@ -70,7 +70,7 @@ const ExplorePage: React.FC = () => {
       }
     };
     fetchQuests();
-  }, [player?.quests, player?.location, planetData]);
+  }, [player?.quests, player?.location]);
 
 
   if (!planetData || !player) {
