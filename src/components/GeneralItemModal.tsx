@@ -34,15 +34,12 @@ const GeneralItemModal = ({ showModal, item, sellItem, setShowModal, imgString, 
 
   return (
     <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
-      <div className="weapon-modal-title">
-        {item.type?.toUpperCase()}
-      </div>
       <div className="weapon-name-title" style={{ color: getItemGradeColor(item?.grade ?? 'common') }}>
         {item.name}
       </div>
 
 
-      <IonGrid style={{ height: '100px', border: '2px solid rgb(89, 59, 47)', margin: "6px 16px 16px 16px" }}>
+      <IonGrid style={{ height: '100px', border: `1px solid ${getItemGradeColor(item.grade ?? 'common')}`, margin: "6px 16px 16px 16px" }}>
         <IonRow className="ion-padding">
           <IonImg
             alt={`A ${item.name} with beautiful details`}
