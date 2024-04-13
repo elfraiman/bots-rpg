@@ -48,7 +48,7 @@ const GalaxyPage = () => {
                   <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-1.webp`} />
                   <IonCardHeader>
                     <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Aurora Nova</IonCardTitle>
-                    <IonCardSubtitle>Experienced pilot</IonCardSubtitle>
+                    <IonCardSubtitle>Pilot</IonCardSubtitle>
                   </IonCardHeader>
                   <IonCardContent className="ion-padding">
                     <p>Just let me know where we are headed and I'll make sure we get there.</p>

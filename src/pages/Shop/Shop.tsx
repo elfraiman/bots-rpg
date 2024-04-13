@@ -61,10 +61,10 @@ const Shop = () => {
               <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-0.webp`} />
               <IonCardHeader>
                 <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Alex Nova</IonCardTitle>
-                <IonCardSubtitle>Onboard shop keeper</IonCardSubtitle>
+                <IonCardSubtitle>Trader</IonCardSubtitle>
               </IonCardHeader>
               <IonCardContent className="ion-padding">
-                <p>Full of available assortments for your Mecha Guardian to purchase and use</p>
+                <p>Full of available assortments for your Mecha Guardian to purchase and use.</p>
               </IonCardContent>
             </IonCard>
 

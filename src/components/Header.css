@@ -1,4 +1,30 @@
 ion-progress-bar {
-    --background: rgba(128, 128, 128, 0.201);
-    --progress-background: purple;
-  }
+  --background: rgba(128, 128, 128, 0.201);
+  --progress-background: #a335ee;
+}
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+  min-height: 80px;
+}
+
+.gold-col {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.alpha-version {
+  color: deeppink;
+}

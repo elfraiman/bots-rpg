@@ -74,13 +74,12 @@ const LoginPage = () => {
             ) : (
                 <>
                     <IonContent className="login-bg">
-                        <IonCard className="card-fade login-card ion-padding">
-                            <IonCardTitle>
-                                Alpha {import.meta.env.VITE_REACT_APP_VERSION}
-                            </IonCardTitle>
+                        <IonCard className="card-fade login-card">
                             <IonCardContent>
-
-                                <form onSubmit={(e) => handleSubmit(e)}> {/* Wrap inputs and buttons with a form */}
+                                <IonCardTitle>
+                                    Alpha {import.meta.env.VITE_REACT_APP_VERSION}
+                                </IonCardTitle>
+                                <form onSubmit={(e) => handleSubmit(e)} style={{ marginTop: 16 }}>
                                     <IonItem>
                                         <IonInput required={true} label="Email" value={email} onIonChange={e => setEmail(e.detail.value!)} type="email" name="email"></IonInput>
                                     </IonItem>
@@ -106,8 +105,8 @@ const LoginPage = () => {
                                         <span onClick={() => setIsLogin(true)}>Already have an account? <a>Sign in</a></span>
                                     )}
                                 </div>
-                            </IonCardContent>
-                        </IonCard>
+                            </IonCardContent >
+                        </IonCard >
 
                         <IonAlert
                             isOpen={showAlert}
@@ -116,11 +115,11 @@ const LoginPage = () => {
                             message={alertMessage}
                             buttons={['OK']}
                         />
-                    </IonContent>
+                    </IonContent >
                 </>
             )}
 
-        </IonPage>
+        </IonPage >
     );
 }
 

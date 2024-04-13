@@ -86,8 +86,6 @@ const ExplorePage: React.FC = () => {
           '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
         }}
       >
-
-
         {availableQuests?.map((q: IQuest, index) => (
           <QuestCard quest={q} key={index} />
         ))}
