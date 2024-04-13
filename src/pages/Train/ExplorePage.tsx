@@ -51,11 +51,12 @@ const ExplorePage: React.FC = () => {
     fetchData();
   }, [player?.location]);
 
+  // We fetch this every time the location changes
+  // since quests are location based
+  //
   useEffect(() => {
     if (!player) return;
-
     const fetchQuests = async () => {
-
       try {
         const quests = await GetAvailableQuests(player.location);
         if (quests) {
@@ -68,9 +69,8 @@ const ExplorePage: React.FC = () => {
         console.error("Failed to fetch quests:", error);
       }
     };
-
     fetchQuests();
-  }, [player?.quests]);
+  }, [player?.quests, player?.location, planetData]);
 
 
   if (!planetData || !player) {
