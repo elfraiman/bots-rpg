@@ -1,4 +1,4 @@
-import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, useIonViewWillLeave } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory, useLocation, useRouteMatch } from "react-router";
@@ -422,42 +422,23 @@ const BattleTrain = () => {
         // This is the logic to create "basic item" loot from the fight
         //
         try {
+          let amountToDrop = Math.floor(Math.random() * 5) + 1;
           // Step 1: Create or get the already owned item from the player owned items.
           // reference the trash loot from the monster
           //
-          const playerOwnedItem = await GetCreatePlayerOwnedItem(player, enemy.trashLoot);
+          const item = await GetCreatePlayerOwnedItem(player, enemy.trashLoot, amountToDrop);
           const baseItem = await GetBaseItem(enemy.trashLoot);
-
           // Check if the player's inventory already includes this playerOwnedItem.
           //
-          const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === playerOwnedItem?._id.toString());
-          let amountToDrop = Math.floor(Math.random() * 5) + 1;
+          const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === item?._id.toString());
 
 
-          if (itemInInventoryIndex >= 0 && playerOwnedItem) {
-            // The player already owns this item, so increase its quantity.
-            await GetModifyOwnedItem(playerOwnedItem?._id, amountToDrop);
-          } else {
-            // The player does not own this item, so add it to the inventory.
-            // that will be pushed to the updatePlayerData
-            //
-            if (playerOwnedItem) {
-              updatedInventory.push(playerOwnedItem._id);
-              amountToDrop = 1;
-            }
+          if (itemInInventoryIndex < 0 && item) {
+            updatedInventory.push(item._id);
           }
 
           if (baseItem) {
             loot.push({ item: baseItem, quantity: amountToDrop })
-            toast(`+ ${amountToDrop} ${baseItem.name}  `,
-              {
-                style: {
-                  borderRadius: '10px',
-                  background: '#333',
-                  color: '#fff',
-                },
-              }
-            );
           }
 
         } catch (e) {
@@ -467,7 +448,6 @@ const BattleTrain = () => {
 
       goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
-
     } else {
       goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 10);
       xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 10);
@@ -485,61 +465,65 @@ const BattleTrain = () => {
     // The battle stats log
     //
     const battleStatsLogMessage = (
-      <div>
-        <IonGrid>
-          <IonRow>
-            <IonCol>Attempts</IonCol>
-            <IonCol>{battleStats.attempts}</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Hit Rate</IonCol>
-            <IonCol>{hitRate}%</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Max Hit</IonCol>
-            <IonCol>{battleStats.maxHit}</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Misses</IonCol>
-            <IonCol>{battleStats.misses}</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Dodges</IonCol>
-            <IonCol>{battleStats.dodges}</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Average Damage</IonCol>
-            <IonCol>{averageDamage}</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Total Damage</IonCol>
-            <IonCol>{battleStats.totalDamage}</IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Winner</IonCol>
-            <IonCol><span style={{ color: playerWin ? style.playerName.color : style.enemyName.color, fontWeight: 'bold' }}>{playerWin ? player.name : enemy.name}</span></IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Gold reward</IonCol>
-            <IonCol><span style={{ color: 'gold' }}>{goldReward} 🪙</span></IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>Gained XP</IonCol>
-            <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
-          </IonRow>
-          {loot.length > 0 ? (
+      <div className="card-fade">
+        <IonCardTitle>Battle log</IonCardTitle>
+        <IonCardContent>
+          <IonGrid>
             <IonRow>
-              <IonCol>
-                Loot:
-                {loot.map((i, index) => {
-                  return (
-                    <p key={index}>{i.quantity}x <span style={{ color: getItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
-                  );
-                })}
-              </IonCol>
+              <IonCol>Attempts</IonCol>
+              <IonCol>{battleStats.attempts}</IonCol>
             </IonRow>
-          ) : <></>}
-        </IonGrid>
+            <IonRow>
+              <IonCol>Hit Rate</IonCol>
+              <IonCol>{hitRate}%</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Max Hit</IonCol>
+              <IonCol>{battleStats.maxHit}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Misses</IonCol>
+              <IonCol>{battleStats.misses}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Dodges</IonCol>
+              <IonCol>{battleStats.dodges}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Average Damage</IonCol>
+              <IonCol>{averageDamage}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Total Damage</IonCol>
+              <IonCol>{battleStats.totalDamage}</IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Winner</IonCol>
+              <IonCol><span style={{ color: playerWin ? style.playerName.color : style.enemyName.color, fontWeight: 'bold' }}>{playerWin ? player.name : enemy.name}</span></IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Gold reward</IonCol>
+              <IonCol><span style={{ color: 'gold' }}>{goldReward} 🪙</span></IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>Gained XP</IonCol>
+              <IonCol><span style={{ color: 'aquamarine' }}>{xpReward}</span></IonCol>
+            </IonRow>
+            {loot.length > 0 ? (
+              <IonRow>
+                <IonCol>
+                  Loot:
+                  {loot.map((i, index) => {
+                    return (
+                      <p key={index}>{i.quantity}x <span style={{ color: getItemGradeColor(i?.item?.grade ?? 'common') }}> {i?.item?.name}</span></p>
+                    );
+                  })}
+                </IonCol>
+              </IonRow>
+            ) : <></>}
+          </IonGrid>
+        </IonCardContent>
+
       </div>
     );
 
@@ -618,7 +602,7 @@ const BattleTrain = () => {
   const enemyHealthPercent = (enemyHealth / enemyMaxHealth) * 100;
 
   return (
-    <IonPage>
+    <IonPage className="content">
       {
         //* Battle header enemy vs player *//
       }
@@ -627,14 +611,13 @@ const BattleTrain = () => {
         playerHealthPercent={playerHealthPercent}
         enemyHitInfo={enemyHitInfo}
         playerHitInfo={playerHitInfo}
-        enemyImgId={currentEnemy?.imgId ?? 0}
-      />
+        enemyImgId={currentEnemy?.imgId ?? 0} loading={!currentEnemy} />
 
 
       <IonContent className="content" style={{
         '--background': `url('/images/planets/planet-battle-${0}.webp') 0 0/cover no-repeat`,
       }}>
-        <div className="ion-padding fight-narrative">
+        <div className="ion-padding fight-narrative quick-fade-in">
           {fightNarrative.map((line, index) => (
             <div key={index}>{line}</div>
           ))}
@@ -699,6 +682,7 @@ const BattleTrain = () => {
         {/* Invisible element at the end of your narratives */}
         <div ref={narrativeEndRef} />
       </IonContent>
+
     </IonPage >
   );
 };

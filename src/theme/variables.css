@@ -30,6 +30,14 @@ ion-button {
   padding-top: var(--header-height);
 }
 
+ion-tab-bar {
+  --background: rgba(0, 0, 0, 0.616);
+  --border: 1px solid #f7ae5b;
+}
+
+ion-tab-button {
+}
+
 /** Ionic CSS Variables **/
 :root {
   --header-height: 100px;

@@ -243,7 +243,7 @@ export type IPlayer = {
   attributePoints: number;
   con: number;
   dex: number;
-  equipment?: IPlayer_equipment;
+  equipment: IPlayer_equipment;
   equipmentInventory: Array<Realm.BSON.ObjectId>;
   experience: number;
   faction?: Realm.BSON.ObjectId;

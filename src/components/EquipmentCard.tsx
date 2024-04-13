@@ -42,13 +42,8 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
   const purchaseEquipment = async (equipmentToPurchase: IEquipment) => {
     try {
       if (!player) return;
-      const playerEquipment = await GetCreatePlayerOwnedEquipment(player, equipmentToPurchase);
-      if (!playerEquipment) throw new Error("Failed to insert the new armor into the database.");
-      updatePlayerData({
-        ...player,
-        gold: player.gold - equipmentToPurchase.cost,
-        equipmentInventory: [...player.equipmentInventory, playerEquipment._id]
-      });
+      await GetCreatePlayerOwnedEquipment(player, equipmentToPurchase, updatePlayerData);
+
       setShowModal(false);
     } catch (e) {
       console.error("An error occurred while purchasing the armor: ", e);
@@ -156,7 +151,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
   return (
     <>
       {equipment && player && (
-        <div onClick={() => setShowModal(true)} style={{ height: '100%', borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
+        <div className="quick-fade-in" onClick={() => setShowModal(true)} style={{ height: '100%', borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
           {loading ? <IonSpinner /> : (
             <IonGrid style={{ width: '100%', height: '100%', padding: 0 }}>
               <IonRow style={{ width: '100%' }}>

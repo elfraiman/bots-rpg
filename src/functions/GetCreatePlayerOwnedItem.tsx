@@ -1,8 +1,10 @@
 import * as Realm from 'realm-web';
 import { IItem, IPlayer, IPlayerItem } from "../types/types";
+import GetModifyOwnedItem from './GetModifyBaseItem';
+import GetBaseItem from './GetBaseItem';
+import toast from 'react-hot-toast';
 
 const app = Realm.App.getApp('application-0-vgvqx');
-
 
 export const GetCreatePlayerOwnedItem = async (
     player: IPlayer,
@@ -16,30 +18,38 @@ export const GetCreatePlayerOwnedItem = async (
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
     const playerItems = mongodb.db("bots_rpg").collection<IPlayerItem>("playerItems");
 
-
     try {
-        // If a baseItem of the same Id is already owned, return that one.
-        //
-        const itemAlreadyOwned = await playerItems.findOne({ baseItemId: itemId });
+        const itemAlreadyOwned = await playerItems.findOne({ baseItemId: itemId, ownerId: app.currentUser.id });
+        const baseItem = await GetBaseItem(itemId);
 
-        if (itemAlreadyOwned) {
-            return itemAlreadyOwned;
-        }
-
-        // Create a new unique item in the database
-        const newItem: IPlayerItem = {
-            _id: new Realm.BSON.ObjectId(),
-            baseItemId: itemId,
-            ownerId: player._id,
-            quantity: quantity ?? 1,
+        const displayToast = async () => {
+            toast(`+ ${quantity} ${baseItem?.name}`, {
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
         };
 
-        await playerItems.insertOne(newItem);
-        // Return the new item including its generated _id
-        return newItem;
-
-    } catch (err) {
-        console.error(`Failed to create ${itemId}:`, err);
-        throw err;
+        if (itemAlreadyOwned) {
+            await GetModifyOwnedItem(itemAlreadyOwned._id, quantity);
+            await displayToast();
+            return itemAlreadyOwned;
+        } else {
+            // Create a new unique item in the database
+            const newItem: IPlayerItem = {
+                _id: new Realm.BSON.ObjectId(),
+                baseItemId: itemId,
+                ownerId: player._id,
+                quantity: quantity ?? 1,
+            };
+            await playerItems.insertOne(newItem);
+            await displayToast();
+            return newItem;
+        }
+    } catch (err: any) {
+        console.error(`Failed to create or modify item ${itemId}:`, err);
+        throw new Error(`Failed to create or modify item: ${err.message}`);
     }
 }

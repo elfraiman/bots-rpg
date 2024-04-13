@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import * as Realm from 'realm-web';
 import { IPlayer, IPlayerOwnedItem } from '../types/types';
 
@@ -24,7 +25,7 @@ export const getSellItem = async (item: IPlayerOwnedItem, quantityToSell: number
 
                     await updatePlayerData({
                         ...player,
-                        inventory: player.inventory.filter(i => i !== item._id),
+                        inventory: player.inventory.filter(i => i.toString() !== item._id.toString()),
                         gold: player.gold + gold
                     });
                 });
@@ -33,11 +34,21 @@ export const getSellItem = async (item: IPlayerOwnedItem, quantityToSell: number
 
                     await updatePlayerData({
                         ...player,
-                        gold: player.gold + gold
+                        gold: player.gold + gold,
+                        inventory: player.inventory
                     });
                 })
             }
 
+            toast(`+ ${quantityToSell * item.cost} 🪙`,
+                {
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            );
 
         } catch (e) {
             console.error('Error selling player owned items');

@@ -57,7 +57,7 @@ const Header = () => {
     const playerLocation = usePlayerLocation(player as IPlayer);
 
     return (
-        <IonHeader style={{ borderBottom: '2px solid black', minHeight: 100 }}>
+        <IonHeader style={{ borderBottom: '2px solid black', minHeight: 100 }} className="fade-in">
             <IonToolbar style={{
                 '--background': `url('/images/planets/planet-ground-${playerLocation?.imgId}.webp') 0 0/cover no-repeat`,
                 position: 'relative'

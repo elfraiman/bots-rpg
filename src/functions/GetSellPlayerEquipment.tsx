@@ -9,7 +9,6 @@ export const GetSellPlayerEquipment = async (equipment: IEquipment, player: IPla
     if (!app.currentUser) {
         throw new Error("No current user found. Ensure you're logged in to Realm.");
     }
-
     const mongodb = app.currentUser.mongoClient("mongodb-atlas");
     const playerEquipmentsCollections = mongodb.db("bots_rpg").collection<IPlayerEquipment>("playerEquipments");
 
@@ -17,6 +16,7 @@ export const GetSellPlayerEquipment = async (equipment: IEquipment, player: IPla
         if (equipment !== undefined && player) {
             await playerEquipmentsCollections.deleteOne({ _id: equipment._id });
             // Correctly filter out the sold armor using .equals() for ObjectId comparison
+            //
             const updatedEquipInventory = player.equipmentInventory.filter((itemId: Realm.BSON.ObjectId) => !itemId.equals(equipment._id));
 
             await updatePlayerData({

@@ -18,6 +18,10 @@
     animation: fadeIn 1s ease-in forwards;
 }
 
+.quick-fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
 .story-screen ion-img {
     height: 100%;
     width: 100%;

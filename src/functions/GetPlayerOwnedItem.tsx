@@ -8,7 +8,6 @@ const app = Realm.App.getApp('application-0-vgvqx');
 
 
 const GetPlayerOwnedItem = async (_id: Realm.BSON.ObjectId) => {
-
     if (!app.currentUser) {
         throw new Error("No current user found. Ensure you're logged in to Realm.");
     }
@@ -18,7 +17,7 @@ const GetPlayerOwnedItem = async (_id: Realm.BSON.ObjectId) => {
 
     try {
         if (_id !== undefined) {
-            const playerOwnedItem = await playerOwnedItemsCollection.findOne({ _id });
+            const playerOwnedItem = await playerOwnedItemsCollection.findOne({ _id, ownerId: app.currentUser.id });
 
             return playerOwnedItem;
         } else {

@@ -7,6 +7,7 @@ const app = Realm.App.getApp('application-0-vgvqx');
 export const GetCreatePlayerOwnedEquipment = async (
     player: IPlayer,
     equipment: IEquipment,
+    updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>,
 ): Promise<IPlayerEquipment | undefined> => {
     if (!app.currentUser) {
         throw new Error("No current user found. Ensure you're logged in to Realm.");
@@ -31,9 +32,15 @@ export const GetCreatePlayerOwnedEquipment = async (
         };
 
         await playerEquipments.insertOne(newEquipment);
-        // Return the new equipment including its generated _id
-        return newEquipment;
 
+        // Return the new equipment including its generated _id
+        updatePlayerData({
+            ...player,
+            gold: player.gold - equipment.cost,
+            equipmentInventory: [...player.equipmentInventory, newEquipment._id]
+        });
+
+        return newEquipment;
     } catch (err) {
         console.error(`Failed to create ${equipment.type}:`, err);
         throw err;

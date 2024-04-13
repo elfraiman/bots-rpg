@@ -1,6 +1,5 @@
-import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner, useIonToast } from "@ionic/react";
+import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner } from "@ionic/react";
 import { useContext, useState } from 'react';
-import toast from "react-hot-toast";
 import { PlayerContext } from '../context/PlayerContext';
 import getItemGradeColor from "../functions/GetItemGradeColor";
 import { getSellItem } from "../functions/GetSellItem";
@@ -27,16 +26,6 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
     if (player) {
       setLoading(true);
       await getSellItem(item, sellQuantity, updatePlayerData, player);
-      toast(`Gold + ${sellQuantity * item.cost}`,
-        {
-          icon: '🪙',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-        }
-      );
       setShowModal(false);
       setLoading(false);
     }

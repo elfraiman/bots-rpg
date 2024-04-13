@@ -20,12 +20,12 @@ import {
   IonSpinner
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
 import EquipmentCard from '../../components/EquipmentCard';
 import EquipmentPopover from '../../components/EquipmentPopover';
 import GeneralItemCard from '../../components/GeneralItemCard';
-import { PlayerContext } from '../../context/PlayerContext';
+import { usePlayerData } from '../../context/PlayerContext';
 import { GetCombinedEquipmentStatsDetails } from '../../functions/GetCombinedEquipmentStatsDetails';
 import { GetCombinedItemDetails } from '../../functions/GetCombinedItemDetails';
 import { IEquipment, IPlayer, IPlayerOwnedItem } from '../../types/types';
@@ -41,15 +41,13 @@ const app = Realm.App.getApp('application-0-vgvqx');
 
 
 const GuardianPage: React.FC = () => {
-  const { player, updatePlayerData } = useContext(PlayerContext); // Assuming updatePlayerStats is a method provided by your context
+  const { player, updatePlayerData } = usePlayerData(); // Assuming updatePlayerStats is a method provided by your context
   const [playerHasPoints, setPlayerHasPoints] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [attributeLoading, setAttributeLoading] = useState(false);
   const [inventoryEquipments, setEquipmentInventoryItems] = useState<IEquipment[]>([]);
   const [inventoryItems, setInventoryItems] = useState<IPlayerOwnedItem[]>([]);
   const [equippedDetails, setEquippedDetails] = useState<any>({});
-
-
 
   const handleIncreaseStat = async (statName: keyof IPlayer) => {
     if (player && player?.attributePoints > 0) {
@@ -72,23 +70,37 @@ const GuardianPage: React.FC = () => {
     }
   };
 
+  const loadEquipmentInventory = async () => {
+    if (!player) {
+      setLoading(false);
+      return;
+    }
+    const equipmentPromises = player.equipmentInventory?.map((item: Realm.BSON.ObjectId) => GetCombinedEquipmentStatsDetails(player._id, item));
+
+    try {
+      const equipments = await Promise.all(equipmentPromises);
+      const filteredEquipments: any = equipments.filter(equipment => equipment !== undefined); // Filter out undefined items
+
+      setEquipmentInventoryItems(filteredEquipments);
+    } catch (error) {
+      console.error("Error loading equipment items:", error);
+      // Handle any errors that occurred during fetching
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const loadInventory = async () => {
     if (!player) {
       setLoading(false);
       return;
     }
-
-    const equipmentPromises = player.equipmentInventory?.map((item: Realm.BSON.ObjectId) => GetCombinedEquipmentStatsDetails(player._id, item));
     const itemPromises = player.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId));
-
     try {
-      const equipments = await Promise.all(equipmentPromises);
       const items = await Promise.all(itemPromises);
-      const filteredEquipments: any = equipments.filter(equipment => equipment !== undefined); // Filter out undefined items
       const filteredItems: any = items.filter(item => item !== undefined);
 
       setInventoryItems(filteredItems);
-      setEquipmentInventoryItems(filteredEquipments);
     } catch (error) {
       console.error("Error loading inventory items:", error);
       // Handle any errors that occurred during fetching
@@ -102,20 +114,30 @@ const GuardianPage: React.FC = () => {
       setLoading(false);
       return;
     }
+    // Create an array of promises for each piece of equipment that the player has
+    const equipmentTypes = ['armor', 'helmet', 'boots', 'weapon']; // Extend this list with other equipment types if needed
+    const equipmentPromises = equipmentTypes.map((type) =>
+      // @ts-ignore
+      player.equipment[type] as any ? GetCombinedEquipmentStatsDetails(player._id, player.equipment[type]) : Promise.resolve(null)
+    );
 
-    // Example for fetching and combining details for weapon, extend this to other equipment types
-    const armorDetails = player.equipment.armor ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.armor) : null;
-    const helmetDetails = player.equipment.helmet ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.helmet) : null;
-    const bootsDetails = player.equipment.boots ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.boots) : null;
-    const weaponDetails = player.equipment.weapon ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.weapon) : null;
+    try {
+      // Execute all promises concurrently
+      const results = await Promise.all(equipmentPromises);
 
-    setEquippedDetails({
-      armor: armorDetails,
-      helmet: helmetDetails,
-      boots: bootsDetails,
-      weapon: weaponDetails,
-      // Include other equipment details here
-    });
+      // Map results back to the respective equipment type
+      const equippedDetails = results.reduce((details, result, index) => {
+        const type = equipmentTypes[index];
+        // @ts-ignore
+        details[type] = result;
+        return details;
+      }, {});
+
+      setEquippedDetails(equippedDetails);
+    } catch (error) {
+      console.error("Failed to load equipment details:", error);
+      // Handle errors as appropriate
+    }
 
     setLoading(false);
   };
@@ -130,13 +152,23 @@ const GuardianPage: React.FC = () => {
 
   useEffect(() => {
     if (!player) return;
-    loadInventory();
     loadEquippedDetails();
-  }, [player]);
+  }, [player?.equipment]);
+
+  useEffect(() => {
+    if (!player) return;
+    loadEquipmentInventory()
+  }, [player?.equipmentInventory]);
+
+  useEffect(() => {
+    if (!player) return;
+    loadInventory();
+  }, [player?.gold]);
 
   useEffect(() => {
     loadAttributePoints();
   }, [player?.attributePoints])
+
 
   if (loading) {
     return (
@@ -160,21 +192,19 @@ const GuardianPage: React.FC = () => {
     }
   }
 
-
   return (
     <>
-      <IonPage className="content" >
+      <IonPage className="content " >
         <IonContent style={{
           '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,
         }}>
-          <IonCard className="card-fade ion-padding ion-bot-card corner-border">
+          <IonCard className="card-fade ion-padding ion-bot-card corner-border ">
             {loading ? <IonSpinner /> : (
               <div>
                 <IonCardTitle>{player.name}</IonCardTitle>
                 <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
                 <IonCardContent className="bot-card-content">
-                  <IonImg src={BotOutline} className="bot-outline-img" />
-
+                  <IonImg src={BotOutline} className="bot-outline-img " />
 
                   <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
                     {equippedDetails?.weapon ? (

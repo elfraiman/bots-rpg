@@ -68,7 +68,7 @@ const LoginPage = () => {
     };
 
     return (
-        <IonPage className="content">
+        <IonPage>
             {isNavigationDisabled ? (
                 <SplashScreen />
             ) : (

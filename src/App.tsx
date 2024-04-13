@@ -2,7 +2,7 @@ import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, Io
 import { IonReactRouter } from '@ionic/react-router';
 import { diamondOutline, medalOutline, planetOutline, rocketOutline, trophyOutline, walkOutline } from 'ionicons/icons';
 import React from 'react';
-import { Redirect, Route } from 'react-router';
+import { Redirect, Route, useHistory, useLocation } from 'react-router';
 import * as Realm from "realm-web";
 
 
@@ -41,7 +41,7 @@ import './theme/variables.css';
 import Header from './components/Header';
 
 setupIonicReact({
-  rippleEffect: false,
+  rippleEffect: true,
   mode: 'md',
 });
 
@@ -79,6 +79,7 @@ const App: React.FC = () => {
   // if we have a user, show navigation
   // if we dont have a user, show login.
   //
+
   return (
     <IonApp>
       <IonReactRouter>
@@ -86,11 +87,13 @@ const App: React.FC = () => {
           position="top-right"
           reverseOrder={true}
         />
+
         {user && player?.name === 'noname' ? (<InitialStoryPage />) : (
           <>
             {!user ? (<Login />) : (
               <>
-                <Header />
+                {player && player?.name !== "noname" ? (<Header />) : <></>}
+
                 <IonTabs>
                   <IonRouterOutlet>
                     <Redirect exact path="/" to="/guardian" />
@@ -107,7 +110,7 @@ const App: React.FC = () => {
                   </IonRouterOutlet>
 
 
-                  <IonTabBar slot="bottom">
+                  <IonTabBar slot="bottom" >
                     <IonTabButton disabled={isNavigationDisabled} tab="home" href="/guardian">
                       <IonIcon icon={walkOutline} />
                       <IonLabel>Guardian</IonLabel>

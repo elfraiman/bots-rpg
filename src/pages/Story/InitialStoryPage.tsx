@@ -61,7 +61,7 @@ const InitialStoryPage = () => {
   };
 
   return (
-    <IonPage className={`content ${pageExiting ? 'page-exit' : ''}`}>
+    <IonPage className="fade-in">
       <IonHeader>
         <IonButton color="warning" fill="clear" style={{
           width: '100%'

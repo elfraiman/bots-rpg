@@ -1,3 +1,4 @@
+import { IonSpinner } from '@ionic/react';
 import './BattleInfoHeader.css';
 
 interface IBattleInfoHeaderProps {
@@ -6,42 +7,54 @@ interface IBattleInfoHeaderProps {
   enemyHealthPercent: number;
   playerHealthPercent: number;
   enemyImgId: number;
+  loading: boolean;
 }
 
 
-const BattleInfoHeader = ({ enemyHitInfo, playerHitInfo, enemyHealthPercent, playerHealthPercent, enemyImgId }: IBattleInfoHeaderProps) => {
+const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPercent, playerHealthPercent, enemyImgId }: IBattleInfoHeaderProps) => {
 
 
   return (
     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', width: '100%', maxHeight: '200px', position: 'relative' }}>
-      <div style={{ width: '50%', position: 'relative' }}>
-        <img src="/images/player-placeholder.webp" className="player-image" />
-        <div className="fade-right-overlay"></div>
-        <div className="health-bar-container">
-          <div className="health-bar player-health" style={{ width: `${playerHealthPercent}%` }}></div>
-        </div>
-        {enemyHitInfo.damage && (
-          <div className="hit-number" style={{ color: 'red' }} key={enemyHitInfo.key}>
-            {enemyHitInfo.damage}
-          </div>
+      <div style={{ width: '50%', position: 'relative', minHeight: 200 }}>
+        {loading ? <IonSpinner /> : (
+          <>
+            <img src="/images/player-placeholder.webp" className="player-image quick-fade-in" />
+            <div className="fade-right-overlay"></div>
+            <div className="health-bar-container">
+              <div className="health-bar player-health" style={{ width: `${playerHealthPercent}%` }}></div>
+            </div>
+            {enemyHitInfo.damage && (
+              <div className="hit-number" style={{ color: 'red' }} key={enemyHitInfo.key}>
+                {enemyHitInfo.damage}
+              </div>
+            )}
+          </>
         )}
       </div>
+
       <div className="vs-text">
         VS
       </div>
-      <div style={{ width: '50%', position: 'relative' }}>
-        <img src={`/images/enemies/enemy-${enemyImgId}.webp`} className="enemy-image" />
 
-        <div className="fade-left-overlay"></div>
-        <div className="health-bar-container">
-          <div className="health-bar enemy-health" style={{ width: `${enemyHealthPercent}%` }}></div>
-        </div>
+      <div style={{ width: '50%', position: 'relative', minHeight: 200 }}>
+        {loading ? <IonSpinner /> : (
+          <>
+            <img src={`/images/enemies/enemy-${enemyImgId}.webp`} className="enemy-image quick-fade-in" />
 
-        {playerHitInfo.damage && (
-          <div className="hit-number" style={{ color: 'red' }} key={playerHitInfo.key}>
-            {playerHitInfo.damage}
-          </div>
+            <div className="fade-left-overlay"></div>
+            <div className="health-bar-container">
+              <div className="health-bar enemy-health" style={{ width: `${enemyHealthPercent}%` }}></div>
+            </div>
+
+            {playerHitInfo.damage && (
+              <div className="hit-number" style={{ color: 'red' }} key={playerHitInfo.key}>
+                {playerHitInfo.damage}
+              </div>
+            )}
+          </>
         )}
+
       </div>
     </div>
   )
