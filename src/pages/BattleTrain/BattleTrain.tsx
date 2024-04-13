@@ -275,12 +275,11 @@ const BattleTrain = () => {
 
   const applyFightResults = ({ hitChance, minAttack, maxAttack, attacker, defender, isPlayerAttack }: IFightResult) => {
     if (!player || !currentEnemy) return;
-    const playerHealth = calculateMaxHealth(player);
     const randomNumber = Math.random();
 
     if (randomNumber <= hitChance) {
       const damageDealt = Math.floor(Math.random() * (maxAttack - minAttack + 1) + minAttack);
-      let newPlayerHealth = playerHealth;
+      let newPlayerHealth = playerMaxHealth;
       let newEnemyHealth = enemyHealth;
 
       if (isPlayerAttack) {
@@ -310,8 +309,8 @@ const BattleTrain = () => {
           <br />
           <span>
             {isPlayerAttack ? returnEnemyShape(currentEnemy, newEnemyHealth) :
-              <span style={style.playerHealth}> damage report: {newPlayerHealth}/{playerHealth}  <span style={returnPercentageColor(playerHealth)}>
-                {Math.round((newPlayerHealth / playerHealth) * 100)} % left
+              <span style={style.playerHealth}> damage report: {newPlayerHealth}/{playerMaxHealth}  <span style={returnPercentageColor(playerHealth)}>
+                {Math.round((newPlayerHealth / playerMaxHealth) * 100)} % left
               </span>
               </span>
             }
