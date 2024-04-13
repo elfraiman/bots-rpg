@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonImg, IonInput, IonItem, IonLabel, IonModal, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonImg, IonInput, IonItem, IonLabel, IonModal, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { usePlayerData } from "../../context/PlayerContext";
@@ -62,32 +62,27 @@ const InitialStoryPage = () => {
   };
 
   return (
-    <IonPage id="main-content" className={`content ${pageExiting ? 'page-exit' : ''}`}>
-      <IonContent>
-        <IonHeader>
-          <IonButton color="warning" fill="clear" style={{
-            width: '100%', marginTop: 8
-          }} onClick={() => setShowModal(true)}>Skip</IonButton>
-        </IonHeader>
+    <IonPage className={`content ${pageExiting ? 'page-exit' : ''}`}>
+      <IonHeader>
+        <IonButton color="warning" fill="clear" style={{
+          width: '100%'
+        }} onClick={() => setShowModal(true)}>Skip</IonButton>
+      </IonHeader>
 
-        <div className="story-screen">
-          <IonImg src="/images/initialstory-bg.webp" style={{ position: 'absolute', zIndex: -1, height: '100vh' }} />
-          {/* Overlay div */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            height: '100vh',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust the opacity as needed
-            zIndex: 1 // Ensure it sits above the background but below the content
-          }}></div>
+      <IonContent style={{
+        '--background': `url('/images/story/initialstory-bg.webp') 0 0/cover no-repeat `,
+      }}>
 
-          <IonText className="ion-padding" style={{ zIndex: 5, fontSize: 20, color: '#FFE81F', fontWeight: 600 }}>
-            {Typewriter({ text: `  In the year 2145, humanity has leapt into the stars, making the dream of interstellar travel a reality. This new era, dubbed the 'Galactic Expansion Era,' saw humans establishing colonies on distant planets and discovering resources beyond their wildest imaginations. However, this golden age of exploration brought forth unforeseen dangers: monstrous entities dwelling on newly discovered worlds, each harboring a deep-seated animosity towards humans and their technological marvels.`, speed: 20 })}
-          </IonText>
-        </div>
+        <IonCard className="corner-border card-fade fade-in" style={{ padding: 0 }}>
+          <img alt={`Elara the scholar`} src={`/images/npc/npc-ship-2.webp`} />
+          <IonCardHeader>
+            <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Elara Thorne</IonCardTitle>
+            <IonCardSubtitle>Scholar</IonCardSubtitle>
+          </IonCardHeader>
+          <div className="ion-padding">
+            <span style={{ zIndex: 5, fontSize: 16, color: `var(--ion-color-warning)`, fontWeight: 600 }}>{Typewriter({ text: `  In the year 2100, the remnants of humanity scavenge through the ruins of a once-prosperous civilization, now shattered by global catastrophes and wars over dwindling resources. This period, known as the "Scorched Epoch," marks humanity’s desperate search for a new home among the stars. Driven from Earth, survivors travel to distant, uncharted planets, each filled with its own dangers and dark secrets.`, speed: 20 })}</span>
+          </div>
+        </IonCard>
       </IonContent>
 
 
@@ -97,6 +92,7 @@ const InitialStoryPage = () => {
             <IonTitle>Choose Nickname</IonTitle>
           </IonToolbar>
         </IonHeader>
+
         <div className="ion-padding">
           <IonItem>
             <IonLabel position="floating">Nickname</IonLabel>

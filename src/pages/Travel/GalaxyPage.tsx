@@ -1,4 +1,4 @@
-import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
 import { useContext } from "react";
 import * as Realm from 'realm-web';
 import Header from "../../components/Header";
@@ -8,6 +8,7 @@ import { getTravel } from "../../functions/GetTravel";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './GalaxyPage.css'
+import useTypewriter from "../../hooks/UseTypewritter";
 
 
 const GalaxyPage = () => {
@@ -30,7 +31,7 @@ const GalaxyPage = () => {
 
   return (
     <>
-      <IonPage id="main-content" className="content">
+      <IonPage>
         {isNavigationDisabled ? (
           <SplashScreen />
         ) : (
@@ -39,22 +40,31 @@ const GalaxyPage = () => {
             <IonContent >
               <div className='bg-video'>
                 <video playsInline autoPlay muted preload="auto" loop className="video" src="/videos/galaxy.mp4"> </video>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the opacity as needed
-                  zIndex: 0, // Ensure it sits above the background but below the content
-                  height: '100vh'
-                }}></div>
               </div>
 
-              <IonList className="card-fade" style={{ zIndex: 5 }}>
+              <IonList className="low-fade ion-padding" style={{ zIndex: 5 }}>
+
+                <IonCard style={{ padding: 0, margin: 0 }} className="corner-border" >
+                  <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-1.webp`} />
+                  <IonCardHeader>
+                    <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Aurora Nova</IonCardTitle>
+                    <IonCardSubtitle>Experienced pilot</IonCardSubtitle>
+                  </IonCardHeader>
+                  <IonCardContent className="ion-padding">
+                    <p>Just let me know where we are headed and I'll make sure we get there.</p>
+                  </IonCardContent>
+                </IonCard>
+
+                <div className="ion-padding low-fade" style={{ marginTop: 16 }}>
+                  <h2><strong>Travel</strong></h2>
+                  <p>Here's a list of planets you've located.</p>
+                </div>
+
                 {planets?.map((planet, index) => {
                   return (
-                    <div key={index} style={{ padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}>
+                    <div key={index}
+                      style={{ padding: 6, borderTop: '1px solid rgba(235, 235, 235, 0.11)', borderBottom: '1px solid rgba(235, 235, 235, 0.11)' }}
+                      className="low-fade">
                       <IonGrid style={{ width: '100%', padding: 0 }} >
                         <IonRow style={{ width: '100%' }} >
                           {/* Image Column */}

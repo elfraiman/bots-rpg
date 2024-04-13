@@ -14,6 +14,10 @@
     overflow: hidden;
 }
 
+.fade-in {
+    animation: fadeIn 1s ease-in forwards;
+}
+
 .story-screen ion-img {
     height: 100%;
     width: 100%;

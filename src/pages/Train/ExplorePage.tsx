@@ -86,16 +86,15 @@ const ExplorePage: React.FC = () => {
           '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
         }}
       >
-        <div className="ion-padding low-fade" style={{ color: 'white' }}>
-          <h4>You've arrived at {planetData.name}</h4>
-          <p>{planetData.description}</p>
-        </div>
+
 
         {availableQuests?.map((q: IQuest, index) => (
           <QuestCard quest={q} key={index} />
         ))}
-
-
+        <div className="ion-padding low-fade" style={{ color: 'white' }}>
+          <h4>You've arrived at {planetData.name}</h4>
+          <p>{planetData.description}</p>
+        </div>
         {enemies.map((enemy, index) => (
           <EnemyCard key={index} enemy={enemy} />
         ))}

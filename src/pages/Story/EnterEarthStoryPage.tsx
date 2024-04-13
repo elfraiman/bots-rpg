@@ -1,6 +1,6 @@
 
 
-import { IonButton, IonContent, IonHeader, IonImg, IonPage, IonText } from "@ionic/react";
+import { IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonImg, IonPage, IonText } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
@@ -41,32 +41,25 @@ const EnterEarthStoryPage = () => {
         }}
           onClick={handleSkip}>Skip</IonButton>
       </IonHeader>
-      <IonContent >
-        <div className="story-screen">
-          <IonImg src="/images/earthstory-bg.webp" style={{ position: 'absolute', zIndex: 1, height: '100vh' }} />
-          {/* Overlay div */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the opacity as needed
-            zIndex: 1, // Ensure it sits above the background but below the content
-            height: '100vh'
-          }}></div>
+      <IonContent style={{
+        '--background': `url('/images/planets/planet-ground-0.webp') 0 0/cover no-repeat `,
+      }}>
 
+        <IonCard className="corner-border card-fade fade-in" style={{ padding: 0 }}>
+          <img alt={`Elara the scholar`} src={`/images/npc/npc-ship-2.webp`} />
+          <IonCardHeader>
+            <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Elara Thorne</IonCardTitle>
+            <IonCardSubtitle>Scholar</IonCardSubtitle>
+          </IonCardHeader>
+          <div className="ion-padding">
+            <span style={{ zIndex: 5, fontSize: 16, color: `var(--ion-color-warning)`, fontWeight: 600 }}>
+              {Typewriter({
+                text: `  The remnants of human civilization have transformed Earth into a barren wasteland, where the remaining cities are cobbled together from the relics of advanced technology. The survivors, banded together into various factions, use robots as their primary means of survival and defense. These robots, revered as Steel Sentinels, are not mere tools but partners, crafted and cared for by their human counterparts. `,
+                speed: 20
+              })}</span>
+          </div>
+        </IonCard>
 
-          <IonText className="ion-padding" style={{ zIndex: 5, fontSize: 20, color: '#FFE81F', fontWeight: 600 }}>
-            {Typewriter({
-              text: `  Earth stands as a beacon of progress and unity in the cosmos. Humanity has transformed their home into a utopian world where nature and technology exist in harmony. The planet's surface is a testament to this balance: sprawling green cities merge seamlessly with restored forests, rivers, and oceans teeming with life.
-Earth is the heart of the Galactic Expansion Era, serving as the capital for the United Earth Council and the birthplace of the Mecha Guardian Program. Its cities are centers of innovation and culture, drawing beings from across the galaxy to study, trade, and share knowledge.
-From space, Earth is a jewel of blues, greens, and whites, with swirling clouds hinting at its dynamic weather systems. Its oceans glisten under the sun's light, reflecting the peace and harmony that humanity has achieved. Yet, this tranquility belies the turbulent past and the challenges faced in reaching this utopian state, reminding all of Earth's resilience and humanity's capacity for change.`,
-              speed: 20
-            })}
-          </IonText>
-
-        </div>
       </IonContent>
     </IonPage>
   )

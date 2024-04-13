@@ -171,7 +171,7 @@ const GuardianPage: React.FC = () => {
         <IonContent style={{
           '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,
         }}>
-          <IonCard className="ion-padding card-fade ion-bot-card corner-border">
+          <IonCard className="card-fade ion-padding ion-bot-card corner-border">
             {loading ? <IonSpinner /> : (
               <div>
                 <IonCardTitle>{player.name}</IonCardTitle>
