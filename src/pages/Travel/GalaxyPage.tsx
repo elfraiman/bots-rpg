@@ -1,14 +1,12 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
 import { useContext } from "react";
 import * as Realm from 'realm-web';
-import Header from "../../components/Header";
-import { PlayerContext } from "../../context/PlayerContext";
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
+import { PlayerContext } from "../../context/PlayerContext";
 import { getTravel } from "../../functions/GetTravel";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
 import SplashScreen from "../SplashScreen/SplashScreen";
-import './GalaxyPage.css'
-import useTypewriter from "../../hooks/UseTypewritter";
+import './GalaxyPage.css';
 
 
 const GalaxyPage = () => {
@@ -31,12 +29,11 @@ const GalaxyPage = () => {
 
   return (
     <>
-      <IonPage>
+      <IonPage className="content">
         {isNavigationDisabled ? (
           <SplashScreen />
         ) : (
           <>
-            <Header />
             <IonContent >
               <div className='bg-video'>
                 <video playsInline autoPlay muted preload="auto" loop className="video" src="/videos/galaxy.mp4"> </video>

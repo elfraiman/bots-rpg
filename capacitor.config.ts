@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: '3fb6cd5f',
-  appName: 'Mecha guardians',
+  appName: 'Nomads',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

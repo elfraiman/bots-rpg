@@ -38,6 +38,7 @@ import InitialStoryPage from './pages/Story/InitialStoryPage';
 import ExplorePage from './pages/Train/ExplorePage';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
+import Header from './components/Header';
 
 setupIonicReact({
   rippleEffect: false,
@@ -81,7 +82,6 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-
         <Toaster
           position="top-right"
           reverseOrder={true}
@@ -89,55 +89,58 @@ const App: React.FC = () => {
         {user && player?.name === 'noname' ? (<InitialStoryPage />) : (
           <>
             {!user ? (<Login />) : (
-              <IonTabs>
-                <IonRouterOutlet>
-                  <Redirect exact path="/" to="/guardian" />
-                  <Route path="/guardian" render={() => <GuardianPage />} exact={true} />
-                  <Route path="/explore" render={() => <ExplorePage />} exact={true} />
-                  <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
-                  <Route path="/shop" render={() => <Shop />} exact={true} />
-                  <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
-                  <Route path="/pvp" render={() => <FightPvpPage />} exact={true} />
-                  <Route path="/leaderboard" render={() => <LeaderboardPage />} exact={true} />
-                  <Route path="/login" render={() => <Login />} exact={true} />
-                  <Route path="/initialstory" render={() => <InitialStoryPage />} exact={true} />
-                  <Route path="/earthstory" render={() => <EnterEarthStoryPage />} exact={true} />
-                </IonRouterOutlet>
+              <>
+                <Header />
+                <IonTabs>
+                  <IonRouterOutlet>
+                    <Redirect exact path="/" to="/guardian" />
+                    <Route path="/guardian" render={() => <GuardianPage />} exact={true} />
+                    <Route path="/explore" render={() => <ExplorePage />} exact={true} />
+                    <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
+                    <Route path="/shop" render={() => <Shop />} exact={true} />
+                    <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
+                    <Route path="/pvp" render={() => <FightPvpPage />} exact={true} />
+                    <Route path="/leaderboard" render={() => <LeaderboardPage />} exact={true} />
+                    <Route path="/login" render={() => <Login />} exact={true} />
+                    <Route path="/initialstory" render={() => <InitialStoryPage />} exact={true} />
+                    <Route path="/earthstory" render={() => <EnterEarthStoryPage />} exact={true} />
+                  </IonRouterOutlet>
 
 
-                <IonTabBar slot="bottom">
-                  <IonTabButton disabled={isNavigationDisabled} tab="home" href="/guardian">
-                    <IonIcon icon={walkOutline} />
-                    <IonLabel>Guardian</IonLabel>
-                  </IonTabButton>
+                  <IonTabBar slot="bottom">
+                    <IonTabButton disabled={isNavigationDisabled} tab="home" href="/guardian">
+                      <IonIcon icon={walkOutline} />
+                      <IonLabel>Guardian</IonLabel>
+                    </IonTabButton>
 
-                  <IonTabButton disabled={isNavigationDisabled} tab="radio" href="/explore">
-                    <IonIcon icon={planetOutline} />
-                    <IonLabel>Explore</IonLabel>
-                  </IonTabButton>
+                    <IonTabButton disabled={isNavigationDisabled} tab="radio" href="/explore">
+                      <IonIcon icon={planetOutline} />
+                      <IonLabel>Explore</IonLabel>
+                    </IonTabButton>
 
-                  <IonTabButton disabled={isNavigationDisabled} tab="library" href="/pvp">
-                    <IonIcon icon={medalOutline} />
-                    <IonLabel>Fight</IonLabel>
-                  </IonTabButton>
+                    <IonTabButton disabled={isNavigationDisabled} tab="library" href="/pvp">
+                      <IonIcon icon={medalOutline} />
+                      <IonLabel>Fight</IonLabel>
+                    </IonTabButton>
 
-                  <IonTabButton disabled={isNavigationDisabled} tab="shop" href="/shop">
-                    <IonIcon icon={diamondOutline} />
-                    <IonLabel>Shop</IonLabel>
-                  </IonTabButton>
+                    <IonTabButton disabled={isNavigationDisabled} tab="shop" href="/shop">
+                      <IonIcon icon={diamondOutline} />
+                      <IonLabel>Shop</IonLabel>
+                    </IonTabButton>
 
-                  <IonTabButton disabled={isNavigationDisabled} tab="travel" href="/travel">
-                    <IonIcon icon={rocketOutline} />
-                    <IonLabel>Travel</IonLabel>
-                  </IonTabButton>
+                    <IonTabButton disabled={isNavigationDisabled} tab="travel" href="/travel">
+                      <IonIcon icon={rocketOutline} />
+                      <IonLabel>Travel</IonLabel>
+                    </IonTabButton>
 
-                  <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">
-                    <IonIcon icon={trophyOutline} />
-                    <IonLabel>Leaderboard</IonLabel>
-                  </IonTabButton>
+                    <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">
+                      <IonIcon icon={trophyOutline} />
+                      <IonLabel>Leaderboard</IonLabel>
+                    </IonTabButton>
 
-                </IonTabBar>
-              </IonTabs>
+                  </IonTabBar>
+                </IonTabs>
+              </>
             )}
           </>
         )}

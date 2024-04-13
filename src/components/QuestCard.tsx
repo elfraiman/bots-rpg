@@ -25,7 +25,6 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
   }
 
   const getObjectiveInfos = async () => {
-    setLoading(true)
 
     if (quest.objective?.target && quest.objective.type === 'collect') {
       const getItemData = await GetBaseItem(quest.objective.target);
@@ -40,7 +39,6 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
          setObjectiveInfo(enemyInfo);
        } */
     }
-    setLoading(false);
   }
 
   const acceptQuest = async () => {

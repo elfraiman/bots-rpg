@@ -28,7 +28,7 @@ const EnterEarthStoryPage = () => {
 
     // Wait for the animation to complete before changing the route
     setTimeout(() => {
-      history.push(`/guardian`);
+      history.replace(`/guardian`);
       setIsNavigationDisabled(false);
     }, 1000); // Adjust the timeout duration to match your CSS animation duration
   };

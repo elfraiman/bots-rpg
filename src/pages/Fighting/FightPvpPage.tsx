@@ -46,8 +46,7 @@ const FightPvpPage: React.FC = () => {
 
   return (
     <>
-      <IonPage id="main-content">
-        <Header />
+      <IonPage id="main-content" className="content" >
         <IonContent>
           pvp
 

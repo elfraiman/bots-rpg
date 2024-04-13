@@ -50,8 +50,8 @@ const Shop = () => {
   return (
     <React.Fragment>
 
-      <IonPage>
-        <Header />
+      <IonPage className="content">
+
 
         <IonContent style={{
           '--background': `url('/images/shop.webp') 0 0/cover no-repeat `,
@@ -64,7 +64,7 @@ const Shop = () => {
                 <IonCardSubtitle>Trader</IonCardSubtitle>
               </IonCardHeader>
               <IonCardContent className="ion-padding">
-                <p>Full of available assortments for your Mecha Guardian to purchase and use.</p>
+                <p>Full of available assortments for your Nomad Guardian to purchase and use.</p>
               </IonCardContent>
             </IonCard>
 

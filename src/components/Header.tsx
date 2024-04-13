@@ -22,12 +22,11 @@ const usePlayerXP = (player: IPlayer) => {
 
     useEffect(() => {
         if (!player) return;
-
         const xpNeededForNextLevel = GetXpForNextLevel({ level: player.level });
         const progress = Math.max(0.0, Math.min(player.experience / xpNeededForNextLevel, 1));
         setXpToNextLevel(xpNeededForNextLevel);
         setPlayerXpBar(progress);
-    }, [player]);
+    }, [player?.level, player?.experience]);
 
     return { playerXpBar, xpToNextLevel };
 };

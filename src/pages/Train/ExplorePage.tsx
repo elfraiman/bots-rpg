@@ -78,9 +78,7 @@ const ExplorePage: React.FC = () => {
   }
 
   return (
-    <IonPage>
-      <Header />
-
+    <IonPage className="content">
       <IonContent
         style={{
           '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,

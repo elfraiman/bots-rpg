@@ -79,7 +79,7 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
                 </IonCol>
 
                 <IonCol style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                  <IonButton fill="clear" id="sell-modal">Sell</IonButton>
+                  <IonButton fill="clear" id="sell-modal" className="corner-border">Sell</IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>

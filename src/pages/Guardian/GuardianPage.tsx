@@ -19,13 +19,12 @@ import {
   IonRow,
   IonSpinner
 } from '@ionic/react';
-import { add, informationCircle, informationCircleOutline, informationOutline } from 'ionicons/icons';
+import { add } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
 import EquipmentCard from '../../components/EquipmentCard';
 import EquipmentPopover from '../../components/EquipmentPopover';
 import GeneralItemCard from '../../components/GeneralItemCard';
-import Header from '../../components/Header';
 import { PlayerContext } from '../../context/PlayerContext';
 import { GetCombinedEquipmentStatsDetails } from '../../functions/GetCombinedEquipmentStatsDetails';
 import { GetCombinedItemDetails } from '../../functions/GetCombinedItemDetails';
@@ -141,15 +140,13 @@ const GuardianPage: React.FC = () => {
 
   if (loading) {
     return (
-      <IonPage>
-        <Header />
+      <IonPage className="content">
         <IonContent><IonSpinner /></IonContent>
       </IonPage>
     );
   } else if (!player) {
     return (
-      <IonPage>
-        <Header />
+      <IonPage className="content">
         <IonContent>Please login</IonContent>
       </IonPage>
     );
@@ -166,8 +163,7 @@ const GuardianPage: React.FC = () => {
 
   return (
     <>
-      <IonPage>
-        <Header />
+      <IonPage className="content" >
         <IonContent style={{
           '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,
         }}>

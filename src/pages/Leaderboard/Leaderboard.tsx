@@ -43,8 +43,7 @@ const LeaderboardPage = () => {
 
 
   return (
-    <IonPage>
-      <Header />
+    <IonPage className="content">
       <IonContent className="galaxy-bg">
         <IonSegment
           className="card-fade"

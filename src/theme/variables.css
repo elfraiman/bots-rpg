@@ -26,8 +26,13 @@ ion-button {
   }
 }
 
+.content {
+  padding-top: var(--header-height);
+}
+
 /** Ionic CSS Variables **/
 :root {
+  --header-height: 100px;
   --ion-font-family: Shentox;
   --ion-color-primary: #f7ae5b;
   --ion-color-primary-rgb: 247, 174, 91;

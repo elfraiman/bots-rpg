@@ -1,7 +1,7 @@
 import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useHistory, useRouteMatch } from "react-router";
+import { useHistory, useLocation, useRouteMatch } from "react-router";
 import * as Realm from 'realm-web';
 import Header from "../../components/Header";
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
@@ -71,18 +71,18 @@ const BattleTrain = () => {
   const [enemyIntimidation, setEnemyIntimidation] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
-  const [hiddenEnemyConcluded, setHiddenEnemyConcluded] = useState<boolean>(true);
   const [battleActive, setBattleActive] = useState<boolean>(false);
   const match = useRouteMatch<{ id: string }>();
   const [playerHitInfo, setPlayerHitInfo] = useState({ damage: null, key: 0 });
   const [enemyHitInfo, setEnemyHitInfo] = useState({ damage: null, key: 0 });
-
   const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
   const [enemyNextAttack, setEnemyNextAttack] = useState(BASE_ATTACK_SPEED);
   const history = useHistory();
+  const location = useLocation();
 
   const playerTimerRef = useRef<any>();
   const enemyTimerRef = useRef<any>();
+
 
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
@@ -104,7 +104,6 @@ const BattleTrain = () => {
 
     if (enemy.hidden) {
       setEnemyIntimidation(enemy.description ?? '');
-      setHiddenEnemyConcluded(false);
     }
   }
 
@@ -134,6 +133,7 @@ const BattleTrain = () => {
     setPlayerMaxHealth(playerHealth);
     setEnemyMaxHealth(enemyHealth);
     setEnemyHealth(enemyHealth);
+    setEnemyIntimidation('');
     setBattleStats({
       attempts: 0,
       hits: 0,
@@ -142,8 +142,6 @@ const BattleTrain = () => {
       totalDamage: 0,
       dodges: 0,
     });
-
-    setEnemyIntimidation('');
   }
 
   const getPlayerEquipment = async () => {
@@ -185,6 +183,11 @@ const BattleTrain = () => {
   useEffect(() => {
     getEnemy();
     setFightNarrative([]);
+
+    return () => {
+      setFightNarrative([]);
+      getEnemy();
+    }
   }, []);
 
 
@@ -368,14 +371,22 @@ const BattleTrain = () => {
     if (!currentEnemy || !player) return;
     setLoading(true);
     setIsNavigationDisabled(true);
-
+    // If we fought a hidden enemy and his health is 0
+    // we want to make sure we reset the fight to the original
+    // enemy when the play clicks start fight again.
+    //
+    if (currentEnemy?.hidden && enemyHealth <= 0) {
+      getEnemy();
+      resetStats();
+      setFightNarrative([]);
+      return;
+    }
     // Try to spawn hidden enemies (Elites, Bosses) based on their spawn chance
     // and the players planet location
     //
     const spawnHiddenEnemies = await GetSpawnHiddenEnemies(player);
 
     if (spawnHiddenEnemies.length > 0 && !currentEnemy.hidden) {
-
       // Find the enemy with the lowest chanceToEncounter, treating undefined as 1 (or another high value indicating very common)
       const chooseRarestEnemy = spawnHiddenEnemies.reduce((rarest, current) => {
         const rarestChance = rarest.chanceToEncounter !== undefined ? rarest.chanceToEncounter : 1;
@@ -391,7 +402,6 @@ const BattleTrain = () => {
       setLoading(false);
       return;
     }
-
 
     resetStats();
     setFightNarrative([]);
@@ -458,18 +468,10 @@ const BattleTrain = () => {
       goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
 
-      // if we were fighting a hidden enemy
-      // we mark him as dead so that value can be used to spawn the original enemy
-      //
-      if (enemy.hidden) {
-        setHiddenEnemyConcluded(true);
-      }
     } else {
       goldReward = Math.floor(getGoldReward({ enemy: enemy, playerLevel: player.level }) / 10);
       xpReward = Math.floor(getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level }) / 10);
-
     }
-
     // Update the player with all the new data
     // this will update in context & back-end
     //
@@ -551,10 +553,11 @@ const BattleTrain = () => {
       }
     );
 
-    setFightNarrative(prev => [...prev, battleStatsLogMessage]);
     setLoading(false);
     setIsNavigationDisabled(false);
+    setFightNarrative(prev => [...prev, battleStatsLogMessage]);
   }
+
   // Attacking logic
   // We use dex to determine who attacks at what speed
   //
@@ -610,26 +613,12 @@ const BattleTrain = () => {
   }, [fightNarrative]);
 
 
-  // Ionic lifecycle event for component will leave
-  useIonViewWillLeave(() => {
-    if (player && currentEnemy) {
-      resetStats();
-      setFightNarrative([]);
-    }
-
-    // Clear timeouts when leaving the view
-    if (playerTimerRef.current) clearTimeout(playerTimerRef.current);
-    if (enemyTimerRef.current) clearTimeout(enemyTimerRef.current);
-    setIsNavigationDisabled(false);
-  });
-
   // Calculate health percentage
   const playerHealthPercent = (playerHealth / playerMaxHealth) * 100;
   const enemyHealthPercent = (enemyHealth / enemyMaxHealth) * 100;
 
   return (
-    <IonPage >
-      <Header />
+    <IonPage>
       {
         //* Battle header enemy vs player *//
       }
@@ -642,7 +631,7 @@ const BattleTrain = () => {
       />
 
 
-      <IonContent style={{
+      <IonContent className="content" style={{
         '--background': `url('/images/planets/planet-battle-${0}.webp') 0 0/cover no-repeat`,
       }}>
         <div className="ion-padding fight-narrative">
@@ -654,7 +643,7 @@ const BattleTrain = () => {
             <>
               <div>
                 {
-                  //*If elite or boss enemy*//
+                  // *If elite or boss enemy *//
                 }
                 {currentEnemy?.hidden && playerHealth > 0 ? (
                   <div>
@@ -679,13 +668,11 @@ const BattleTrain = () => {
 
               {!loading ? (
                 <div>
-
                   {playerHealth > 0 ? (
-                    <IonButton onClick={startFight} color={currentEnemy?.hidden && !hiddenEnemyConcluded ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 16 }}>
+                    <IonButton onClick={startFight} color={currentEnemy?.hidden ? 'danger' : 'primary'} style={{ width: '100%', marginTop: 16 }}>
                       <>Fight</>
                     </IonButton>
                   ) : <></>}
-
 
                   <IonButton
                     style={{
@@ -696,13 +683,7 @@ const BattleTrain = () => {
                     color="light"
                     onClick={(e) => {
                       e.preventDefault();
-                      // we reset to the default enemy before navigating out because this
-                      // navigation stack /fight/:id stays alive
-                      //
-                      getEnemy();
-                      resetStats();
-                      setFightNarrative([]);
-                      history.push(`/explore`);
+                      history.replace(`/explore`);
                     }}
                   >
                     Return
