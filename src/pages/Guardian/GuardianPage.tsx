@@ -19,7 +19,7 @@ import {
   IonRow,
   IonSpinner
 } from '@ionic/react';
-import { add } from 'ionicons/icons';
+import { add, informationCircle, informationCircleOutline, informationOutline } from 'ionicons/icons';
 import React, { useContext, useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
 import EquipmentCard from '../../components/EquipmentCard';
@@ -220,7 +220,7 @@ const GuardianPage: React.FC = () => {
 
             <IonAccordionGroup >
               <IonAccordion value="items" >
-                <IonItem slot="header" color="light" >
+                <IonItem slot="header"  >
                   <IonLabel>Equipment inventory</IonLabel>
                 </IonItem>
                 <div slot="content">
@@ -242,7 +242,7 @@ const GuardianPage: React.FC = () => {
             <div>
               <IonAccordionGroup>
                 <IonAccordion value="items">
-                  <IonItem slot="header" color="light">
+                  <IonItem slot="header" >
                     <IonLabel>Inventory</IonLabel>
                   </IonItem>
                   <div slot="content">
@@ -272,7 +272,8 @@ const GuardianPage: React.FC = () => {
                 <IonGrid>
                   <IonRow>
                     <IonCol size='3'>
-                      <IonButton fill="clear" id="str-trigger" color="dark" className="stats-btn">STR: {player?.str}</IonButton>
+
+                      <IonButton fill="clear" id="str-trigger" className="stats-btn"> STR: {player?.str} </IonButton>
                       <IonPopover trigger="str-trigger" triggerAction="hover">
                         <IonContent class="ion-padding">Strength increases your minimum and maximum physical damage.</IonContent>
                       </IonPopover>
@@ -284,7 +285,7 @@ const GuardianPage: React.FC = () => {
                     </IonCol>
 
                     <IonCol size='3'>
-                      <IonButton fill="clear" id="con-trigger" color="dark" className="stats-btn">CON: {player?.con}</IonButton>
+                      <IonButton fill="clear" id="con-trigger" className="stats-btn">CON: {player?.con}</IonButton>
                       <IonPopover trigger="con-trigger" triggerAction="hover">
                         <IonContent class="ion-padding">Constitution increases your maximum health.</IonContent>
                       </IonPopover>
@@ -297,7 +298,7 @@ const GuardianPage: React.FC = () => {
                   </IonRow>
                   <IonRow>
                     <IonCol size='3'>
-                      <IonButton fill="clear" id="dex-trigger" color="dark" className="stats-btn">DEX: {player?.dex}</IonButton>
+                      <IonButton fill="clear" id="dex-trigger" className="stats-btn">DEX: {player?.dex}</IonButton>
                       <IonPopover trigger="dex-trigger" triggerAction="hover">
                         <IonContent class="ion-padding">Dexterity increases your attack speed, accuracy and dodge chance.</IonContent>
                       </IonPopover>
@@ -308,7 +309,7 @@ const GuardianPage: React.FC = () => {
                       </IonButton>
                     </IonCol>
                     <IonCol size='3'>
-                      <IonButton fill="clear" id="int-trigger" color="dark" className="stats-btn">INT: {player?.int}</IonButton>
+                      <IonButton fill="clear" id="int-trigger" className="stats-btn">INT: {player?.int}</IonButton>
                       <IonPopover trigger="int-trigger" triggerAction="hover">
                         <IonContent class="ion-padding">Intelligence increases your rare loot chance and XXX</IonContent>
                       </IonPopover>

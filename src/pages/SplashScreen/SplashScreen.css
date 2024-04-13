@@ -1,9 +1,7 @@
 .splash-screen {
-    height: 100vh;
+    height: 100%;
     width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
     animation: fadeInOut 5s ease-in forwards; /* Updated to use fadeIn and added "forwards" */
     overflow: hidden;
 }
@@ -12,8 +10,6 @@
     height: 100vh;
     width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
     animation: fadeIn 5s ease-in forwards; /* Updated to use fadeIn and added "forwards" */
     overflow: hidden;
 }

@@ -6,6 +6,7 @@ ion-menu::part(backdrop) {
   padding: 0px;
   margin: 0px;
   font-size: 16px;
+  color: white;
 }
 
 .bg-video video {

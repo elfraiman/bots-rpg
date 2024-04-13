@@ -68,7 +68,7 @@ const Shop = () => {
                   {weaponsData && armorsData && player ? (
                     <IonAccordionGroup>
                       <IonAccordion value="weapons">
-                        <IonItem slot="header" color="light">
+                        <IonItem slot="header">
                           <IonLabel>Weapons</IonLabel>
                         </IonItem>
                         <div slot="content">
@@ -82,7 +82,7 @@ const Shop = () => {
                         </div>
                       </IonAccordion>
                       <IonAccordion value="armors">
-                        <IonItem slot="header" color="light">
+                        <IonItem slot="header">
                           <IonLabel>Armors</IonLabel>
                         </IonItem>
                         <div slot="content">
@@ -96,7 +96,7 @@ const Shop = () => {
                         </div>
                       </IonAccordion>
                       <IonAccordion value="boots">
-                        <IonItem slot="header" color="light">
+                        <IonItem slot="header">
                           <IonLabel>Boots</IonLabel>
                         </IonItem>
                         <div slot="content">
@@ -110,7 +110,7 @@ const Shop = () => {
                         </div>
                       </IonAccordion>
                       <IonAccordion value="helmets">
-                        <IonItem slot="header" color="light">
+                        <IonItem slot="header">
                           <IonLabel>Helmets</IonLabel>
                         </IonItem>
                         <div slot="content">

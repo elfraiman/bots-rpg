@@ -1,4 +1,4 @@
-import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonViewWillLeave } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, IonSpinner, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory, useRouteMatch } from "react-router";
@@ -18,6 +18,7 @@ import getXpReward from "../../functions/GetXpReward";
 import { BASE_ATTACK_SPEED, calculateAttackSpeed, calculateDamage, calculateHitChance, calculateMaxHealth } from "../../types/stats";
 import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
+import BattleInfoHeader from "../../components/BattleInfoHeader";
 
 interface IFightResult {
   hitChance: number;
@@ -63,6 +64,8 @@ const BattleTrain = () => {
   const [playerWeapon, setPlayerWeapon] = useState<IPlayerOwnedWeapon | any>();
   const [playerDefensiveStats, setPlayerDefensiveStats] = useState<IPlayerDefensiveStats>({ evasion: 0, defense: 0 });
   const [currentEnemy, setCurrentEnemy] = useState<IEnemy>();
+  const [playerMaxHealth, setPlayerMaxHealth] = useState<number>(0);
+  const [enemyMaxHealth, setEnemyMaxHealth] = useState<number>(0);
   const [playerHealth, setPlayerHealth] = useState<number>(0);
   const [enemyHealth, setEnemyHealth] = useState<number>(0);
   const [enemyIntimidation, setEnemyIntimidation] = useState<string>("");
@@ -71,6 +74,9 @@ const BattleTrain = () => {
   const [hiddenEnemyConcluded, setHiddenEnemyConcluded] = useState<boolean>(true);
   const [battleActive, setBattleActive] = useState<boolean>(false);
   const match = useRouteMatch<{ id: string }>();
+  const [playerHitInfo, setPlayerHitInfo] = useState({ damage: null, key: 0 });
+  const [enemyHitInfo, setEnemyHitInfo] = useState({ damage: null, key: 0 });
+
   const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
   const [enemyNextAttack, setEnemyNextAttack] = useState(BASE_ATTACK_SPEED);
   const history = useHistory();
@@ -91,9 +97,10 @@ const BattleTrain = () => {
   const narrativeEndRef = useRef(null);
 
   const setEnemyInState = (enemy: IEnemy) => {
-    const enemyMaxHealth = calculateMaxHealth(enemy);
+    const enemyHealth = calculateMaxHealth(enemy);
     setCurrentEnemy(enemy);
-    setEnemyHealth(enemyMaxHealth); // Setting enemy's health based on the loaded enemy data
+    setEnemyHealth(enemyHealth);
+    setEnemyMaxHealth(enemyHealth);
 
     if (enemy.hidden) {
       setEnemyIntimidation(enemy.description ?? '');
@@ -118,12 +125,15 @@ const BattleTrain = () => {
 
   const resetStats = () => {
     if (!player || !currentEnemy) return;
-    const playerMaxHealth = calculateMaxHealth(player);
-    const enemyMaxHealth = calculateMaxHealth(currentEnemy);
+    const playerHealth = calculateMaxHealth(player);
+    const enemyHealth = calculateMaxHealth(currentEnemy);
+
     // reset stats
     //
-    setPlayerHealth(playerMaxHealth);
-    setEnemyHealth(enemyMaxHealth);
+    setPlayerHealth(playerHealth);
+    setPlayerMaxHealth(playerHealth);
+    setEnemyMaxHealth(enemyHealth);
+    setEnemyHealth(enemyHealth);
     setBattleStats({
       attempts: 0,
       hits: 0,
@@ -181,8 +191,8 @@ const BattleTrain = () => {
   useEffect(() => {
     if (player) {
       getPlayerEquipment();
-      const playerMaxHealth = calculateMaxHealth(player);
-      setPlayerHealth(playerMaxHealth);
+      const playerHealth = calculateMaxHealth(player);
+      setPlayerHealth(playerHealth);
     }
   }, [player?.attributePoints, player?.equipment]);
 
@@ -191,17 +201,17 @@ const BattleTrain = () => {
   //
   const returnEnemyShape = (enemy: IEnemy, health: number) => {
     let enemyNameStyled = <span style={style.enemyName}>{enemy.name}</span>;
-    const enemyMaxHealth = calculateMaxHealth(enemy);
+    const enemyHealth = calculateMaxHealth(enemy);
 
-    if (health > 0.80 * enemyMaxHealth) {
+    if (health > 0.80 * enemyHealth) {
       return <span style={style.goodShape}> {enemyNameStyled}  is in good shape.</span>
-    } else if (health > 0.65 * enemyMaxHealth) {
+    } else if (health > 0.65 * enemyHealth) {
       return <span style={style.reasonableShape}> {enemyNameStyled}  is in reasonable shape.</span>
-    } else if (health > 0.40 * enemyMaxHealth) {
+    } else if (health > 0.40 * enemyHealth) {
       return <span style={style.badShape}> {enemyNameStyled}  is in bad shape.</span>
-    } else if (health > 0.20 * enemyMaxHealth) {
+    } else if (health > 0.20 * enemyHealth) {
       return <span style={style.barelyAlive}> {enemyNameStyled} is barely alive.</span>
-    } else if (health > 0.01 * enemyMaxHealth) {
+    } else if (health > 0.01 * enemyHealth) {
       return <span style={style.barelyAlive}> {enemyNameStyled} is barely hanging on.</span>
     } else {
       return <span style={style.barelyAlive}> {enemyNameStyled} is dead!</span>
@@ -212,8 +222,8 @@ const BattleTrain = () => {
   //
   const returnPercentageColor = (health: number) => {
     if (!player) return;
-    const playerMaxHealth = calculateMaxHealth(player);
-    const percentage = (health / playerMaxHealth) * 100;
+    const playerHealth = calculateMaxHealth(player);
+    const percentage = (health / playerHealth) * 100;
     if (percentage > 75) {
       return style.goodShape;
     } else if (percentage > 55) {
@@ -227,6 +237,22 @@ const BattleTrain = () => {
     }
   }
 
+  const handleHit = (damage: any, isPlayer: boolean) => {
+    const hitInfo = { damage, key: Date.now() };
+    if (isPlayer) {
+      setPlayerHitInfo(hitInfo);
+    } else {
+      setEnemyHitInfo(hitInfo);
+    }
+    setTimeout(() => {
+      if (isPlayer) {
+        setPlayerHitInfo({ damage: null, key: 0 });
+      } else {
+        setEnemyHitInfo({ damage: null, key: 0 });
+      }
+    }, 1000); // reset after 1 second to allow for animation completion
+  };
+
   const attack = (isPlayerAttack: boolean) => {
     if (!player || !currentEnemy) {
       setFightNarrative(prev => [...prev, <div>Player or enemy is missing.</div>]);
@@ -236,8 +262,6 @@ const BattleTrain = () => {
 
     const hitChance = isPlayerAttack ? calculateHitChance(player.dex, currentEnemy.dex) : calculateHitChance(currentEnemy.dex, player.dex, playerDefensiveStats.evasion);
     const damageNumbers = isPlayerAttack ? calculateDamage(playerWeapon.stats.minAttack, playerWeapon.stats.maxAttack, player.str, 0) : calculateDamage(enemyWeapon?.minAttack, enemyWeapon?.maxAttack, currentEnemy.str, playerDefensiveStats.defense);
-
-    console.log(hitChance, damageNumbers, 'Hit chance, damage numbers', isPlayerAttack);
 
     applyFightResults({
       hitChance,
@@ -251,7 +275,7 @@ const BattleTrain = () => {
 
   const applyFightResults = ({ hitChance, minAttack, maxAttack, attacker, defender, isPlayerAttack }: IFightResult) => {
     if (!player || !currentEnemy) return;
-    const playerMaxHealth = calculateMaxHealth(player);
+    const playerHealth = calculateMaxHealth(player);
     const randomNumber = Math.random();
 
     if (randomNumber <= hitChance) {
@@ -262,10 +286,12 @@ const BattleTrain = () => {
       if (isPlayerAttack) {
         newEnemyHealth = Math.max(enemyHealth - damageDealt, 0);
         setEnemyHealth(newEnemyHealth);
-
+        handleHit(damageDealt, true)
       } else {
         newPlayerHealth = Math.max(playerHealth - damageDealt, 0);
+        handleHit(damageDealt, false)
         setPlayerHealth(newPlayerHealth);
+        handleHit(damageDealt, false)
       }
 
       const hitMessage = (
@@ -284,8 +310,8 @@ const BattleTrain = () => {
           <br />
           <span>
             {isPlayerAttack ? returnEnemyShape(currentEnemy, newEnemyHealth) :
-              <span style={style.playerHealth}> damage report: {newPlayerHealth}/{playerMaxHealth}  <span style={returnPercentageColor(playerHealth)}>
-                {Math.round((newPlayerHealth / playerMaxHealth) * 100)} % left
+              <span style={style.playerHealth}> damage report: {newPlayerHealth}/{playerHealth}  <span style={returnPercentageColor(playerHealth)}>
+                {Math.round((newPlayerHealth / playerHealth) * 100)} % left
               </span>
               </span>
             }
@@ -598,19 +624,26 @@ const BattleTrain = () => {
     setIsNavigationDisabled(false);
   });
 
+  // Calculate health percentage
+  const playerHealthPercent = (playerHealth / playerMaxHealth) * 100;
+  const enemyHealthPercent = (enemyHealth / enemyMaxHealth) * 100;
 
   return (
     <IonPage >
       <Header />
-      <IonToolbar>
-        <IonTitle style={{ textAlign: 'center' }}>
-          <span style={style.playerName}>{player?.name}</span> VS <span style={style.enemyName}>{currentEnemy?.name}</span>
-        </IonTitle>
-      </IonToolbar>
+      {
+        //* Battle header enemy vs player *//
+      }
+      <BattleInfoHeader
+        enemyHealthPercent={enemyHealthPercent}
+        playerHealthPercent={playerHealthPercent}
+        enemyHitInfo={enemyHitInfo}
+        playerHitInfo={playerHitInfo}
+        enemyImgId={currentEnemy?.imgId ?? 0}
+      />
+
 
       <IonContent>
-        <IonImg style={{ animation: 'fadeIn 2s ease-in' }} src={`/images/enemies/enemy-${currentEnemy?.imgId}.webp`} alt="Enemy" className="room-banner" />
-        {playerHealth}
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (
             <div key={index}>{line}</div>
@@ -619,12 +652,26 @@ const BattleTrain = () => {
           {!battleActive ? (
             <>
               <div>
+                {
+                  //*If elite or boss enemy*//
+                }
                 {currentEnemy?.hidden && playerHealth > 0 ? (
                   <div>
-                    Type: <span style={{ color: currentEnemy?.type === 'boss' ? 'orange' : '#A335EE' }}>{currentEnemy?.type.toLocaleUpperCase()} </span><br />
-                    Level: <span style={{ fontWeight: 700, marginBottom: 36 }}>{currentEnemy?.level}</span> <br />
-                    <IonCardSubtitle style={{ color: 'gold' }}>This enemy has a chance to drop rare loot.</IonCardSubtitle>
-                    <p style={{ color: 'red', fontSize: 16, fontWeight: 700 }}>{enemyIntimidation ?? ''}</p>
+                    Type:
+                    <span style={{ color: currentEnemy?.type === 'boss' ? '#FF8000' : '#A335EE' }}>
+                      {currentEnemy?.type.toLocaleUpperCase()}
+                    </span>
+                    <br />
+                    Level: <span style={{ fontWeight: 700, marginBottom: 36 }}>
+                      {currentEnemy?.level}
+                    </span>
+                    <br />
+                    <IonCardSubtitle style={{ color: 'gold' }}>
+                      This enemy has a chance to drop rare loot.
+                    </IonCardSubtitle>
+                    <p style={{ color: 'red', fontSize: 16, fontWeight: 700 }}>
+                      {enemyIntimidation ?? ''}
+                    </p>
                   </div>
                 ) : <></>}
               </div>
@@ -670,7 +717,7 @@ const BattleTrain = () => {
         {/* Invisible element at the end of your narratives */}
         <div ref={narrativeEndRef} />
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 
