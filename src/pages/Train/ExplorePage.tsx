@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonSpinner } from '@ionic/react';
+import { IonCard, IonContent, IonPage, IonSpinner } from '@ionic/react';
 import React, { useContext, useEffect, useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
 import { IEnemy, IPlanet, IQuest } from '../../types/types';
@@ -78,16 +78,15 @@ const ExplorePage: React.FC = () => {
   }
 
   return (
-    <IonPage id="main-content">
+    <IonPage>
       <Header />
 
       <IonContent
-        className="explore-content"
         style={{
           '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
         }}
       >
-        <div className="ion-padding">
+        <div className="ion-padding low-fade" style={{ color: 'white' }}>
           <h4>You've arrived at {planetData.name}</h4>
           <p>{planetData.description}</p>
         </div>

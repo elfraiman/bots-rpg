@@ -49,7 +49,6 @@ export const getSingleEnemy = async ({ monsterId }: IGetEnemiesProps): Promise<I
     if (monsterId !== undefined) {
       // Use findOne() for _id queries as it's more efficient for single document retrieval
       const enemy = await enemiesCollection.findOne({ _id: new Realm.BSON.ObjectId(monsterId) });
-      console.log("Querying with _id:", monsterId);
       return enemy ?? undefined;
     } else {
       // Optionally handle the case where neither _id nor location is provided

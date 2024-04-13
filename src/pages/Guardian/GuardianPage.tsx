@@ -166,7 +166,7 @@ const GuardianPage: React.FC = () => {
 
   return (
     <>
-      <IonPage id="main-content">
+      <IonPage>
         <Header />
         <IonContent style={{
           '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,

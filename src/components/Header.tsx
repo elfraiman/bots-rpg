@@ -21,14 +21,14 @@ const Header = () => {
         if (!player) {
             return;
         }
-
-
         // if player is in the same location no need to get planet
         //
         if (player?.location.toString() === playerLocation?._id.toString()) return;
 
         setLoading(true);
+
         const playerLocationPlanet = await getSinglePlanet(player.location)
+
         if (playerLocationPlanet !== undefined) setPlayerLocation(playerLocationPlanet)
         setLoading(false);
     }

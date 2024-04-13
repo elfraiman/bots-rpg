@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import * as Realm from "realm-web";
 import { IPlanet } from '../types/types'; // Assuming you've renamed the import to avoid naming conflict
 
-const app =  Realm.App.getApp('application-0-vgvqx');
+const app = Realm.App.getApp('application-0-vgvqx');
 
 const usePlanetsHook = () => {
     const [planetsData, setPlanetsData] = useState<IPlanet[]>([]);
 
     useEffect(() => {
-        const fetchWeapons = async () => {
+        const fetchPlanets = async () => {
             // Ensure there's a logged-in user
             if (!app.currentUser) {
                 console.error("No current user found");
@@ -31,7 +31,7 @@ const usePlanetsHook = () => {
             }
         };
 
-        fetchWeapons();
+        fetchPlanets();
     }, []); // Empty dependency array means this effect runs once on mount
 
     return planetsData;

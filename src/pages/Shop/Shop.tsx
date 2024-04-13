@@ -55,7 +55,7 @@ const Shop = () => {
           <Header />
           {player ? (
             <IonContent style={{
-              '--background': `url('/images/shop.webp') 0 0/cover no-repeat`,
+              '--background': `url('/images/shop.webp') 0 0/cover no-repeat `,
             }}>
               <IonText>
                 <div className="text-overlay">
@@ -127,7 +127,6 @@ const Shop = () => {
                   ) : <IonSpinner />}
                 </IonCardContent>
               </IonCard>
-
 
             </IonContent>
           ) : <IonSpinner />}

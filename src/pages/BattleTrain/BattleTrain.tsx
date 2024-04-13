@@ -642,7 +642,9 @@ const BattleTrain = () => {
       />
 
 
-      <IonContent>
+      <IonContent style={{
+        '--background': `url('/images/planets/planet-battle-${0}.webp') 0 0/cover no-repeat`,
+      }}>
         <div className="ion-padding fight-narrative">
           {fightNarrative.map((line, index) => (
             <div key={index}>{line}</div>
