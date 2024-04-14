@@ -48,6 +48,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
     const userId = app.currentUser.id;
 
+
     if (!userId) {
       console.error("No user id found");
       return;
@@ -79,7 +80,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       console.error("Failed to update player data:", err);
     }
   };
-
 
 
   useEffect(() => {

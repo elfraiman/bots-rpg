@@ -249,6 +249,7 @@ export type IStory = {
 
 export type IPlayer = {
   _id: string;
+  email: string;
   attributePoints: number;
   con: number;
   dex: number;
