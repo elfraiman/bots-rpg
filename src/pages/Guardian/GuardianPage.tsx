@@ -78,6 +78,7 @@ const GuardianPage: React.FC = () => {
     const equipmentPromises = player.equipmentInventory?.map((item: Realm.BSON.ObjectId) => GetCombinedEquipmentStatsDetails(player._id, item));
 
     try {
+      setLoading(true);
       const equipments = await Promise.all(equipmentPromises);
       const filteredEquipments: any = equipments.filter(equipment => equipment !== undefined); // Filter out undefined items
 
@@ -95,6 +96,7 @@ const GuardianPage: React.FC = () => {
       setLoading(false);
       return;
     }
+    setLoading(true);
     const itemPromises = player.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId));
     try {
       const items = await Promise.all(itemPromises);
@@ -170,20 +172,6 @@ const GuardianPage: React.FC = () => {
   }, [player?.attributePoints])
 
 
-  if (loading) {
-    return (
-      <IonPage className="content">
-        <IonContent><IonSpinner /></IonContent>
-      </IonPage>
-    );
-  } else if (!player) {
-    return (
-      <IonPage className="content">
-        <IonContent>Please login</IonContent>
-      </IonPage>
-    );
-  }
-
   const logout = async () => {
     const user = app.currentUser;
     if (user) {
@@ -198,48 +186,52 @@ const GuardianPage: React.FC = () => {
         <IonContent style={{
           '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,
         }}>
-          <IonCard className="card-fade ion-padding ion-bot-card corner-border ">
-            {loading ? <IonSpinner /> : (
-              <div>
-                <IonCardTitle>{player.name}</IonCardTitle>
-                <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
-                <IonCardContent className="bot-card-content">
-                  <IonImg src={BotOutline} className="bot-outline-img " />
+          <IonCard className="card-fade ion-padding ion-bot-card corner-border " style={{ minHeight: 380 }}>
+            <div>
+              {!player || loading ? <IonSpinner /> : (
+                <>
+                  <IonCardTitle>{player.name}</IonCardTitle>
+                  <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
+                  <IonCardContent className="bot-card-content">
+                    <IonImg src={BotOutline} className="bot-outline-img " />
 
-                  <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.weapon ? (
-                      <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="left-weapon-click" />
-                    ) : <></>}
-                  </IonButton>
+                    <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.weapon ? (
+                        <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="left-weapon-click" />
+                      ) : <></>}
+                    </IonButton>
 
-                  <IonButton fill="clear" id="right-weapon-click" className="right-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.weapon ? (
-                      <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="right-weapon-click" />
-                    ) : <></>}
-                  </IonButton>
+                    <IonButton fill="clear" id="right-weapon-click" className="right-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.weapon ? (
+                        <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="right-weapon-click" />
+                      ) : <></>}
+                    </IonButton>
 
-                  <IonButton fill="clear" id="armor-click" className="armor-block" style={equippedDetails?.armor ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.armor ? (
-                      <EquipmentPopover equippedDetails={equippedDetails?.armor} trigger="armor-click" />
-                    ) : <></>}
-                  </IonButton>
+                    <IonButton fill="clear" id="armor-click" className="armor-block" style={equippedDetails?.armor ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.armor ? (
+                        <EquipmentPopover equippedDetails={equippedDetails?.armor} trigger="armor-click" />
+                      ) : <></>}
+                    </IonButton>
 
-                  <IonButton fill="clear" id="helmet-click" className="helmet-block" style={equippedDetails?.helmet ? styles.equipped : styles.notEquipped}>
-                    {equippedDetails?.helmet ? (
-                      <EquipmentPopover equippedDetails={equippedDetails?.helmet} trigger="helmet-click" />
-                    ) : <></>}
-                  </IonButton>
+                    <IonButton fill="clear" id="helmet-click" className="helmet-block" style={equippedDetails?.helmet ? styles.equipped : styles.notEquipped}>
+                      {equippedDetails?.helmet ? (
+                        <EquipmentPopover equippedDetails={equippedDetails?.helmet} trigger="helmet-click" />
+                      ) : <></>}
+                    </IonButton>
 
-                  <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
-                    <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="right-boot-click" />
-                  </IonButton>
+                    <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
+                      <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="right-boot-click" />
+                    </IonButton>
 
-                  <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
-                    <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="left-boot-click" />
-                  </IonButton>
+                    <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
+                      <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="left-boot-click" />
+                    </IonButton>
 
-                </IonCardContent>
-              </div>)}
+                  </IonCardContent>
+                </>
+              )}
+
+            </div>
           </IonCard>
 
           <IonCard className="corner-border">
@@ -347,7 +339,6 @@ const GuardianPage: React.FC = () => {
                       </IonButton>
                     </IonCol>
                   </IonRow>
-                  {/* Add more rows and columns for additional stats as needed */}
                 </IonGrid>
               </IonCardContent>
             </div>

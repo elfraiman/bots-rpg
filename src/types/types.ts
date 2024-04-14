@@ -237,6 +237,15 @@ export const IPlanetSchema = {
   primaryKey: '_id',
 };
 
+export type IStory = {
+  _id: Realm.BSON.ObjectId;
+  imgId: number;
+  npcImgId: number;
+  npcName: string;
+  story: string;
+  storyName: string;
+  storyStep: number;
+};
 
 export type IPlayer = {
   _id: string;
@@ -261,6 +270,7 @@ export type IPlayer = {
 export type IPlayer_quests = {
   completed: Array<Realm.BSON.ObjectId>;
   inProgress: Array<Realm.BSON.ObjectId>;
+  storyStep: number;
 };
 
 export type IPlayer_equipment = {
@@ -286,17 +296,6 @@ export type IEquippedItemsDetails = {
   helmet?: IPlayer_equipment_armor;
   boots?: IPlayer_equipment_armor;
 }
-
-
-export const IPlayer_equipmentSchema = {
-  name: 'IPlayer_equipment',
-  embedded: true,
-  properties: {
-    mainHand: 'IPlayer_equipment_mainHand',
-  },
-};
-
-
 
 export type IHelmet_requirements = {
   con: number;

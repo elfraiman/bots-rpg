@@ -48,6 +48,10 @@ ion-tab-button {
   font-weight: bold;
 }
 
+.story-modal-content {
+  background-color: black;
+}
+
 /** Ionic CSS Variables **/
 :root {
   --header-height: 100px;

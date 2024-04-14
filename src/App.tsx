@@ -39,6 +39,8 @@ import ExplorePage from './pages/Train/ExplorePage';
 import GalaxyPage from './pages/Travel/GalaxyPage';
 import './theme/variables.css';
 import Header from './components/Header';
+import { GlobalModalWrapper, GlobalModal } from 'react-global-modal'
+import 'react-global-modal/dist/style.css';
 
 setupIonicReact({
   rippleEffect: true,
@@ -58,6 +60,7 @@ setupIonicReact({
 
 SplashScreen.hide()
 const app = new Realm.App({ id: 'application-0-vgvqx' });
+let globalModalRef: any = null
 
 const App: React.FC = () => {
   // initializeApp();
@@ -74,6 +77,9 @@ const App: React.FC = () => {
   }, [app.currentUser]);
 
 
+  React.useEffect(() => {
+    GlobalModal.setUpModal(globalModalRef)
+  }, [])
   // If we have a user that doesn't have a nickname
   // we show the initial story page where he can set a nickname
   // if we have a user, show navigation
@@ -82,12 +88,13 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
+
       <IonReactRouter>
         <Toaster
           position="top-right"
           reverseOrder={true}
         />
-
+        <GlobalModalWrapper ref={(el) => (globalModalRef = el)} />
         {user && player?.name === 'noname' ? (<InitialStoryPage />) : (
           <>
             {!user ? (<Login />) : (

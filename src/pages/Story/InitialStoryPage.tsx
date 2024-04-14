@@ -12,7 +12,6 @@ const InitialStoryPage = () => {
   const history = useHistory();
   const { player, updatePlayerData } = usePlayerData();
   const { setIsNavigationDisabled } = useNavigationDisable();
-  const [pageExiting, setPageExiting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isNicknameValid, setIsNicknameValid] = useState(false); // State to track if nickname is valid
@@ -52,8 +51,6 @@ const InitialStoryPage = () => {
 
 
   const handleSkip = () => {
-    // Trigger the fade-out animation
-    setPageExiting(true);
     // Wait for the animation to complete before changing the route
     setTimeout(() => {
       history.replace(`/earthstory`);

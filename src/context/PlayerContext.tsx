@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { IPlayer } from '../types/types';
+import { IPlayer, IPlayer_quests } from '../types/types';
 import * as Realm from 'realm-web';
 import GetXpForNextLevel from '../functions/GetXpForNextLevel';
+import { GlobalModal } from 'react-global-modal';
+import StoryModal from '../components/StoryModal';
 
 // Assuming you've properly initialized the Realm app outside of this component
 const app = Realm.App.getApp('application-0-vgvqx');
@@ -19,6 +21,19 @@ const defaultState: IPlayerContext = {
 export const PlayerContext = createContext<IPlayerContext>(defaultState);
 
 export const usePlayer = () => useContext(PlayerContext);
+
+export const showStory = (storyStep: number) => {
+  GlobalModal.push({
+    component: StoryModal,
+    props: {
+      storyStep: storyStep
+    },
+    hideHeader: true,
+    hideCloseIcon: true,
+    contentClassName: 'story-modal-content',
+    isCloseable: false,
+  })
+}
 
 export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [player, setPlayer] = useState<IPlayer | null>(null);
@@ -46,6 +61,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         updates['level'] = player?.level + 1;
         updates['experience'] = 0;
         updates['attributePoints'] = player.attributePoints + 5;
+
+        // If player reaches level 10 start story
+        //
+        if (player.level + 1 === 10) {
+          showStory(0);
+          (updates['quests'] as IPlayer_quests)['storyStep'] = 1;
+        }
       }
 
       // Assuming 'updates' is an object with fields you want to update and their new values
@@ -57,6 +79,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       console.error("Failed to update player data:", err);
     }
   };
+
+
 
   useEffect(() => {
     const fetchPlayer = async () => {

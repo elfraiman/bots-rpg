@@ -151,7 +151,7 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
   }
 
   return (
-    <IonCard style={{ minHeight: 180 }} className='corner-border'>
+    <IonCard style={{ minHeight: 180 }} className='corner-border quick-fade-in'>
       {loading ? <IonSpinner /> : (
         <>
           <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/npc-earth-0.webp`} sizes="small" />

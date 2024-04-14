@@ -1,4 +1,4 @@
-import { IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonPage, IonRow, IonSpinner } from "@ionic/react";
+import { IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonPage, IonRow, IonSpinner, useIonViewWillEnter, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory, useRouteMatch } from "react-router";
@@ -161,41 +161,6 @@ const BattleTrain = () => {
     };
 
   }
-
-  // Initial get enemy
-  //
-  useEffect(() => {
-    getEnemy();
-    setFightNarrative([]);
-
-    return () => {
-      setFightNarrative([]);
-      getEnemy();
-    }
-  }, []);
-
-
-  useEffect(() => {
-    if (player) {
-      const playerHealth = calculateMaxHealth(player);
-      setPlayerMaxHealth(playerHealth);
-      setPlayerHealth(playerHealth);
-    }
-  }, [player?.con]);
-
-  useEffect(() => {
-    if (player) {
-      getPlayerEquipment();
-    }
-  }, [player?.equipment]);
-
-
-  useEffect(() => {
-    setLoading(true);
-    if (player && playerWeapon && currentEnemy && playerDefensiveStats) {
-      setLoading(false);
-    }
-  }, [player?.equipment, playerWeapon, currentEnemy, playerDefensiveStats]);
 
   // Returns some text to describe the enemy's health status
   //
@@ -529,6 +494,38 @@ const BattleTrain = () => {
     (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
   }, [fightNarrative]);
 
+  // Initial get enemy
+  //
+  useIonViewWillEnter(() => {
+    getEnemy();
+    setFightNarrative([]);
+  })
+
+  useIonViewWillLeave(() => {
+    setIsNavigationDisabled(false);
+  })
+
+  useEffect(() => {
+    if (player) {
+      const playerHealth = calculateMaxHealth(player);
+      setPlayerMaxHealth(playerHealth);
+      setPlayerHealth(playerHealth);
+    }
+  }, [player?.con]);
+
+  useEffect(() => {
+    if (player) {
+      getPlayerEquipment();
+    }
+  }, [player?.equipment]);
+
+  useEffect(() => {
+    setLoading(true);
+    if (player && playerWeapon && currentEnemy && playerDefensiveStats) {
+      setLoading(false);
+    }
+  }, [player?.equipment, playerWeapon, currentEnemy, playerDefensiveStats]);
+
 
   // Calculate health percentage
   const playerHealthPercent = (playerHealth / playerMaxHealth) * 100;
@@ -545,7 +542,6 @@ const BattleTrain = () => {
         enemyHitInfo={enemyHitInfo}
         playerHitInfo={playerHitInfo}
         enemyImgId={currentEnemy?.imgId ?? 0} loading={!currentEnemy} />
-
 
       <IonContent className="content" style={{
         '--background': `url('/images/planets/planet-battle-${0}.webp') 0 0/cover no-repeat`,
@@ -596,7 +592,6 @@ const BattleTrain = () => {
                   color="light"
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsNavigationDisabled(false);
                     history.replace(`/explore`);
                   }}
                 >

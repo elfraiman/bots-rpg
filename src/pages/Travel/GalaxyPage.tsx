@@ -1,8 +1,8 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow } from "@ionic/react";
-import { useContext } from "react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow, useIonViewWillEnter } from "@ionic/react";
+import { useContext, useEffect } from "react";
 import * as Realm from 'realm-web';
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
-import { PlayerContext } from "../../context/PlayerContext";
+import { PlayerContext, showStory } from "../../context/PlayerContext";
 import { getTravel } from "../../functions/GetTravel";
 import usePlanetsHook from "../../hooks/UsePlanetsHook";
 import SplashScreen from "../SplashScreen/SplashScreen";
@@ -14,11 +14,9 @@ const GalaxyPage = () => {
   const { player, updatePlayerData } = useContext(PlayerContext)
   const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
-  if (!player) {
-    return;
-  };
 
   const travelToPlanet = async (destination: Realm.BSON.ObjectId) => {
+    if (!player) return;
     try {
       await getTravel({ destination, player, updatePlayerData });
       triggerDisableWithTimer(5000);
@@ -26,6 +24,14 @@ const GalaxyPage = () => {
       console.error(e);
     }
   };
+
+  useIonViewWillEnter(() => {
+    // Handle if player is on story step 1
+    //
+    if (player && player.quests.storyStep === 1) {
+      showStory(1);
+    }
+  })
 
   return (
     <>
@@ -41,7 +47,7 @@ const GalaxyPage = () => {
 
               <IonList className="low-fade ion-padding" style={{ zIndex: 5 }}>
 
-                <IonCard style={{ padding: 0, margin: 0 }} className="corner-border" >
+                <IonCard style={{ padding: 0, margin: 0 }} className="corner-border quick-fade-in" >
                   <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-1.webp`} />
                   <IonCardHeader>
                     <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Aurora Nova</IonCardTitle>
