@@ -285,7 +285,7 @@ const GuardianPage: React.FC = () => {
           <IonCard className="ion-padding card-fade corner-border">
             <div>
               <IonCardTitle>Stats</IonCardTitle>
-              <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
+              <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints ?? 0 > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
               <IonCardContent style={{ padding: 0 }}>
                 <IonGrid>
                   <IonRow>
