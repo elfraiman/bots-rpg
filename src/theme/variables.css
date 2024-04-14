@@ -38,6 +38,16 @@ ion-tab-bar {
 ion-tab-button {
 }
 
+.player-name {
+  color: #00e1ff;
+  font-weight: bold;
+}
+
+.enemy-name {
+  color: #ffff00;
+  font-weight: bold;
+}
+
 /** Ionic CSS Variables **/
 :root {
   --header-height: 100px;
