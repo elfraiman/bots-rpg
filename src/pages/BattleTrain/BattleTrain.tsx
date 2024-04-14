@@ -596,6 +596,7 @@ const BattleTrain = () => {
                   color="light"
                   onClick={(e) => {
                     e.preventDefault();
+                    setIsNavigationDisabled(false);
                     history.replace(`/explore`);
                   }}
                 >
