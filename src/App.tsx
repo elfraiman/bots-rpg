@@ -108,7 +108,7 @@ const App: React.FC = () => {
                     <Route path="/explore" render={() => <ExplorePage />} exact={true} />
                     <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
                     <Route path="/shop" render={() => <Shop />} exact={true} />
-                    <Route path="/travel" render={() => <GalaxyPage />} exact={true} />
+                    <Route path="/galaxy" render={() => <GalaxyPage />} exact={true} />
                     <Route path="/pvp" render={() => <FightPvpPage />} exact={true} />
                     <Route path="/leaderboard" render={() => <LeaderboardPage />} exact={true} />
                     <Route path="/login" render={() => <Login />} exact={true} />
@@ -138,9 +138,9 @@ const App: React.FC = () => {
                       <IonLabel>Shop</IonLabel>
                     </IonTabButton>
 
-                    <IonTabButton disabled={isNavigationDisabled} tab="travel" href="/travel">
+                    <IonTabButton disabled={isNavigationDisabled} tab="galaxy" href="/galaxy">
                       <IonIcon icon={rocketOutline} />
-                      <IonLabel>Travel</IonLabel>
+                      <IonLabel>Galaxy</IonLabel>
                     </IonTabButton>
 
                     <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">

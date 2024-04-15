@@ -1,20 +1,21 @@
 import toast from 'react-hot-toast';
 import * as Realm from 'realm-web';
 import { IPlayer, IPlayerOwnedItem } from '../types/types';
+import { getMongoClient } from '../mongoClient';
 
 
-const app = Realm.App.getApp('application-0-vgvqx');
 
+export const sellItem = async (item: IPlayerOwnedItem, quantityToSell: number, updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>, player: IPlayer) => {
+    const client = getMongoClient();
 
-export const getSellItem = async (item: IPlayerOwnedItem, quantityToSell: number, updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>, player: IPlayer) => {
-    if (!app.currentUser) {
-        throw new Error("No current user found. Ensure you're logged in to Realm.");
+    if (!client) {
+        console.error("No client found");
+        return;
     }
+
     if (!player) return;
 
-
-    const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const playerOwnedItemsCollection = mongodb.db("bots_rpg").collection<IPlayerOwnedItem>("playerItems");
+    const playerOwnedItemsCollection = client.db("bots_rpg").collection<IPlayerOwnedItem>("playerItems");
 
 
     if (playerOwnedItemsCollection && quantityToSell) {

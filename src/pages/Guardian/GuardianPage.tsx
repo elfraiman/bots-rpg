@@ -97,7 +97,7 @@ const GuardianPage: React.FC = () => {
       return;
     }
     setLoading(true);
-    const itemPromises = player.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId));
+    const itemPromises = player.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId, player._id));
     try {
       const items = await Promise.all(itemPromises);
       const filteredItems: any = items.filter(item => item !== undefined);
@@ -235,7 +235,6 @@ const GuardianPage: React.FC = () => {
           </IonCard>
 
           <IonCard className="corner-border">
-
             <IonAccordionGroup >
               <IonAccordion value="items" >
                 <IonItem slot="header"  >

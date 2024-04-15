@@ -1,39 +1,48 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSpinner, IonTitle } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSpinner, useIonViewDidEnter } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { GlobalModal } from "react-global-modal";
 import { GetStory } from "../functions/GetStory";
-import { IStory } from "../types/types";
-import { usePlayerData } from "../context/PlayerContext";
+import { IPlayer, IStory } from "../types/types";
 
 
+interface IStoryModalProps {
+  storyStep: number;
+  player: IPlayer;
+  updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>;
+}
 
-const StoryModal = ({ storyStep }: { storyStep: number }) => {
+
+const StoryModal = ({ storyStep, player, updatePlayerData }: IStoryModalProps) => {
   const [story, setStory] = useState<IStory | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const { player, updatePlayerData } = usePlayerData();
 
-  useEffect(() => {
-    const fetchStory = async () => {
-      setLoading(true)
-      const story = await GetStory(storyStep)
-      if (story && player?.quests.storyStep) {
+
+  const fetchStory = async () => {
+    console.log('STEP', storyStep, player.quests.storyStep)
+    setLoading(true)
+
+    if (player?.quests.storyStep != storyStep) return;
+
+    GetStory(storyStep).then(story => {
+      if (story) {
         setStory(story);
-
         // Increase story step by 1 to prepare for the next story
         //
-        updatePlayerData({ ...player, quests: { ...player?.quests, storyStep: player?.quests.storyStep + 1 } })
+        updatePlayerData({ ...player, quests: { ...player.quests, storyStep: storyStep + 1 } })
       }
 
-      setLoading(false);
-    }
+    }).catch(e => console.error(e)).finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
     fetchStory();
-  }, [])
+  }, [storyStep])
 
   return (
-    <IonCard className="corner-border " style={{ padding: 0, margin: 0, minHeight: 160 }}>
-      <img src={loading ? `/images/placeholder.webp` : `/images/story/story-npc-${story?.npcImgId}.webp`} />
+    <IonCard className="corner-border " style={{ padding: 0, margin: 0, minHeight: 695 }}>
       {!loading && story ? (
         <>
+          <img src={`/images/npc/story-npc-${story?.npcImgId}.webp`} />
           <IonCardHeader>
             <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{story.npcName}</IonCardTitle>
             <IonCardSubtitle>{story.storyName}</IonCardSubtitle>
@@ -45,7 +54,11 @@ const StoryModal = ({ storyStep }: { storyStep: number }) => {
             </IonButton>
           </IonCardContent>
         </>
-      ) : (<></>)}
+      ) : (
+        <div className="spinner-center">
+          <IonSpinner />
+        </div>
+      )}
     </IonCard>
   )
 }

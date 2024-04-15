@@ -9,7 +9,7 @@ import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import { PlayerContext } from "../../context/PlayerContext";
 import GetBaseItem from "../../functions/GetBaseItem";
 import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEquipmentStatsDetails";
-import { GetCreatePlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
+import { createPlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
 import getItemGradeColor from "../../functions/GetItemGradeColor";
@@ -208,13 +208,14 @@ const BattleTrain = () => {
     } else {
       setEnemyHitInfo(hitInfo);
     }
+
     setTimeout(() => {
       if (isPlayer) {
         setPlayerHitInfo({ damage: null, key: 0 });
       } else {
         setEnemyHitInfo({ damage: null, key: 0 });
       }
-    }, MIN_ATTACK_INTERVAL - 100); // reset after 1 second to allow for animation completion
+    }, 2000); // reset after 2 seconds to allow for animation completion
   };
 
   const attack = (isPlayerAttack: boolean) => {
@@ -384,7 +385,7 @@ const BattleTrain = () => {
           // Step 1: Create or get the already owned item from the player owned items.
           // reference the trash loot from the monster
           //
-          const item = await GetCreatePlayerOwnedItem(player, enemy.trashLoot, amountToDrop);
+          const item = await createPlayerOwnedItem(player, enemy.trashLoot, amountToDrop);
           const baseItem = await GetBaseItem(enemy.trashLoot);
           // Check if the player's inventory already includes this playerOwnedItem.
           //

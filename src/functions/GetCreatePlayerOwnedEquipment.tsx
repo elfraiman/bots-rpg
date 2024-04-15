@@ -1,20 +1,20 @@
 import * as Realm from 'realm-web';
+import { getMongoClient } from '../mongoClient';
 import { IEquipment, IPlayer, IPlayerEquipment } from "../types/types";
-
-const app = Realm.App.getApp('application-0-vgvqx');
-
 
 export const GetCreatePlayerOwnedEquipment = async (
     player: IPlayer,
     equipment: IEquipment,
     updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>,
 ): Promise<IPlayerEquipment | undefined> => {
-    if (!app.currentUser) {
-        throw new Error("No current user found. Ensure you're logged in to Realm.");
+    const client = getMongoClient();
+
+    if (!client) {
+        console.error("No client found");
+        return;
     }
 
-    const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const playerEquipments = mongodb.db("bots_rpg").collection<IPlayerEquipment>("playerEquipments");
+    const playerEquipments = client.db("bots_rpg").collection<IPlayerEquipment>("playerEquipments");
 
     try {
         // No need for instanceof checks. Use the type property directly.

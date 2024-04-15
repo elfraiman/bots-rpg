@@ -4,11 +4,11 @@ import GetPlayerOwnedItem from "./GetPlayerOwnedItem";
 
 
 //
-export const GetCombinedItemDetails = async (itemId: Realm.BSON.ObjectId, ownerId?: string) => {
+export const GetCombinedItemDetails = async (itemId: Realm.BSON.ObjectId, ownerId: string) => {
     // Fetch the player-owned item details
 
     try {
-        const playerOwnedItemDetails = await GetPlayerOwnedItem(itemId);
+        const playerOwnedItemDetails = await GetPlayerOwnedItem(itemId, ownerId);
 
         if (!playerOwnedItemDetails) return;
 

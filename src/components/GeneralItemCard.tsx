@@ -2,7 +2,7 @@ import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner } from "@ionic/r
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
 import getItemGradeColor from "../functions/GetItemGradeColor";
-import { getSellItem } from "../functions/GetSellItem";
+import { sellItem } from "../functions/SaleItem";
 import { IPlayerOwnedItem } from "../types/types";
 import GeneralItemModal from "./GeneralItemModal";
 
@@ -25,7 +25,7 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
   const sellItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
     if (player) {
       setLoading(true);
-      await getSellItem(item, sellQuantity, updatePlayerData, player);
+      await sellItem(item, sellQuantity, updatePlayerData, player);
       setShowModal(false);
       setLoading(false);
     }

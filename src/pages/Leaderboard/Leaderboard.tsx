@@ -1,7 +1,7 @@
 import { IonAvatar, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSegment, IonSegmentButton, IonSpinner, IonText } from "@ionic/react"
 import Header from "../../components/Header"
 import { useEffect, useState } from "react";
-import GetPlayers from "../../functions/GetPlayers";
+import getPlayers from "../../functions/GetPlayers";
 import { IPlayer } from "../../types/types";
 import { trophyOutline } from "ionicons/icons";
 
@@ -14,7 +14,7 @@ const LeaderboardPage = () => {
 
   const getAllPlayers = async () => {
     setLoading(true);
-    const playersFetched = await GetPlayers();
+    const playersFetched = await getPlayers();
 
     if (playersFetched) {
       // sort based on level

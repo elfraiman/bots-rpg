@@ -13,7 +13,6 @@ interface IBattleInfoHeaderProps {
 
 const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPercent, playerHealthPercent, enemyImgId }: IBattleInfoHeaderProps) => {
 
-
   return (
     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', width: '100%', maxHeight: '200px', position: 'relative' }}>
       <div style={{ width: '50%', position: 'relative', minHeight: 200 }}>
@@ -24,15 +23,9 @@ const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPer
             <div className="health-bar-container">
               <div className="health-bar player-health" style={{ width: `${playerHealthPercent}%` }}></div>
             </div>
-            {enemyHitInfo.damage > 0 && (
-              <div className="hit-number" style={{ color: 'red' }} key={enemyHitInfo.key}>
+            {enemyHitInfo.damage >= 0 && (
+              <div className={`hit-number  ${enemyHitInfo.damage === 0 ? "splash-miss" : "splash"}`} key={enemyHitInfo.key}>
                 {enemyHitInfo.damage}
-              </div>
-            )}
-
-            {enemyHitInfo.damage === 0 && (
-              <div className="hit-number" style={{ color: 'lightblue' }} key={enemyHitInfo.key}>
-                Miss
               </div>
             )}
           </>
@@ -44,6 +37,7 @@ const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPer
       </div>
 
       <div style={{ width: '50%', position: 'relative', minHeight: 200 }}>
+
         <img src={loading ? `/images/placeholder.webp` : `/images/enemies/enemy-${enemyImgId}.webp`} className="enemy-image quick-fade-in" style={{ height: '100%' }} />
         {loading ? <IonSpinner /> : (
           <>
@@ -52,24 +46,17 @@ const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPer
               <div className="health-bar enemy-health" style={{ width: `${enemyHealthPercent}%` }}></div>
             </div>
 
-            {playerHitInfo.damage > 0 && (
-              <div className="hit-number" style={{ color: 'red' }} key={playerHitInfo.key}>
+            {playerHitInfo.damage >= 0 && (
+
+              <div className={`hit-number  ${playerHitInfo.damage === 0 ? "splash-miss" : "splash"}`} key={playerHitInfo.key}>
                 {playerHitInfo.damage}
               </div>
             )}
-
-
-            {playerHitInfo.damage === 0 && (
-              <div className="hit-number" style={{ color: 'lightblue' }} key={enemyHitInfo.key}>
-                Miss
-              </div>
-            )}
-
           </>
         )}
 
       </div>
-    </div>
+    </div >
   )
 }
 

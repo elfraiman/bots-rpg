@@ -63,7 +63,7 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
 
     try {
       if (baseItemObjective && type === 'collect') {
-        const itemPromises = player?.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId));
+        const itemPromises = player?.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId, player._id));
         const items = await Promise.all(itemPromises);
         const findSameItem = items.find(item => item?.baseItemId.toString() === baseItemObjective._id.toString());
 

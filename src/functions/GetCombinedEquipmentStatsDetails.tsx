@@ -1,6 +1,6 @@
 import { IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../types/types";
 import { GetBaseEquipment } from "./GetBaseEquipment";
-import { GetPlayerOwnedEquipment } from "./GetPlayerOwnedEquipment";
+import { getPlayerOwnedEquipment } from "./GetPlayerOwnedEquipment";
 import * as Realm from 'realm-web';
 
 
@@ -9,7 +9,7 @@ export const GetCombinedEquipmentStatsDetails = async (playerId: string, playerO
     // Fetch the player-owned item details
 
     try {
-        const playerOwnedEquipmentDetails = await GetPlayerOwnedEquipment(playerId, playerOwnedItemId);
+        const playerOwnedEquipmentDetails = await getPlayerOwnedEquipment(playerId, playerOwnedItemId);
 
         if (!playerOwnedEquipmentDetails) return;
 

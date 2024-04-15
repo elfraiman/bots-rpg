@@ -1,22 +1,21 @@
 import * as Realm from 'realm-web';
-import { IPlayerOwnedArmor, IPlayer, IPlayerEquipment, IEquipment } from "../types/types";
+import { getMongoClient } from '../mongoClient';
+import { IEquipment, IPlayer, IPlayerEquipment } from "../types/types";
 
+export const SellPlayerEquipment = async (equipment: IEquipment, player: IPlayer, updatePlayerData: any): Promise<boolean | undefined> => {
+    const client = getMongoClient();
 
-const app = Realm.App.getApp('application-0-vgvqx');
-
-
-export const GetSellPlayerEquipment = async (equipment: IEquipment, player: IPlayer, updatePlayerData: any): Promise<boolean | undefined> => {
-    if (!app.currentUser) {
-        throw new Error("No current user found. Ensure you're logged in to Realm.");
+    if (!client) {
+        console.error("No client found");
+        return;
     }
-    const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const playerEquipmentsCollections = mongodb.db("bots_rpg").collection<IPlayerEquipment>("playerEquipments");
+
+    const playerEquipmentsCollections = client.db("bots_rpg").collection<IPlayerEquipment>("playerEquipments");
 
     try {
         if (equipment !== undefined && player) {
             await playerEquipmentsCollections.deleteOne({ _id: equipment._id });
-            // Correctly filter out the sold armor using .equals() for ObjectId comparison
-            //
+
             const updatedEquipInventory = player.equipmentInventory.filter((itemId: Realm.BSON.ObjectId) => !itemId.equals(equipment._id));
 
             await updatePlayerData({
@@ -30,7 +29,7 @@ export const GetSellPlayerEquipment = async (equipment: IEquipment, player: IPla
             return undefined;
         }
     } catch (err) {
-        console.error("Failed to create equipment:", err);
+        console.error("Failed to sell equipment:", err);
         throw err; // Rethrow the error for the calling function to handle
     }
 }

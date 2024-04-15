@@ -1,17 +1,20 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonList, IonPage, IonRow, useIonViewWillEnter } from "@ionic/react";
-import { useContext, useEffect } from "react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonItem, IonList, IonPage, IonRow, useIonViewWillEnter } from "@ionic/react";
+import { useEffect, useState } from "react";
 import * as Realm from 'realm-web';
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
-import { PlayerContext, showStory } from "../../context/PlayerContext";
+import { usePlayerData } from "../../context/PlayerContext";
+import { getPlanets } from "../../functions/GetPlanets";
 import { getTravel } from "../../functions/GetTravel";
-import usePlanetsHook from "../../hooks/UsePlanetsHook";
+import { showStoryModal } from "../../functions/ShowStoryModal";
+import { IPlanet } from "../../types/types";
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './GalaxyPage.css';
+import NpcCard from "../../components/NpcCard";
 
 
 const GalaxyPage = () => {
-  const planets = usePlanetsHook();
-  const { player, updatePlayerData } = useContext(PlayerContext)
+  const [planets, setPlanets] = useState<IPlanet[]>([]);
+  const { player, updatePlayerData } = usePlayerData();
   const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
 
@@ -25,13 +28,30 @@ const GalaxyPage = () => {
     }
   };
 
+  const fetchPlanets = async () => {
+    try {
+      const planetsFetched = await getPlanets();
+      if (planetsFetched) {
+        setPlanets(planetsFetched);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   useIonViewWillEnter(() => {
+    fetchPlanets();
+  })
+
+  useEffect(() => {
     // Handle if player is on story step 1
     //
     if (player && player.quests.storyStep === 1) {
-      showStory(1);
+      showStoryModal({ storyStep: 1, player, updatePlayerData });
     }
-  })
+  }, [player])
+
+
 
   return (
     <>
@@ -44,22 +64,16 @@ const GalaxyPage = () => {
               <div className='bg-video'>
                 <video playsInline autoPlay muted preload="auto" loop className="video" src="/videos/galaxy.mp4"> </video>
               </div>
-
               <IonList className="low-fade ion-padding" style={{ zIndex: 5 }}>
-
-                <IonCard style={{ padding: 0, margin: 0 }} className="corner-border quick-fade-in" >
-                  <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-1.webp`} />
-                  <IonCardHeader>
-                    <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Aurora Nova</IonCardTitle>
-                    <IonCardSubtitle>Pilot</IonCardSubtitle>
-                  </IonCardHeader>
-                  <IonCardContent className="ion-padding">
-                    <p>Just let me know where we are headed and I'll make sure we get there.</p>
-                  </IonCardContent>
-                </IonCard>
+                <NpcCard
+                  npcImgId={1}
+                  npcName="Aurora Nova"
+                  npcRole="Pilot"
+                  npcText="Just let me know where we are headed and I'll make sure we get there."
+                />
 
                 <div className="ion-padding low-fade" style={{ marginTop: 16 }}>
-                  <h2><strong>Travel</strong></h2>
+                  <h2>Travel</h2>
                   <p>Here's a list of planets you've located.</p>
                 </div>
 

@@ -13,7 +13,7 @@ import {
   useIonViewWillEnter
 } from '@ionic/react';
 import Header from '../../components/Header';
-import GetPlayers from '../../functions/GetPlayers';
+import getPlayers from '../../functions/GetPlayers';
 import { useEffect, useState } from 'react';
 import { IPlayer } from '../../types/types';
 import { trophyOutline } from 'ionicons/icons';
@@ -28,7 +28,7 @@ const FightPvpPage: React.FC = () => {
   }, [])
   const getAllPlayers = async () => {
     setLoading(true);
-    const playersFetched = await GetPlayers();
+    const playersFetched = await getPlayers();
 
     if (playersFetched) {
       // sort based on level

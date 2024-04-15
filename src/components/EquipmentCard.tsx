@@ -5,8 +5,8 @@ import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import { GetCreatePlayerOwnedEquipment } from "../functions/GetCreatePlayerOwnedEquipment";
 import getItemGradeColor from "../functions/GetItemGradeColor";
-import { GetPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
-import { GetSellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
+import { getPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
+import { SellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
 import { IEquipment, IPlayer } from "../types/types";
 import EquipmentModal from "./EquipmentModal";
 
@@ -54,7 +54,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
     setLoading(true);
     try {
       if (!player) return;
-      await GetSellPlayerEquipment(equipmentToSell, player, updatePlayerData);
+      await SellPlayerEquipment(equipmentToSell, player, updatePlayerData);
       toast(`Gold + ${equipmentToSell.cost / 2}`,
         {
           icon: '🪙',
@@ -83,7 +83,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
       // reason for this is that the player owned equipments are unique and
       // separate from the list of armors and weapons.
       //
-      const playerEquipmentItem = await GetPlayerOwnedEquipment(player._id, itemId);
+      const playerEquipmentItem = await getPlayerOwnedEquipment(player._id, itemId);
 
       if (!playerEquipmentItem) {
         console.error("Item to equip not found in player's inventory");

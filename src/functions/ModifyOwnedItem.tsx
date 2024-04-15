@@ -4,7 +4,7 @@ import { IPlayerItem } from '../types/types';
 
 
 
-const GetPlayerOwnedItem = async (_id: Realm.BSON.ObjectId, ownerId: string) => {
+const modifyOwnedItem = async (_id: Realm.BSON.ObjectId, quantity?: number) => {
     const client = getMongoClient();
 
     if (!client) {
@@ -12,11 +12,15 @@ const GetPlayerOwnedItem = async (_id: Realm.BSON.ObjectId, ownerId: string) => 
         return;
     }
 
-    const playerOwnedItemsCollection = client.db("bots_rpg").collection<IPlayerItem>("playerItems");
+    const playerItemsCollection = client.db("bots_rpg").collection<IPlayerItem>("playerItems");
 
     try {
         if (_id !== undefined) {
-            const playerOwnedItem = await playerOwnedItemsCollection.findOne({ _id, ownerId: ownerId });
+            const increaseAmount = quantity ?? 1;
+            const playerOwnedItem = await playerItemsCollection.updateOne(
+                { _id: _id },
+                { $inc: { quantity: increaseAmount } }
+            );
 
             return playerOwnedItem;
         } else {
@@ -25,10 +29,10 @@ const GetPlayerOwnedItem = async (_id: Realm.BSON.ObjectId, ownerId: string) => 
         }
     } catch (err) {
         console.error("Failed to create trash:", err);
-        throw err; // Rethrow the error for the calling function to handle
+        throw err;
     }
 
 }
 
 
-export default GetPlayerOwnedItem;
+export default modifyOwnedItem;

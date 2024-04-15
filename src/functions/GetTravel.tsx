@@ -9,14 +9,8 @@ export interface ITravelDestinationsProps {
     updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>;
 }
 
-const app = Realm.App.getApp('application-0-vgvqx');
-
 
 export const getTravel = async ({ destination, player, updatePlayerData }: ITravelDestinationsProps): Promise<boolean | undefined> => {
-    if (!app.currentUser) {
-        throw new Error("No current user found. Ensure you're logged in to Realm.");
-    }
-
     try {
         if (destination !== undefined && player) {
             updatePlayerData({

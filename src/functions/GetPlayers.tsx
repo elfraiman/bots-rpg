@@ -1,18 +1,15 @@
+import { getMongoClient } from "../mongoClient";
 import { IPlayer } from "../types/types";
-import * as Realm from 'realm-web';
 
-// Assuming you've properly initialized the Realm app outside of this component
-const app = Realm.App.getApp('application-0-vgvqx');
+const getPlayers = async () => {
+  const client = getMongoClient();
 
-
-const GetPlayers = async () => {
-  if (!app.currentUser) {
-    console.error("No current user found");
+  if (!client) {
+    console.error("No client found");
     return;
   }
 
-  const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-  const playersCollection = mongodb.db("bots_rpg").collection<IPlayer>("players");
+  const playersCollection = client.db("bots_rpg").collection<IPlayer>("players");
 
 
   try {
@@ -27,13 +24,15 @@ const GetPlayers = async () => {
 
 
 export const checkNameIsValid = async (name: string) => {
-  if (!app.currentUser) {
-    console.error("No current user found");
+  const client = getMongoClient();
+
+  if (!client) {
+    console.error("No client found");
     return;
   }
 
-  const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-  const playersCollection = mongodb.db("bots_rpg").collection<IPlayer>("players");
+
+  const playersCollection = client.db("bots_rpg").collection<IPlayer>("players");
 
 
   try {
@@ -46,4 +45,4 @@ export const checkNameIsValid = async (name: string) => {
 
 }
 
-export default GetPlayers;
+export default getPlayers;

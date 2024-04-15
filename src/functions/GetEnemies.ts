@@ -1,4 +1,5 @@
 import * as Realm from "realm-web";
+import { getMongoClient } from "../mongoClient";
 import { IEnemy } from "../types/types";
 
 interface IGetEnemiesProps {
@@ -6,16 +7,14 @@ interface IGetEnemiesProps {
   monsterId?: string; // Use string type assuming _id is a string in your schema
 }
 
-const app = Realm.App.getApp('application-0-vgvqx');
-
 export const getEnemies = async ({ location }: IGetEnemiesProps): Promise<IEnemy[] | undefined> => {
-  if (!app.currentUser) {
-    console.error("No current user found. Ensure you're logged in to Realm.");
+  const client = getMongoClient();
+
+  if (!client) {
+    console.error("No client found");
     return;
   }
-
-  const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-  const enemiesCollection = mongodb.db("bots_rpg").collection<IEnemy>("enemies");
+  const enemiesCollection = client.db("bots_rpg").collection<IEnemy>("enemies");
 
   try {
     if (location) {
@@ -37,13 +36,14 @@ export const getEnemies = async ({ location }: IGetEnemiesProps): Promise<IEnemy
 
 
 export const getSingleEnemy = async ({ monsterId }: IGetEnemiesProps): Promise<IEnemy | undefined> => {
-  if (!app.currentUser) {
-    console.error("No current user found. Ensure you're logged in to Realm.");
+  const client = getMongoClient();
+
+  if (!client) {
+    console.error("No client found");
     return;
   }
 
-  const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-  const enemiesCollection = mongodb.db("bots_rpg").collection<IEnemy>("enemies");
+  const enemiesCollection = client.db("bots_rpg").collection<IEnemy>("enemies");
 
   try {
     if (monsterId !== undefined) {

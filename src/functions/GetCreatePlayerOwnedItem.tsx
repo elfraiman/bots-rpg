@@ -1,25 +1,26 @@
-import * as Realm from 'realm-web';
-import { IItem, IPlayer, IPlayerItem } from "../types/types";
-import GetModifyOwnedItem from './GetModifyBaseItem';
-import GetBaseItem from './GetBaseItem';
 import toast from 'react-hot-toast';
+import * as Realm from 'realm-web';
+import { getMongoClient } from '../mongoClient';
+import { IPlayer, IPlayerItem } from "../types/types";
+import GetBaseItem from './GetBaseItem';
+import modifyOwnedItem from './ModifyOwnedItem';
 
-const app = Realm.App.getApp('application-0-vgvqx');
-
-export const GetCreatePlayerOwnedItem = async (
+export const createPlayerOwnedItem = async (
     player: IPlayer,
     itemId: Realm.BSON.ObjectId,
     quantity?: number,
 ): Promise<IPlayerItem | undefined> => {
-    if (!app.currentUser) {
-        throw new Error("No current user found. Ensure you're logged in to Realm.");
+    const client = getMongoClient();
+
+    if (!client) {
+        console.error("No client found");
+        return;
     }
 
-    const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const playerItems = mongodb.db("bots_rpg").collection<IPlayerItem>("playerItems");
+    const playerItems = client.db("bots_rpg").collection<IPlayerItem>("playerItems");
 
     try {
-        const itemAlreadyOwned = await playerItems.findOne({ baseItemId: itemId, ownerId: app.currentUser.id });
+        const itemAlreadyOwned = await playerItems.findOne({ baseItemId: itemId, ownerId: player._id });
         const baseItem = await GetBaseItem(itemId);
 
         const displayToast = async () => {
@@ -33,7 +34,7 @@ export const GetCreatePlayerOwnedItem = async (
         };
 
         if (itemAlreadyOwned) {
-            await GetModifyOwnedItem(itemAlreadyOwned._id, quantity);
+            await modifyOwnedItem(itemAlreadyOwned._id, quantity);
             await displayToast();
             return itemAlreadyOwned;
         } else {

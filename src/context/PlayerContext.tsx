@@ -1,11 +1,9 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { IPlayer, IPlayer_quests } from '../types/types';
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
 import GetXpForNextLevel from '../functions/GetXpForNextLevel';
-import { GlobalModal } from 'react-global-modal';
-import StoryModal from '../components/StoryModal';
+import { IPlayer, IPlayer_quests } from '../types/types';
+import { showStoryModal } from '../functions/ShowStoryModal';
 
-// Assuming you've properly initialized the Realm app outside of this component
 const app = Realm.App.getApp('application-0-vgvqx');
 
 interface IPlayerContext {
@@ -22,92 +20,43 @@ export const PlayerContext = createContext<IPlayerContext>(defaultState);
 
 export const usePlayer = () => useContext(PlayerContext);
 
-export const showStory = (storyStep: number) => {
-  GlobalModal.push({
-    component: StoryModal,
-    props: {
-      storyStep: storyStep
-    },
-    hideHeader: true,
-    hideCloseIcon: true,
-    contentClassName: 'story-modal-content',
-    isCloseable: false,
-  })
-}
+const mongodbPlayerCollection = app.currentUser?.mongoClient("mongodb-atlas").db("bots_rpg").collection<IPlayer>("players");
 
 export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [player, setPlayer] = useState<IPlayer | null>(null);
 
   const updatePlayerData = async (updates: Partial<IPlayer>) => {
-    if (!app.currentUser) {
+    if (!app.currentUser?.id) {
       console.error("No current user found");
       return;
     }
 
-    const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
-    const userId = app.currentUser.id;
-
-
-    if (!userId) {
-      console.error("No user id found");
-      return;
-    }
-
     try {
-      const xpToNextLevel = GetXpForNextLevel({ level: player?.level ?? 0, });
+      const updatedPlayer = applyPlayerUpdates(player, updates);
+      await mongodbPlayerCollection?.updateOne({ _id: app.currentUser.id }, { $set: updates });
+      setPlayer(updatedPlayer);
 
-      // Handle leveling up.
-      if (player && xpToNextLevel <= player?.experience) {
-        updates['level'] = player?.level + 1;
-        updates['experience'] = 0;
-        updates['attributePoints'] = player.attributePoints + 5;
-
-        // If player reaches level 10 start story
-        //
-        if (player.level + 1 === 10) {
-          showStory(0);
-          (updates['quests'] as IPlayer_quests)['storyStep'] = 1;
-        }
+      // Handle side effects after updates
+      if (updatedPlayer.level === 10 && updatedPlayer.quests.storyStep === 0) {
+        showStoryModal({ storyStep: 0, player: updatedPlayer, updatePlayerData });
       }
-
-      // Assuming 'updates' is an object with fields you want to update and their new values
-      await players.updateOne({ _id: userId }, { $set: updates });
-
-      // Update the local player state to reflect changes
-      setPlayer((prevPlayer) => prevPlayer ? { ...prevPlayer, ...updates } : null);
     } catch (err) {
       console.error("Failed to update player data:", err);
     }
   };
 
-
   useEffect(() => {
     const fetchPlayer = async () => {
-      // Check if there's already a player set to avoid unnecessary fetching
-      if (player) return;
-
-      // Ensure there's a logged-in user
-      if (!app.currentUser) {
+      if (!app.currentUser?.id) {
         console.error("No current user found");
         return;
       }
-
-      const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-      const players = mongodb.db("bots_rpg").collection<IPlayer>("players");
-      const userId = app.currentUser.id;
-
-      if (!userId) {
-        console.error("No user id found");
-        return;
-      }
-
       try {
-        const playerResult = await players.findOne({ _id: userId }); // Adjust the query as needed
+        const playerResult = await mongodbPlayerCollection?.findOne({ _id: app.currentUser.id });
         if (playerResult) {
           setPlayer(playerResult);
         } else {
-          console.error("Player not found");
+          console.error("No player data found for current user");
         }
       } catch (err) {
         console.error("Failed to fetch player data:", err);
@@ -115,7 +64,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     };
 
     fetchPlayer();
-  }, [player]); // Dependency on 'player' to prevent refetching if it's already set
+  }, []);
 
   return (
     <PlayerContext.Provider value={{ player, updatePlayerData }}>
@@ -124,12 +73,17 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+function applyPlayerUpdates(player: IPlayer | null, updates: Partial<IPlayer>): IPlayer {
+  if (!player) return { ...updates } as any;
 
-// Custom hook to use the splash screen context
-export const usePlayerData = () => {
-  const context = useContext(PlayerContext);
-  if (context === undefined) {
-    throw new Error('useSplashScreen must be used within a SplashScreenProvider');
+  const xpToNextLevel = GetXpForNextLevel({ level: player.level });
+  if (xpToNextLevel <= player.experience) {
+    updates.level = player.level + 1;
+    updates.experience = 0; // reset experience
+    updates.attributePoints = (player.attributePoints ?? 0) + 5; // add attribute points
   }
-  return context;
-};
+
+  return { ...player, ...updates };
+}
+
+export const usePlayerData = () => useContext(PlayerContext);

@@ -1,18 +1,18 @@
 import * as Realm from 'realm-web';
 import { IEquipment } from "../types/types";
-
-const app = Realm.App.getApp('application-0-vgvqx');
-
+import { getMongoClient } from '../mongoClient';
 
 export const GetBaseEquipment = async (
     baseItemId: Realm.BSON.ObjectId,
 ): Promise<IEquipment | null> => {
-    if (!app.currentUser) {
-        throw new Error("No current user found. Ensure you're logged in to Realm.");
+    const client = getMongoClient();
+
+    if (!client) {
+        console.error("No client found");
+        return null;
     }
 
-    const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-    const playerEquipments = mongodb.db("bots_rpg").collection<IEquipment>("armors");
+    const playerEquipments = client.db("bots_rpg").collection<IEquipment>("armors");
 
     try {
         // No need for instanceof checks. Use the type property directly;

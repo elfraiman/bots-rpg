@@ -4,6 +4,7 @@ import EquipmentCard from '../../components/EquipmentCard';
 import getShopArmors from '../../functions/GetShopEquipment';
 import { IEquipment } from '../../types/types';
 import './Shop.css';
+import NpcCard from '../../components/NpcCard';
 
 
 
@@ -56,6 +57,7 @@ const Shop = () => {
 
   useIonViewWillEnter(() => {
     getData();
+
   })
 
   return (
@@ -64,19 +66,20 @@ const Shop = () => {
         <IonContent style={{
           '--background': `url('/images/shop.webp') 0 0/cover no-repeat `,
         }}>
-          <div>
-            <IonCard className="corner-border quick-fade-in" style={{ padding: 0 }}>
-              <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-0.webp`} />
-              <IonCardHeader>
-                <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Alex Nova</IonCardTitle>
-                <IonCardSubtitle>Trader</IonCardSubtitle>
-              </IonCardHeader>
-              <IonCardContent className="ion-padding">
-                <p>Full of available assortments for your Nomad Guardian to purchase and use.</p>
-              </IonCardContent>
-            </IonCard>
+          <div className="ion-padding">
+            <NpcCard
+              npcImgId={0}
+              npcName="Alex Nova"
+              npcRole="Trader"
+              npcText="Hey! Make sure you can equip what you buy. I don't do refunds."
+            />
 
-            <IonAccordionGroup className="ion-padding">
+            <div className="ion-padding low-fade" style={{ marginTop: 16 }}>
+              <h2>Travel</h2>
+              <p>Here's a list of planets you've located.</p>
+            </div>
+
+            <IonAccordionGroup >
               {!loading ? (
                 <>
                   <IonAccordion value="weapons" >
