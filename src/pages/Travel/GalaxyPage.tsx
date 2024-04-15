@@ -49,7 +49,7 @@ const GalaxyPage = () => {
     if (player && player.quests.storyStep === 1) {
       showStoryModal({ storyStep: 1, player, updatePlayerData });
     }
-  }, [player])
+  }, [player?.quests.storyStep])
 
 
 
@@ -73,7 +73,7 @@ const GalaxyPage = () => {
                 />
 
                 <div className="ion-padding low-fade" style={{ marginTop: 16 }}>
-                  <h2>Travel</h2>
+                  <h2 style={{ marginTop: 0 }}>Travel</h2>
                   <p>Here's a list of planets you've located.</p>
                 </div>
 

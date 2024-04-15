@@ -92,6 +92,7 @@ export type IQuest = {
   objective: IQuest_objective;
   rewards?: IQuest_rewards;
   questStep: number;
+  npcImgId: number;
 };
 
 export type IQuest_objective = {
@@ -272,6 +273,7 @@ export type IPlayer_quests = {
   completed: Array<Realm.BSON.ObjectId>;
   inProgress: Array<Realm.BSON.ObjectId>;
   storyStep: number;
+  storyModalShown: boolean;
 };
 
 export type IPlayer_equipment = {

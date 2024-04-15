@@ -23,7 +23,7 @@ const NpcCard = ({ npcName, npcRole, npcText, npcImgId }: INpcCardProps) => {
         </IonCol>
 
         <IonCol style={{ margin: 0, padding: 0 }}>
-          <img alt={`Alex the shop attendant`} src={`/images/npc/npc-ship-${npcImgId}.webp`} style={{ margin: 0 }} />
+          <img alt={`${npcName}, the ${npcRole}`} src={`/images/npc/story-npc-${npcImgId}.webp`} style={{ margin: 0 }} />
         </IonCol>
       </IonRow>
     </IonCard>

@@ -154,7 +154,7 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
     <IonCard style={{ minHeight: 180 }} className='corner-border quick-fade-in'>
       {loading ? <IonSpinner /> : (
         <>
-          <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/npc-earth-0.webp`} sizes="small" />
+          <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/story-npc-${quest.npcImgId}.webp`} sizes="small" />
           <IonCardHeader>
             <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{quest.npcName} <span style={{ color: playerInProgress ? 'var(--ion-color-primary)' : 'var(--ion-color-success)' }}>{playerInProgress ? 'In progress' : 'Available'}</span></IonCardTitle>
             <IonCardSubtitle>{quest.name}</IonCardSubtitle>

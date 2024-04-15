@@ -34,7 +34,7 @@ const EnterEarthStoryPage = () => {
   };
 
   return (
-    <IonPage id="main-content" className={`content  ${pageExiting ? 'page-exit' : 'fade-in'}`}>
+    <IonPage id="main-content" className={`content  ${pageExiting ? 'page-exit' : ''}`}>
       <IonHeader>
         <IonButton color="warning" fill="clear" style={{
           width: '100%', marginTop: 8
@@ -46,7 +46,7 @@ const EnterEarthStoryPage = () => {
       }}>
 
         <IonCard className="corner-border card-fade fade-in" style={{ padding: 0 }}>
-          <img alt={`Elara the scholar`} src={`/images/npc/npc-ship-2.webp`} />
+          <img alt={`Elara the scholar`} src={`/images/npc/story-npc-4.webp`} />
           <IonCardHeader>
             <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Elara Thorne</IonCardTitle>
             <IonCardSubtitle>Scholar</IonCardSubtitle>

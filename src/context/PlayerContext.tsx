@@ -37,13 +37,14 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       setPlayer(updatedPlayer);
 
       // Handle side effects after updates
-      if (updatedPlayer.level === 10 && updatedPlayer.quests.storyStep === 0) {
+      if (updatedPlayer.level === 3 && updatedPlayer.quests.storyStep === 0) {
         showStoryModal({ storyStep: 0, player: updatedPlayer, updatePlayerData });
       }
     } catch (err) {
       console.error("Failed to update player data:", err);
     }
   };
+
 
   useEffect(() => {
     const fetchPlayer = async () => {
