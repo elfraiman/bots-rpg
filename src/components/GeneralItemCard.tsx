@@ -22,7 +22,7 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
   }
 
 
-  const sellItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
+  const sellPlayerOwnedItem = async (item: IPlayerOwnedItem, sellQuantity: number) => {
     if (player) {
       setLoading(true);
       await sellItem(item, sellQuantity, updatePlayerData, player);
@@ -77,7 +77,7 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
 
 
           {<GeneralItemModal
-            sellItem={sellItem}
+            sellItem={sellPlayerOwnedItem}
             showModal={showModal}
             setShowModal={setShowModal}
             imgString={`/images/item/item-${item.imgId}.webp`}
