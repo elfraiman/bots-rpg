@@ -45,6 +45,10 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       if (updatedPlayer.level === 5 && updatedPlayer.quests.storyStep === 2) {
         showStoryModal({ storyStep: 2, player: updatedPlayer, updatePlayerData });
       }
+      // First planet Xyleria with Mia
+      if (updatedPlayer.level === 10 && updatedPlayer.quests.storyStep === 3) {
+        showStoryModal({ storyStep: 3, player: updatedPlayer, updatePlayerData });
+      }
     } catch (err) {
       console.error("Failed to update player data:", err);
     }

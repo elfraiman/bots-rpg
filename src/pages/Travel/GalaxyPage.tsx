@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonItem, IonList, IonPage, IonRow, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonItem, IonList, IonPage, IonRow, useIonViewDidEnter, useIonViewWillEnter } from "@ionic/react";
 import { useEffect, useState } from "react";
 import * as Realm from 'realm-web';
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
@@ -10,6 +10,7 @@ import { IPlanet } from "../../types/types";
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './GalaxyPage.css';
 import NpcCard from "../../components/NpcCard";
+import { getSinglePlanet } from "../../functions/GetPlanet";
 
 
 const GalaxyPage = () => {
@@ -34,6 +35,7 @@ const GalaxyPage = () => {
       if (planetsFetched) {
         console.log('Planets fetched', planetsFetched, player?.unlockedLocations)
         const playerUnlockedPlanets = player?.unlockedLocations.map((planet) => planet.toString());
+
         if (playerUnlockedPlanets) {
           const unlockedPlanets = planetsFetched.filter((planet) => playerUnlockedPlanets.includes(planet._id.toString()));
           setPlanets(unlockedPlanets);
@@ -50,13 +52,29 @@ const GalaxyPage = () => {
     fetchPlanets();
   })
 
-  useEffect(() => {
-    // Handle if player is on story step 1
-    //
-    if (player && player.quests.storyStep === 1) {
-      showStoryModal({ storyStep: 1, player, updatePlayerData });
-    }
-  }, [player?.quests.storyStep])
+  const getPlanet = async (name: string) => {
+    const planet = await getSinglePlanet(undefined, name);
+    return planet;
+  }
+
+  useIonViewDidEnter(() => {
+    // Fetch the latest planet info and update player data accordingly
+    const unlockNewPlanet = async () => {
+      if (player?.quests.storyStep === 4) {
+        const planet = await getPlanet('Xyleria');
+        if (!planet) return;
+
+        showStoryModal({ storyStep: 4, player, updatePlayerData });
+        updatePlayerData({
+          ...player,
+          unlockedLocations: [...player.unlockedLocations, planet._id]
+        });
+      }
+    };
+
+    unlockNewPlanet();
+  }, [player, updatePlayerData]); // Include all functions and state variables the effect uses
+
 
 
 
@@ -84,6 +102,10 @@ const GalaxyPage = () => {
               <p>Here's a list of planets we know and can land on.</p>
             </div>
 
+            <div className="card-fade">
+              <h5 style={{ margin: 0, marginTop: 16 }} className="ion-padding">Planets</h5>
+            </div>
+
             {planets?.map((planet, index) => {
               return (
                 <div key={index}
@@ -91,9 +113,9 @@ const GalaxyPage = () => {
                     borderTop: '1px solid rgba(235, 235, 235, 0.11)',
                     borderBottom: '1px solid rgba(235, 235, 235, 0.11)',
                     zIndex: 20,
-                    marginTop: 16
                   }}
                   className="card-fade">
+
                   <IonGrid style={{ width: '100%', padding: 0 }} >
                     <IonRow style={{ width: '100%' }} >
                       {/* Image Column */}

@@ -41,12 +41,12 @@ import './theme/variables.css';
 import Header from './components/Header';
 import { GlobalModalWrapper, GlobalModal } from 'react-global-modal'
 import 'react-global-modal/dist/style.css';
-import TraderIcon from '../public/images/icons/trader-icon.webp';
-import GuardianIcon from '../public/images/icons/guardian-icon.webp';
-import PvpIcon from '../public/images/icons/pvp-icon.webp'
-import ShipIcon from '../public/images/icons/ship-icon.webp';
-import TrophyIcon from '../public/images/icons/trophy-icon.webp';
-import PlanetIcon from '../public/images/icons/planet-icon.webp';
+import TraderIcon from '/images/icons/trader-icon.webp';
+import GuardianIcon from '/images/icons/guardian-icon.webp';
+import PvpIcon from '/images/icons/pvp-icon.webp'
+import ShipIcon from '/images/icons/ship-icon.webp';
+import TrophyIcon from '/images/icons/trophy-icon.webp';
+import PlanetIcon from '/images/icons/planet-icon.webp';
 
 setupIonicReact({
   rippleEffect: false,

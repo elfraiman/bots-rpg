@@ -3,7 +3,7 @@ import { IPlanet } from "../types/types";
 import * as Realm from 'realm-web';
 
 
-export const getSinglePlanet = async (location: Realm.BSON.ObjectId): Promise<IPlanet | undefined> => {
+export const getSinglePlanet = async (location?: Realm.BSON.ObjectId, planetName?: string): Promise<IPlanet | undefined> => {
   const client = getMongoClient();
 
   if (!client) {
@@ -20,9 +20,9 @@ export const getSinglePlanet = async (location: Realm.BSON.ObjectId): Promise<IP
       console.log("Querying with _id:", location);
       return planet ?? undefined;
     } else {
-
-      console.log("No query parameters provided.");
-      return undefined;
+      const planet = await planetsCollections.findOne({ name: planetName });
+      console.log("Querying with name:", planetName);
+      return planet ?? undefined;
     }
   } catch (err) {
     console.error("Failed to fetch enemies data:", err);

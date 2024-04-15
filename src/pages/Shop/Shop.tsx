@@ -63,6 +63,7 @@ const Shop = () => {
 
   useIonViewDidEnter(() => {
     // Handle if player is on story step 1
+    // shows Alex introduction story
     //
     if (player && player.quests.storyStep === 1) {
       showStoryModal({ storyStep: 1, player, updatePlayerData });
