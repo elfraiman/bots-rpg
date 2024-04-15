@@ -181,175 +181,172 @@ const GuardianPage: React.FC = () => {
   }
 
   return (
-    <>
-      <IonPage className="content " >
-        <IonContent style={{
-          '--background': `url('/images/home.webp') 0 0 / cover no-repeat`,
-        }}>
-          <IonCard className="card-fade ion-padding ion-bot-card corner-border " style={{ minHeight: 380 }}>
-            <div>
-              {!player || loading ? <IonSpinner /> : (
-                <>
-                  <IonCardTitle>{player.name}</IonCardTitle>
-                  <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
-                  <IonCardContent className="bot-card-content">
-                    <IonImg src={BotOutline} className="bot-outline-img " />
+    <IonPage className="content">
+      <IonContent style={{
+        '--background': `url('/images/home.webp') 0 0/cover no-repeat`,
+      }}>
+        <IonCard className="card-fade ion-padding corner-border" style={{ minHeight: 380 }}>
+          <div>
+            {!player || loading ? <IonSpinner /> : (
+              <>
+                <IonCardTitle className="player-name">{player.name}</IonCardTitle>
+                <IonCardSubtitle>Level: {player.level}</IonCardSubtitle>
+                <IonCardContent >
+                  <IonImg src={BotOutline} className="bot-outline-img" />
 
-                    <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
-                      {equippedDetails?.weapon ? (
-                        <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="left-weapon-click" />
-                      ) : <></>}
-                    </IonButton>
+                  <IonButton fill="clear" id="left-weapon-click" className="left-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
+                    {equippedDetails?.weapon ? (
+                      <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="left-weapon-click" />
+                    ) : <></>}
+                  </IonButton>
 
-                    <IonButton fill="clear" id="right-weapon-click" className="right-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
-                      {equippedDetails?.weapon ? (
-                        <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="right-weapon-click" />
-                      ) : <></>}
-                    </IonButton>
+                  <IonButton fill="clear" id="right-weapon-click" className="right-arm-block" style={equippedDetails?.weapon ? styles.equipped : styles.notEquipped}>
+                    {equippedDetails?.weapon ? (
+                      <EquipmentPopover equippedDetails={equippedDetails?.weapon} trigger="right-weapon-click" />
+                    ) : <></>}
+                  </IonButton>
 
-                    <IonButton fill="clear" id="armor-click" className="armor-block" style={equippedDetails?.armor ? styles.equipped : styles.notEquipped}>
-                      {equippedDetails?.armor ? (
-                        <EquipmentPopover equippedDetails={equippedDetails?.armor} trigger="armor-click" />
-                      ) : <></>}
-                    </IonButton>
+                  <IonButton fill="clear" id="armor-click" className="armor-block" style={equippedDetails?.armor ? styles.equipped : styles.notEquipped}>
+                    {equippedDetails?.armor ? (
+                      <EquipmentPopover equippedDetails={equippedDetails?.armor} trigger="armor-click" />
+                    ) : <></>}
+                  </IonButton>
 
-                    <IonButton fill="clear" id="helmet-click" className="helmet-block" style={equippedDetails?.helmet ? styles.equipped : styles.notEquipped}>
-                      {equippedDetails?.helmet ? (
-                        <EquipmentPopover equippedDetails={equippedDetails?.helmet} trigger="helmet-click" />
-                      ) : <></>}
-                    </IonButton>
+                  <IonButton fill="clear" id="helmet-click" className="helmet-block" style={equippedDetails?.helmet ? styles.equipped : styles.notEquipped}>
+                    {equippedDetails?.helmet ? (
+                      <EquipmentPopover equippedDetails={equippedDetails?.helmet} trigger="helmet-click" />
+                    ) : <></>}
+                  </IonButton>
 
-                    <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
-                      <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="right-boot-click" />
-                    </IonButton>
+                  <IonButton fill="clear" id="right-boot-click" className="right-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
+                    <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="right-boot-click" />
+                  </IonButton>
 
-                    <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
-                      <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="left-boot-click" />
-                    </IonButton>
+                  <IonButton fill="clear" id="left-boot-click" className="left-boot-block" style={equippedDetails?.boots ? styles.equipped : styles.notEquipped}>
+                    <EquipmentPopover equippedDetails={equippedDetails?.boots} trigger="left-boot-click" />
+                  </IonButton>
 
-                  </IonCardContent>
-                </>
-              )}
+                </IonCardContent>
+              </>
+            )}
 
-            </div>
-          </IonCard>
+          </div>
+        </IonCard>
 
-          <IonCard className="corner-border">
-            <IonAccordionGroup >
-              <IonAccordion value="items" >
-                <IonItem slot="header"  >
-                  <IonLabel>Equipment inventory</IonLabel>
+        <IonCard className="corner-border">
+          <IonAccordionGroup >
+            <IonAccordion value="items" >
+              <IonItem slot="header"  >
+                <IonLabel>Equipment inventory</IonLabel>
+              </IonItem>
+              <div slot="content">
+                <IonList lines='full'>
+                  {inventoryEquipments?.map((item: IEquipment, index: number) => {
+                    return (
+                      <IonItem key={index}>
+                        {item ? (
+                          <EquipmentCard equipment={item} key={index} isForSell={false} />
+                        ) : (<></>)}
+                      </IonItem>
+                    );
+                  })}
+                </IonList>
+              </div>
+            </IonAccordion>
+          </IonAccordionGroup>
+
+          <div>
+            <IonAccordionGroup>
+              <IonAccordion value="items">
+                <IonItem slot="header" >
+                  <IonLabel>Inventory</IonLabel>
                 </IonItem>
                 <div slot="content">
                   <IonList lines='full'>
-                    {inventoryEquipments?.map((item: IEquipment, index: number) => {
+                    {inventoryItems?.map((item: IPlayerOwnedItem, index: number) => {
                       return (
-                        <div key={index}>
+                        <IonItem key={index}>
                           {item ? (
-                            <EquipmentCard equipment={item} key={index} isForSell={false} />
+                            <GeneralItemCard item={item} key={index} isForSell={false} />
                           ) : (<></>)}
-                        </div>
+                        </IonItem>
                       );
                     })}
                   </IonList>
                 </div>
               </IonAccordion>
             </IonAccordionGroup>
-
-            <div>
-              <IonAccordionGroup>
-                <IonAccordion value="items">
-                  <IonItem slot="header" >
-                    <IonLabel>Inventory</IonLabel>
-                  </IonItem>
-                  <div slot="content">
-                    <IonList lines='full'>
-                      {inventoryItems?.map((item: IPlayerOwnedItem, index: number) => {
-                        return (
-                          <div key={index}>
-                            {item ? (
-                              <GeneralItemCard item={item} key={index} isForSell={false} />
-                            ) : (<></>)}
-                          </div>
-                        );
-                      })}
-                    </IonList>
-                  </div>
-                </IonAccordion>
-              </IonAccordionGroup>
-            </div>
-          </IonCard>
+          </div>
+        </IonCard>
 
 
-          <IonCard className="ion-padding card-fade corner-border">
-            <div>
-              <IonCardTitle>Stats</IonCardTitle>
-              <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints ?? 0 > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
-              <IonCardContent style={{ padding: 0 }}>
-                <IonGrid>
-                  <IonRow>
-                    <IonCol size='3'>
+        <IonCard className="ion-padding card-fade corner-border">
+          <div>
+            <IonCardTitle>Attributes</IonCardTitle>
+            <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints ?? 0 > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
+            <IonCardContent style={{ padding: 0 }}>
+              <IonGrid>
+                <IonRow>
+                  <IonCol size='3'>
+                    <IonButton fill="clear" id="str-trigger" className="stats-btn"> STR: {player?.str} </IonButton>
+                    <IonPopover trigger="str-trigger" triggerAction="hover">
+                      <IonContent class="ion-padding">Strength increases your minimum and maximum physical damage.</IonContent>
+                    </IonPopover>
+                  </IonCol>
+                  <IonCol>
+                    <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('str')}>
+                      {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
+                    </IonButton>
+                  </IonCol>
 
-                      <IonButton fill="clear" id="str-trigger" className="stats-btn"> STR: {player?.str} </IonButton>
-                      <IonPopover trigger="str-trigger" triggerAction="hover">
-                        <IonContent class="ion-padding">Strength increases your minimum and maximum physical damage.</IonContent>
-                      </IonPopover>
-                    </IonCol>
-                    <IonCol>
-                      <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('str')}>
-                        {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
-                      </IonButton>
-                    </IonCol>
+                  <IonCol size='3'>
+                    <IonButton fill="clear" id="con-trigger" className="stats-btn">CON: {player?.con}</IonButton>
+                    <IonPopover trigger="con-trigger" triggerAction="hover">
+                      <IonContent class="ion-padding">Constitution increases your maximum health.</IonContent>
+                    </IonPopover>
+                  </IonCol>
+                  <IonCol size='3'>
+                    <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('con')}>
+                      {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol size='3'>
+                    <IonButton fill="clear" id="dex-trigger" className="stats-btn">DEX: {player?.dex}</IonButton>
+                    <IonPopover trigger="dex-trigger" triggerAction="hover">
+                      <IonContent class="ion-padding">Dexterity increases your attack speed, accuracy and dodge chance.</IonContent>
+                    </IonPopover>
+                  </IonCol>
+                  <IonCol size='3'>
+                    <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('dex')}>
+                      {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
+                    </IonButton>
+                  </IonCol>
+                  <IonCol size='3'>
+                    <IonButton fill="clear" id="int-trigger" className="stats-btn">INT: {player?.int}</IonButton>
+                    <IonPopover trigger="int-trigger" triggerAction="hover">
+                      <IonContent class="ion-padding">Intelligence increases your rare loot chance and XXX</IonContent>
+                    </IonPopover>
+                  </IonCol>
 
-                    <IonCol size='3'>
-                      <IonButton fill="clear" id="con-trigger" className="stats-btn">CON: {player?.con}</IonButton>
-                      <IonPopover trigger="con-trigger" triggerAction="hover">
-                        <IonContent class="ion-padding">Constitution increases your maximum health.</IonContent>
-                      </IonPopover>
-                    </IonCol>
-                    <IonCol size='3'>
-                      <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('con')}>
-                        {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
-                      </IonButton>
-                    </IonCol>
-                  </IonRow>
-                  <IonRow>
-                    <IonCol size='3'>
-                      <IonButton fill="clear" id="dex-trigger" className="stats-btn">DEX: {player?.dex}</IonButton>
-                      <IonPopover trigger="dex-trigger" triggerAction="hover">
-                        <IonContent class="ion-padding">Dexterity increases your attack speed, accuracy and dodge chance.</IonContent>
-                      </IonPopover>
-                    </IonCol>
-                    <IonCol size='3'>
-                      <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('dex')}>
-                        {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
-                      </IonButton>
-                    </IonCol>
-                    <IonCol size='3'>
-                      <IonButton fill="clear" id="int-trigger" className="stats-btn">INT: {player?.int}</IonButton>
-                      <IonPopover trigger="int-trigger" triggerAction="hover">
-                        <IonContent class="ion-padding">Intelligence increases your rare loot chance and XXX</IonContent>
-                      </IonPopover>
-                    </IonCol>
+                  <IonCol size='3'>
+                    <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('int')}>
+                      {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </div>
+        </IonCard>
+        <IonCard>
+          <IonCardSubtitle className="ion-padding">This placement is temporary</IonCardSubtitle>
+          <IonButton style={{ width: '100%' }} onClick={() => logout()}>Logout</IonButton>
+        </IonCard>
+      </IonContent>
 
-                    <IonCol size='3'>
-                      <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('int')}>
-                        {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
-                      </IonButton>
-                    </IonCol>
-                  </IonRow>
-                </IonGrid>
-              </IonCardContent>
-            </div>
-          </IonCard>
-          <IonCard>
-            <IonCardSubtitle className="ion-padding">This placement is temporary</IonCardSubtitle>
-            <IonButton style={{ width: '100%' }} onClick={() => logout()}>Logout</IonButton>
-          </IonCard>
-        </IonContent>
-
-      </IonPage>
-    </>
+    </IonPage>
   );
 };
 

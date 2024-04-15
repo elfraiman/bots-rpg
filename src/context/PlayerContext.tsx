@@ -37,8 +37,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       setPlayer(updatedPlayer);
 
       // Handle side effects after updates
+      // Initial story about the shop from Mia
       if (updatedPlayer.level === 3 && updatedPlayer.quests.storyStep === 0) {
         showStoryModal({ storyStep: 0, player: updatedPlayer, updatePlayerData });
+      }
+      // Pilot story with Aurora
+      if (updatedPlayer.level === 5 && updatedPlayer.quests.storyStep === 2) {
+        showStoryModal({ storyStep: 2, player: updatedPlayer, updatePlayerData });
       }
     } catch (err) {
       console.error("Failed to update player data:", err);

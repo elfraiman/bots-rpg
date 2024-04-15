@@ -593,7 +593,7 @@ const BattleTrain = () => {
                   color="light"
                   onClick={(e) => {
                     e.preventDefault();
-                    history.replace(`/explore`);
+                    history.replace(`/planet`);
                   }}
                 >
                   Return

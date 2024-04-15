@@ -16,6 +16,7 @@ export const getPlanets = async (): Promise<IPlanet[] | undefined> => {
   try {
     if (location !== undefined) {
       const planet = await planetsCollections.find();
+
       console.log("Querying with _id:", location);
       return planet;
     } else {

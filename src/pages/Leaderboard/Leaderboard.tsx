@@ -61,9 +61,9 @@ const LeaderboardPage = () => {
         {loading ? (<IonSpinner />) : (
           <>
             {whatToShow === 'players' && (
-              <IonList >
+              <IonList>
                 {playersData.map((player, index) => (
-                  <IonItem key={player._id}  >
+                  <IonItem key={player._id}>
 
                     <IonAvatar slot="start">
                       <img src={`images/player-placeholder.webp`} alt={`${player.name}`} />

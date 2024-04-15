@@ -1,3 +1,11 @@
-.galaxy-bg {
-  --background: url("/images/galaxy.webp") no-repeat center center / cover;
+.bg-video video {
+  min-height: 100%;
+  min-width: 100%;
+  width: auto;
+  object-fit: cover;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
 }

@@ -135,19 +135,19 @@ const App: React.FC = () => {
                           <IonLabel>Planet</IonLabel>
                         </IonTabButton>
 
-                        <IonTabButton disabled={isNavigationDisabled} tab="library" href="/pvp">
+                        <IonTabButton disabled={isNavigationDisabled} tab="pvp" href="/pvp">
                           <img src={PvpIcon} style={{ width: 35 }} />
                           <IonLabel>PvP</IonLabel>
                         </IonTabButton>
 
-                        <IonTabButton disabled={isNavigationDisabled} tab="trader" href="/trader">
+                        <IonTabButton disabled={isNavigationDisabled || player?.level < 3} tab="trader" href="/trader">
                           <img src={TraderIcon} style={{ width: 35 }} />
-                          <IonLabel>{player?.level < 3 ? 'Lvl: 3' : 'Trader'}</IonLabel>
+                          <IonLabel>{player?.level < 3 ? 'Lv:3' : 'Trader'}</IonLabel>
                         </IonTabButton>
 
                         <IonTabButton disabled={isNavigationDisabled || player?.level < 5} tab="galaxy" href="/galaxy">
                           <img src={ShipIcon} style={{ width: 35 }} />
-                          <IonLabel>{player?.level < 10 ? 'Lvl: 10' : 'Galaxy'}</IonLabel>
+                          <IonLabel>{player?.level < 5 ? 'Lv:5' : 'Galaxy'}</IonLabel>
                         </IonTabButton>
 
                         <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">

@@ -81,26 +81,31 @@ const ExplorePage: React.FC = () => {
 
   return (
     <IonPage className="content">
-      {!planetData || !player ? <IonSpinner /> : (
-        <IonContent
-          style={{
-            '--background': `url('/images/planets/planet-ground-${planetData.imgId}.webp') 0 0/cover no-repeat`,
-          }}
-        >
-          {availableQuests?.map((q: IQuest, index) => (
-            <QuestCard quest={q} key={index} />
-          ))}
+      <IonContent
+        className="ion-padding"
+        style={{
+          '--background': `url('/images/planets/planet-ground-${planetData?.imgId}.webp') 0 0/cover no-repeat`,
+        }}
+      >
+        {!planetData || !player ? <></> : (
+          <>
+            {availableQuests?.map((q: IQuest, index) => (
+              <QuestCard quest={q} key={index} />
+            ))}
 
-          <div className="ion-padding low-fade" style={{ color: 'white' }}>
-            <h4>You've arrived at {planetData.name}</h4>
-            <p>{planetData.description}</p>
-          </div>
-          {enemies.map((enemy, index) => (
-            <EnemyCard key={index} enemy={enemy} />
-          ))}
-        </IonContent>
-      )}
+            <div className="ion-padding low-fade corner-border" style={{ marginTop: 16 }}>
+              <h2 style={{ marginTop: 0 }}>You've arrived at {planetData.name}</h2>
+              <p>{planetData.description}</p>
+            </div>
 
+            {enemies.map((enemy, index) => (
+              <div style={{ marginTop: 16 }}>
+                <EnemyCard key={index} enemy={enemy} />
+              </div>
+            ))}
+          </>
+        )}
+      </IonContent>
     </IonPage>
   );
 };

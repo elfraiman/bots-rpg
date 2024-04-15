@@ -10,7 +10,7 @@ interface IEnemyCardProps {
 const EnemyCard = ({ enemy }: IEnemyCardProps) => {
   const history = useHistory();
   return (
-    <IonCard className="card-fade" style={{ zIndex: 101 }}>
+    <IonCard className="card-fade" style={{ zIndex: 101, margin: 0 }}>
       <IonCardHeader>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>

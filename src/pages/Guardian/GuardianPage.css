@@ -9,17 +9,6 @@ ion-menu::part(backdrop) {
   color: white;
 }
 
-.bg-video video {
-  min-height: 100%;
-  min-width: 100%;
-  width: auto;
-  object-fit: cover;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .left-arm-block {
   position: absolute;
   width: 25px;
@@ -72,13 +61,6 @@ ion-menu::part(backdrop) {
   z-index: 100;
   top: 250px;
   left: 90px;
-}
-
-.bot-card-content {
-  margin-right: auto;
-  position: relative;
-  justify-content: center;
-  width: 100%;
 }
 
 .bot-outline-img {

@@ -1,4 +1,4 @@
-import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonItem, IonLabel, IonList, IonPage, IonSpinner, useIonViewWillEnter } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonItem, IonLabel, IonList, IonPage, IonSpinner, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import EquipmentCard from '../../components/EquipmentCard';
 import getShopArmors from '../../functions/GetShopEquipment';
@@ -61,7 +61,7 @@ const Shop = () => {
     getData();
   })
 
-  useEffect(() => {
+  useIonViewDidEnter(() => {
     // Handle if player is on story step 1
     //
     if (player && player.quests.storyStep === 1) {
@@ -83,7 +83,7 @@ const Shop = () => {
             npcText="Hey! Make sure you can equip what you buy. I don't do refunds."
           />
 
-          <div className="ion-padding card-fade" style={{ marginTop: 16 }}>
+          <div className="ion-padding low-fade corner-border" style={{ marginTop: 16 }}>
             <h2 style={{ marginTop: 0 }}>Trader</h2>
             <p>The items that are available for trade will restock based on Alex's plunder.</p>
           </div>
@@ -91,7 +91,7 @@ const Shop = () => {
           <IonAccordionGroup >
             {!loading ? (
               <>
-                <IonAccordion value="weapons" >
+                <IonAccordion value="weapons" style={{ marginTop: 16 }} >
                   <IonItem slot="header">
                     <IonLabel>Weapons</IonLabel>
                   </IonItem>
