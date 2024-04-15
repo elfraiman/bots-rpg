@@ -32,7 +32,7 @@ ion-button {
 
 ion-tab-bar {
   --background: rgba(0, 0, 0, 0.616);
-  --border: 1px solid #f7ae5b;
+  --border: 1px solid var(--ion-color-primary);
 }
 
 ion-tab-button {
@@ -40,7 +40,7 @@ ion-tab-button {
 }
 
 .player-name {
-  color: #00e1ff;
+  color: var(--ion-color-primary);
   font-weight: bold;
 }
 

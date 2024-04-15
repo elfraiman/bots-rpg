@@ -74,7 +74,7 @@ const Header = () => {
                   </IonCol>
 
                   <IonCol size="3" className="gold-col">
-                    <IonText><span>{player.gold.toLocaleString()}</span>🪙</IonText>
+                    <IonText><span>{player.gold.toLocaleString()}</span> 🪙</IonText>
                   </IonCol>
                 </IonRow>
                 <IonRow>

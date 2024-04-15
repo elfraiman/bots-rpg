@@ -117,7 +117,7 @@
     repeating-conic-gradient(#0000 0 11%, rgb(170, 15, 15) 0 13%) 50% / 50% 80%,
     radial-gradient(rgb(170, 15, 15) 22%, #0000 0);
   background-repeat: no-repeat;
-  filter: blur(2px) contrast(100);
+  filter: blur(1px) contrast(20);
 }
 
 .splash-miss {
@@ -128,5 +128,5 @@
     repeating-conic-gradient(#0000 0 11%, rgb(37, 15, 228) 0 13%) 50% / 50% 80%,
     radial-gradient(rgb(37, 15, 228) 22%, #0000 0);
   background-repeat: no-repeat;
-  filter: blur(2px) contrast(100);
+  filter: blur(1px) contrast(20);
 }
