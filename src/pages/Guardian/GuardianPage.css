@@ -66,3 +66,7 @@ ion-menu::part(backdrop) {
 .bot-outline-img {
   width: 280px;
 }
+
+.guardian-bg {
+  --background: url("/images/home.webp") no-repeat center center / cover;
+}
