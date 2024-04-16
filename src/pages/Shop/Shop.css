@@ -6,3 +6,7 @@
 .low-fade {
     background: rgba(0, 0, 0, 0.5);
 }
+
+.shop-bg {
+    --background: url("/images/shop.webp") no-repeat center center / cover;
+}

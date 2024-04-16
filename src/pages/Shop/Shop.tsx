@@ -74,9 +74,7 @@ const Shop = () => {
 
   return (
     <IonPage className="content">
-      <IonContent style={{
-        '--background': `url(${ShopImage}} ) 0 0/cover no-repeat `,
-      }}>
+      <IonContent className="shop-bg">
         <div className="ion-padding">
           <NpcCard
             npcImgId={2}
