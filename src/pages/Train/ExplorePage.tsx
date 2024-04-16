@@ -1,16 +1,16 @@
-import { IonContent, IonPage, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { IonContent, IonPage, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
 import { IEnemy, IPlanet, IPlayer, IQuest } from '../../types/types';
 
 import QuestCard from '../../components/QuestCard';
+import { useNavigationDisable } from '../../context/DisableNavigationContext';
 import { usePlayerData } from '../../context/PlayerContext';
 import { GetAvailableQuests } from '../../functions/GetAvailableQuests';
 import { getEnemies } from '../../functions/GetEnemies';
 import { getSinglePlanet } from '../../functions/GetPlanet';
-import './ExplorePage.css';
 import SplashScreen from "../SplashScreen/SplashScreen";
-import { useNavigationDisable } from '../../context/DisableNavigationContext';
+import './ExplorePage.css';
 
 const ExplorePage: React.FC = () => {
   const [planetData, setPlanetData] = useState<IPlanet | null>(null);
@@ -101,7 +101,7 @@ const ExplorePage: React.FC = () => {
         >
           {!planetData || !player ? <></> : (
             <>
-              <div className={`ion-padding low-fade corner-border corner-border-${planetData.imgId}`} style={{ marginBottom: 16 }}>
+              <div className={`ion-padding low-fade corner-border`} style={{ marginBottom: 16 }}>
                 <h2 style={{ marginTop: 0 }}>You've arrived at {planetData.name}</h2>
                 <p>{planetData.description}</p>
               </div>

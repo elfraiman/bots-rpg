@@ -19,10 +19,16 @@ const GalaxyPage = () => {
   const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
 
-  const travelToPlanet = async (destination: Realm.BSON.ObjectId) => {
+  const travelToPlanet = async (planet: IPlanet) => {
     if (!player) return;
     try {
-      await getTravel({ destination, player, updatePlayerData });
+      await getTravel({ destination: planet._id, player, updatePlayerData });
+      // Change the ion primary color to the planet's
+      // hex code to make the player feel more
+      // as if hes on a different planet
+      //
+      const htmlEl = document.querySelector('html');
+      htmlEl?.style.setProperty('--ion-color-primary', planet.hexColor ?? "#f7ae5b");
       triggerDisableWithTimer(5000);
     } catch (e) {
       console.error(e);
@@ -33,7 +39,6 @@ const GalaxyPage = () => {
     try {
       const planetsFetched = await getPlanets();
       if (planetsFetched) {
-        console.log('Planets fetched', planetsFetched, player?.unlockedLocations)
         const playerUnlockedPlanets = player?.unlockedLocations.map((planet) => planet.toString());
 
         if (playerUnlockedPlanets) {
@@ -77,7 +82,8 @@ const GalaxyPage = () => {
     if (player?.quests.storyStep === 4) {
       // First planet Xyleria with Aurora
       //
-      showStoryModal({ storyStep: 4, player, updatePlayerData });
+      showStoryModal({ storyStep: 4 });
+      updatePlayerData({ quests: { ...player.quests, storyStep: 5 } })
       unlockNewPlanet('Xyleria');
     }
 
@@ -141,7 +147,7 @@ const GalaxyPage = () => {
                         </div>
 
                         <span>
-                          <IonButton fill="clear" className="corner-border" onClick={() => travelToPlanet(planet._id)}>Travel</IonButton>
+                          <IonButton fill="clear" className="corner-border" onClick={() => travelToPlanet(planet)}>Travel</IonButton>
                         </span>
 
 

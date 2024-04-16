@@ -225,6 +225,7 @@ export type IPlanet = {
   description: string;
   imgId: number;
   name: string;
+  hexColor?: string;
 };
 
 export const IPlanetSchema = {

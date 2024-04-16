@@ -7,28 +7,23 @@ import { IPlayer, IStory } from "../types/types";
 
 interface IStoryModalProps {
   storyStep: number;
-  player: IPlayer;
-  updatePlayerData: (updates: Partial<IPlayer>) => Promise<void>;
 }
 
 
-const StoryModal = ({ storyStep, player, updatePlayerData }: IStoryModalProps) => {
+const StoryModal = ({ storyStep }: IStoryModalProps) => {
   const [story, setStory] = useState<IStory | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
 
   const fetchStory = async () => {
-    console.log('STEP', storyStep, player.quests.storyStep)
     setLoading(true)
 
-    if (player?.quests.storyStep != storyStep) return;
 
     GetStory(storyStep).then(story => {
       if (story) {
         setStory(story);
         // Increase story step by 1 to prepare for the next story
         //
-        updatePlayerData({ quests: { ...player.quests, storyStep: storyStep + 1 } })
       }
 
     }).catch(e => console.error(e)).finally(() => setLoading(false));

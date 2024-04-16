@@ -37,20 +37,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       await mongodbPlayerCollection.updateOne({ _id: app.currentUser.id }, { $set: updates });
       setPlayer(updatedPlayer);
 
-      // Handle side effects after updates
-      // Initial story about the shop from Mia
-      if (updatedPlayer.level === 3 && updatedPlayer.quests.storyStep === 0) {
-        showStoryModal({ storyStep: 0, player: updatedPlayer, updatePlayerData });
-      }
-      // Pilot story with Aurora
-      if (updatedPlayer.level === 5 && updatedPlayer.quests.storyStep === 2) {
-        showStoryModal({ storyStep: 2, player: updatedPlayer, updatePlayerData });
-      }
-      // First planet Xyleria with Mia
-      //
-      if (updatedPlayer.level === 10 && updatedPlayer.quests.storyStep === 3) {
-        showStoryModal({ storyStep: 3, player: updatedPlayer, updatePlayerData });
-      }
+
     } catch (err: any) {
       toast.error(`Failed to update player data`,
         {
@@ -102,6 +89,25 @@ function applyPlayerUpdates(player: IPlayer | null, updates: Partial<IPlayer>): 
     updates.level = player.level + 1;
     updates.experience = 0; // reset experience
     updates.attributePoints = (player.attributePoints ?? 0) + 5; // add attribute points
+
+
+    // Handle side effects after updates
+    // Initial story about the shop from Mia
+    if (updates.level === 3) {
+      showStoryModal({ storyStep: 0 });
+      player.quests.storyStep = 1;
+    }
+    // Pilot story with Aurora
+    if (updates.level === 5) {
+      showStoryModal({ storyStep: 2 });
+      player.quests.storyStep = 3;
+    }
+    // First planet Xyleria with Mia
+    //
+    if (updates.level === 10) {
+      showStoryModal({ storyStep: 3 });
+      player.quests.storyStep = 4;
+    }
   }
 
   return { ...player, ...updates };

@@ -66,7 +66,8 @@ const Shop = () => {
     // shows Alex introduction story
     //
     if (player && player.quests.storyStep === 1) {
-      showStoryModal({ storyStep: 1, player, updatePlayerData });
+      showStoryModal({ storyStep: 1 });
+      updatePlayerData({ quests: { ...player.quests, storyStep: 2 } })
     }
   }, [player?.quests.storyStep])
 

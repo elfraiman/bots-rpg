@@ -51,7 +51,7 @@ const EnemyCard = ({ enemy, planetImgId }: IEnemyCardProps) => {
 
         <IonRow>
           <IonButton
-            className={`corner-border corner-border-${planetImgId} color-${planetImgId}`}
+            className={`corner-border`}
             style={{
               width: '100%', marginTop: 8
             }}
