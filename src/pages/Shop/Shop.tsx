@@ -7,7 +7,7 @@ import './Shop.css';
 import NpcCard from '../../components/NpcCard';
 import { showStoryModal } from '../../functions/ShowStoryModal';
 import { usePlayerData } from '../../context/PlayerContext';
-
+import ShopImage from '/images/shop.webp';
 
 interface IArmorsData {
   helmets: IEquipment[],
@@ -75,7 +75,7 @@ const Shop = () => {
   return (
     <IonPage className="content">
       <IonContent style={{
-        '--background': `url('/images/shop.webp') 0 0/cover no-repeat `,
+        '--background': `url(${ShopImage}} ) 0 0/cover no-repeat `,
       }}>
         <div className="ion-padding">
           <NpcCard

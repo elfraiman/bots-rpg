@@ -31,6 +31,7 @@ import { GetCombinedItemDetails } from '../../functions/GetCombinedItemDetails';
 import { IEquipment, IPlayer, IPlayerOwnedItem } from '../../types/types';
 import './GuardianPage.css';
 import BotOutline from '/images/BotOutline.webp';
+import HomeImage from '/images/home.webp';
 
 const styles = {
   notEquipped: { backgroundColor: 'rgba(214, 214, 214, 0.467)', border: '1px solid white' },
@@ -183,7 +184,7 @@ const GuardianPage: React.FC = () => {
   return (
     <IonPage className="content">
       <IonContent style={{
-        '--background': `url('/images/home.webp') 0 0/cover no-repeat`,
+        '--background': `url(${HomeImage} ) 0 0/cover no-repeat`,
       }}>
         <IonCard className="card-fade ion-padding corner-border" style={{ minHeight: 380 }}>
           <div>
@@ -349,7 +350,6 @@ const GuardianPage: React.FC = () => {
           <IonButton style={{ width: '100%' }} onClick={() => logout()}>Logout</IonButton>
         </IonCard>
       </IonContent>
-
     </IonPage>
   );
 };
