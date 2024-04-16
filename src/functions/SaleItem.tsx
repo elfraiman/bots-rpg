@@ -44,8 +44,8 @@ export const sellItem = async (item: IPlayerOwnedItem, quantityToSell: number, u
             toast(`+ ${quantityToSell * item.cost} 🪙`,
                 {
                     style: {
-                        borderRadius: '10px',
-                        background: '#333',
+                        borderRadius: 0,
+                        background: 'black',
                         color: '#fff',
                     },
                 }

@@ -58,11 +58,11 @@ const GeneralItemCard = ({ item, isForSell }: IBootsCardProps) => {
                   </div>
 
                   {isForSell ? (<span>
-                    Cost:<span style={{ color: 'gold' }}> {item.cost.toLocaleString()} G</span>
+                    Cost:<span style={{ color: 'gold' }}> {item.cost.toLocaleString()} 🪙</span>
                   </span>
                   ) : (
                     <span>
-                      Sell: <span style={{ color: 'gold' }}> {(item.cost).toLocaleString()} G</span>
+                      Sell: <span style={{ color: 'gold' }}> {(item.cost).toLocaleString()} 🪙</span>
                     </span>
                   )}
                 </IonCol>

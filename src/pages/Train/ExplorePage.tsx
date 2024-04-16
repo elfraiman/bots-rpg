@@ -1,22 +1,23 @@
-import { IonContent, IonPage, IonSpinner } from '@ionic/react';
-import React, { useContext, useEffect, useState } from 'react';
+import { IonContent, IonPage, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import React, { useEffect, useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
 import { IEnemy, IPlanet, IPlayer, IQuest } from '../../types/types';
 
 import QuestCard from '../../components/QuestCard';
-import { PlayerContext } from '../../context/PlayerContext';
+import { usePlayerData } from '../../context/PlayerContext';
 import { GetAvailableQuests } from '../../functions/GetAvailableQuests';
 import { getEnemies } from '../../functions/GetEnemies';
 import { getSinglePlanet } from '../../functions/GetPlanet';
 import './ExplorePage.css';
+import SplashScreen from "../SplashScreen/SplashScreen";
+import { useNavigationDisable } from '../../context/DisableNavigationContext';
 
 const ExplorePage: React.FC = () => {
   const [planetData, setPlanetData] = useState<IPlanet | null>(null);
   const [enemies, setEnemies] = useState<IEnemy[]>([]);
   const [availableQuests, setAvailableQuests] = useState<IQuest[]>([]);
-  const { player, updatePlayerData } = useContext(PlayerContext);
-
-
+  const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
+  const { player } = usePlayerData();
 
 
   const fetchLocationData = async (player: IPlayer) => {
@@ -70,42 +71,55 @@ const ExplorePage: React.FC = () => {
   useEffect(() => {
     if (!player) return;
     fetchQuests(player);
-
-  }, [player?.quests]);
+  }, [player?.quests, player?.location.toString()]);
 
   useEffect(() => {
     if (!player || !player?.location) return;
     fetchLocationData(player);
+    localStorage.setItem('shownSplash', 'false');
   }, [player?.location.toString()]);
 
+  useIonViewWillEnter(() => {
+    const splashShown = JSON.parse(localStorage.getItem('shownSplash') ?? "false");
+
+    if (!splashShown) {
+      localStorage.setItem('shownSplash', 'true');
+      triggerDisableWithTimer(5000);
+    }
+  })
 
   return (
     <IonPage className="content">
-      <IonContent
-        className="ion-padding"
-        style={{
-          '--background': `url('/images/planets/planet-ground-${planetData?.imgId}.webp') 0 0/cover no-repeat`,
-        }}
-      >
-        {!planetData || !player ? <></> : (
-          <>
-            {availableQuests?.map((q: IQuest, index) => (
-              <QuestCard quest={q} key={index} />
-            ))}
-
-            <div className="ion-padding low-fade corner-border" style={{ marginTop: 16 }}>
-              <h2 style={{ marginTop: 0 }}>You've arrived at {planetData.name}</h2>
-              <p>{planetData.description}</p>
-            </div>
-
-            {enemies.map((enemy, index) => (
-              <div style={{ marginTop: 16 }} key={index}>
-                <EnemyCard enemy={enemy} />
+      {isNavigationDisabled ? (
+        <SplashScreen imgSrc={`/images/planets/planet-ground-${planetData?.imgId}.webp`} />
+      ) : (
+        <IonContent
+          className="ion-padding"
+          style={{
+            '--background': `url('/images/planets/planet-ground-${planetData?.imgId}.webp') 0 0/cover no-repeat`,
+          }}
+        >
+          {!planetData || !player ? <></> : (
+            <>
+              <div className="ion-padding low-fade corner-border" style={{ marginBottom: 16 }}>
+                <h2 style={{ marginTop: 0 }}>You've arrived at {planetData.name}</h2>
+                <p>{planetData.description}</p>
               </div>
-            ))}
-          </>
-        )}
-      </IonContent>
+
+              {availableQuests?.map((q: IQuest, index) => (
+                <QuestCard quest={q} key={index} />
+              ))}
+
+              {enemies.map((enemy, index) => (
+                <div style={{ marginTop: 16 }} key={index}>
+                  <EnemyCard enemy={enemy} />
+                </div>
+              ))}
+            </>
+          )}
+        </IonContent>
+      )}
+
     </IonPage>
   );
 };

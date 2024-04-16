@@ -1,9 +1,9 @@
 .splash-screen {
     height: 100%;
     width: 100%;
-    display: flex;
     animation: fadeInOut 5s ease-in forwards; /* Updated to use fadeIn and added "forwards" */
     overflow: hidden;
+    z-index: 10;
 }
 
 .story-screen {

@@ -432,11 +432,11 @@ const BattleTrain = () => {
     //
     const battleStatsLogMessage = createBattleLogMessage({ enemy, player, playerWin, stats: { ...battleStats, loot, xpReward, goldReward, averageDamage, hitRate } })
 
-    toast(`+ ${goldReward} 🪙`,
+    toast.success(`+ ${goldReward} 🪙`,
       {
         style: {
-          borderRadius: '10px',
-          background: '#333',
+          borderRadius: 0,
+          background: 'black',
           color: '#fff',
         },
       }
@@ -505,6 +505,7 @@ const BattleTrain = () => {
   //
   useIonViewWillEnter(() => {
     getEnemy();
+    resetStats();
     setFightNarrative([]);
   })
 

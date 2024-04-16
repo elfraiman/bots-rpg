@@ -127,12 +127,12 @@ const App: React.FC = () => {
                       <IonTabBar slot="bottom" >
                         <IonTabButton disabled={isNavigationDisabled} tab="guardian" href="/guardian">
                           <img src={GuardianIcon} style={{ width: 35 }} />
-                          <IonLabel>Guardian</IonLabel>
+                          <IonLabel>Quarters</IonLabel>
                         </IonTabButton>
 
                         <IonTabButton disabled={isNavigationDisabled} tab="planet" href="/planet">
                           <img src={PlanetIcon} style={{ width: 35 }} />
-                          <IonLabel>Planet</IonLabel>
+                          <IonLabel>Land</IonLabel>
                         </IonTabButton>
 
                         <IonTabButton disabled={isNavigationDisabled} tab="pvp" href="/pvp">
@@ -147,7 +147,7 @@ const App: React.FC = () => {
 
                         <IonTabButton disabled={isNavigationDisabled || player?.level < 5} tab="galaxy" href="/galaxy">
                           <img src={ShipIcon} style={{ width: 35 }} />
-                          <IonLabel>{player?.level < 5 ? 'Lv:5' : 'Galaxy'}</IonLabel>
+                          <IonLabel>{player?.level < 5 ? 'Lv:5' : 'Cockpit'}</IonLabel>
                         </IonTabButton>
 
                         <IonTabButton disabled={isNavigationDisabled} tab="leaderboard" href="/leaderboard">

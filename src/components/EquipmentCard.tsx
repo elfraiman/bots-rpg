@@ -9,6 +9,7 @@ import { getPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
 import { SellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
 import { IEquipment, IPlayer } from "../types/types";
 import EquipmentModal from "./EquipmentModal";
+import { BASE_EQUIPMENT_SALE_PRICE } from "../types/stats";
 
 interface IEquipmentCardProps {
   equipment: IEquipment;
@@ -40,35 +41,57 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
   };
 
   const purchaseEquipment = async (equipmentToPurchase: IEquipment) => {
+    setLoading(true);
     try {
       if (!player) return;
       await GetCreatePlayerOwnedEquipment(player, equipmentToPurchase, updatePlayerData);
-
+      toast.success(`${equipmentToPurchase.name}`,
+        {
+          style: {
+            borderRadius: 0,
+            background: 'black',
+            color: getItemGradeColor(equipmentToPurchase.grade ?? 'common'),
+          },
+        },
+      );
       setShowModal(false);
     } catch (e) {
       console.error("An error occurred while purchasing the armor: ", e);
     }
+    setLoading(false);
   };
 
   const sellEquipment = async (equipmentToSell: IEquipment) => {
     setLoading(true);
     try {
       if (!player) return;
-      await SellPlayerEquipment(equipmentToSell, player, updatePlayerData);
-      toast(`Gold + ${equipmentToSell.cost / 2}`,
+      const sold = await SellPlayerEquipment(equipmentToSell, player, updatePlayerData);
+
+      if (sold) {
+        toast.success(`${sold} 🪙`,
+          {
+            style: {
+              borderRadius: 0,
+              background: 'black',
+              color: getItemGradeColor(equipmentToSell.grade ?? 'common'),
+            },
+          }
+        );
+        setLoading(false);
+        setShowModal(false);
+      }
+
+    } catch (e) {
+      console.error("An error occurred while selling the armor: ", e);
+      toast.error(`Failed to sell ${equipmentToSell.name}`,
         {
-          icon: '🪙',
           style: {
-            borderRadius: '10px',
-            background: '#333',
+            borderRadius: 0,
+            background: 'black',
             color: '#fff',
           },
         }
       );
-      setLoading(false);
-      setShowModal(false);
-    } catch (e) {
-      console.error("An error occurred while selling the armor: ", e);
     }
 
   };
@@ -76,6 +99,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
   const equipItem = async (itemId: Realm.BSON.ObjectId) => {
     if (!player) return;
     const canEquip = checkRequirements();
+    if (!canEquip) return;
     setLoading(true);
 
     try {
@@ -174,7 +198,7 @@ const EquipmentCard = ({ equipment: equipment, isForSell }: IEquipmentCardProps)
                   </span>
                   ) : (
                     <span>
-                      Sell: <span style={{ color: 'gold' }}> {(equipment.cost / 2).toLocaleString()} 🪙</span>
+                      Sell: <span style={{ color: 'gold' }}> {(Math.round(equipment.cost * (1 - BASE_EQUIPMENT_SALE_PRICE))).toLocaleString()} 🪙</span>
                     </span>
                   )}
                 </IonCol>

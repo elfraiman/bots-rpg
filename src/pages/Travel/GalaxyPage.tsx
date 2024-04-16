@@ -1,16 +1,16 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonImg, IonItem, IonList, IonPage, IonRow, useIonViewDidEnter, useIonViewWillEnter } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonPage, IonRow, useIonViewDidEnter, useIonViewWillEnter } from "@ionic/react";
+import { useState } from "react";
 import * as Realm from 'realm-web';
+import NpcCard from "../../components/NpcCard";
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import { usePlayerData } from "../../context/PlayerContext";
+import { getSinglePlanet } from "../../functions/GetPlanet";
 import { getPlanets } from "../../functions/GetPlanets";
 import { getTravel } from "../../functions/GetTravel";
 import { showStoryModal } from "../../functions/ShowStoryModal";
 import { IPlanet } from "../../types/types";
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './GalaxyPage.css';
-import NpcCard from "../../components/NpcCard";
-import { getSinglePlanet } from "../../functions/GetPlanet";
 
 
 const GalaxyPage = () => {
@@ -40,8 +40,6 @@ const GalaxyPage = () => {
           const unlockedPlanets = planetsFetched.filter((planet) => playerUnlockedPlanets.includes(planet._id.toString()));
           setPlanets(unlockedPlanets);
         }
-
-
       }
     } catch (e) {
       console.error(e);
@@ -108,7 +106,7 @@ const GalaxyPage = () => {
 
 
             <div className="ion-padding low-fade corner-border" style={{ marginTop: 16 }}>
-              <h2 style={{ marginTop: 0 }}>Galaxy</h2>
+              <h2 style={{ marginTop: 0 }}>Galaxy panel</h2>
               <p>Here's a list of planets we know and can land on.</p>
             </div>
 

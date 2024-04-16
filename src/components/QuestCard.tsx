@@ -99,27 +99,30 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
 
       toast.success(`${quest.name} Completed`,
         {
+          duration: 5000,
           style: {
-            borderRadius: '10px',
-            background: '#333',
+            borderRadius: 0,
+            background: 'black',
             color: '#fff',
           },
         },
       );
       toast(`+ ${quest.rewards?.gold} 🪙`,
         {
+          duration: 5000,
           style: {
-            borderRadius: '10px',
-            background: '#333',
+            borderRadius: 0,
+            background: 'black',
             color: '#fff',
           },
         },
       );
       toast(`+ ${quest.rewards?.experience} Xp`,
         {
+          duration: 5000,
           style: {
-            borderRadius: '10px',
-            background: '#333',
+            borderRadius: 0,
+            background: 'black',
             color: '#fff',
           },
         },

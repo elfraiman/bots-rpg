@@ -3,6 +3,7 @@ import * as Realm from 'realm-web';
 import GetXpForNextLevel from '../functions/GetXpForNextLevel';
 import { IPlayer, IPlayer_quests } from '../types/types';
 import { showStoryModal } from '../functions/ShowStoryModal';
+import toast from 'react-hot-toast';
 
 const app = Realm.App.getApp('application-0-vgvqx');
 
@@ -50,7 +51,16 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       if (updatedPlayer.level === 10 && updatedPlayer.quests.storyStep === 3) {
         showStoryModal({ storyStep: 3, player: updatedPlayer, updatePlayerData });
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to update player data`,
+        {
+          duration: 5000,
+          style: {
+            background: 'black',
+            color: '#fff',
+          },
+        },
+      );
       console.error("Failed to update player data:", err);
     }
   };

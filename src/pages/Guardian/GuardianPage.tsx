@@ -19,7 +19,7 @@ import {
   IonRow,
   IonSpinner
 } from '@ionic/react';
-import { add } from 'ionicons/icons';
+import { add, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
 import EquipmentCard from '../../components/EquipmentCard';
@@ -285,52 +285,56 @@ const GuardianPage: React.FC = () => {
             <IonCardTitle>Attributes</IonCardTitle>
             <IonCardSubtitle style={{ fontSize: 15 }}>Level: {player?.level} |  Available Points: <span style={{ color: player?.attributePoints ?? 0 > 0 ? 'green' : 'gray' }}>{player?.attributePoints ?? 0}</span></IonCardSubtitle>
             <IonCardContent style={{ padding: 0 }}>
-              <IonGrid>
+              <IonGrid style={{ padding: 0, marginTop: 16 }}>
                 <IonRow>
-                  <IonCol size='3'>
-                    <IonButton fill="clear" id="str-trigger" className="stats-btn"> STR: {player?.str} </IonButton>
+
+                  <IonCol size='4'>
+                    <IonButton fill="clear" id="str-trigger" className="stats-btn"><IonIcon src={informationCircleOutline} style={{ marginRight: 6 }} />STR: {player?.str} </IonButton>
                     <IonPopover trigger="str-trigger" triggerAction="hover">
                       <IonContent class="ion-padding">Strength increases your minimum and maximum physical damage.</IonContent>
                     </IonPopover>
                   </IonCol>
-                  <IonCol>
+
+                  <IonCol size="2">
                     <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('str')}>
                       {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                     </IonButton>
                   </IonCol>
 
-                  <IonCol size='3'>
-                    <IonButton fill="clear" id="con-trigger" className="stats-btn">CON: {player?.con}</IonButton>
+                  <IonCol size='4'>
+                    <IonButton fill="clear" id="con-trigger" className="stats-btn"><IonIcon src={informationCircleOutline} style={{ marginRight: 6 }} />CON: {player?.con}</IonButton>
                     <IonPopover trigger="con-trigger" triggerAction="hover">
                       <IonContent class="ion-padding">Constitution increases your maximum health.</IonContent>
                     </IonPopover>
                   </IonCol>
-                  <IonCol size='3'>
+
+                  <IonCol size="2" >
                     <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('con')}>
                       {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                     </IonButton>
                   </IonCol>
+
                 </IonRow>
                 <IonRow>
-                  <IonCol size='3'>
-                    <IonButton fill="clear" id="dex-trigger" className="stats-btn">DEX: {player?.dex}</IonButton>
+                  <IonCol size='4'>
+                    <IonButton fill="clear" id="dex-trigger" className="stats-btn"><IonIcon src={informationCircleOutline} style={{ marginRight: 6 }} />DEX: {player?.dex}</IonButton>
                     <IonPopover trigger="dex-trigger" triggerAction="hover">
                       <IonContent class="ion-padding">Dexterity increases your attack speed, accuracy and dodge chance.</IonContent>
                     </IonPopover>
                   </IonCol>
-                  <IonCol size='3'>
+                  <IonCol size="2">
                     <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('dex')}>
                       {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                     </IonButton>
                   </IonCol>
-                  <IonCol size='3'>
-                    <IonButton fill="clear" id="int-trigger" className="stats-btn">INT: {player?.int}</IonButton>
+                  <IonCol size='4'>
+                    <IonButton fill="clear" id="int-trigger" className="stats-btn"><IonIcon src={informationCircleOutline} style={{ marginRight: 6 }} />INT: {player?.int}</IonButton>
                     <IonPopover trigger="int-trigger" triggerAction="hover">
                       <IonContent class="ion-padding">Intelligence increases your rare loot chance and XXX</IonContent>
                     </IonPopover>
                   </IonCol>
 
-                  <IonCol size='3'>
+                  <IonCol size="2">
                     <IonButton disabled={!playerHasPoints} fill="clear" size="small" onClick={() => handleIncreaseStat('int')}>
                       {attributeLoading ? (<IonSpinner />) : (<IonIcon icon={add} />)}
                     </IonButton>

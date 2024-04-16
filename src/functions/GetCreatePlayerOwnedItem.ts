@@ -5,6 +5,7 @@ import { IPlayer, IPlayerItem } from "../types/types";
 import GetBaseItem from './GetBaseItem';
 import modifyOwnedItem from './ModifyOwnedItem';
 import { COMMON_ITEM_DROP_AMOUNT, EPIC_ITEM_DROP_AMOUNT, RARE_ITEM_DROP_AMOUNT, UNCOMMON_ITEM_DROP_AMOUNT } from '../types/stats';
+import getItemGradeColor from './GetItemGradeColor';
 
 interface IReturnedPlayerItem {
     item: IPlayerItem;
@@ -46,11 +47,11 @@ export const createPlayerOwnedItem = async (
         }
 
         const displayToast = async () => {
-            toast(`+ ${quantity} ${baseItem?.name}`, {
+            toast.success(`+ ${quantity} ${baseItem?.name}`, {
                 style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
+                    borderRadius: 0,
+                    background: 'black',
+                    color: getItemGradeColor(baseItem?.grade ?? "common"),
                 },
             });
         };

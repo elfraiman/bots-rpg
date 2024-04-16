@@ -1,6 +1,7 @@
 import { IEnemy, IPlayer } from "./types";
 
 
+export const BASE_EQUIPMENT_SALE_PRICE = 0.4; // 40% of the original cost
 /**
 * Trash Loot drop quantity. This is the amount of trash loot items that will drop after a battle.
 */
