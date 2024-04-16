@@ -17,6 +17,15 @@ ion-button {
   border-color: transparent var(--ion-color-primary) var(--ion-color-primary) transparent;
 }
 
+.corner-border-1 {
+  border: 1px solid rgb(55, 160, 55);
+  border-color: transparent rgb(55, 160, 55) rgb(55, 160, 55) transparent;
+}
+
+.color-1 {
+  color: rgb(55, 160, 55);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

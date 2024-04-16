@@ -113,7 +113,7 @@ const App: React.FC = () => {
                         <Redirect exact path="/" to="/guardian" />
                         <Route path="/guardian" render={() => <GuardianPage />} exact={true} />
                         <Route path="/planet" render={() => <ExplorePage />} exact={true} />
-                        <Route path="/fight/:id" render={() => <BattleTrain />} exact={true} />
+                        <Route path="/fight/:id/:planetImgId" render={() => <BattleTrain />} exact={true} />
                         <Route path="/trader" render={() => <Shop />} exact={true} />
                         <Route path="/galaxy" render={() => <GalaxyPage />} exact={true} />
                         <Route path="/pvp" render={() => <FightPvpPage />} exact={true} />

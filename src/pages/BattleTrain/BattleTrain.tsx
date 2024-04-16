@@ -69,7 +69,6 @@ const BattleTrain = () => {
   const [loading, setLoading] = useState(false);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
   const [battleActive, setBattleActive] = useState<boolean>(false);
-  const match = useRouteMatch<{ id: string }>();
   const [playerHitInfo, setPlayerHitInfo] = useState({ damage: null, key: 0 });
   const [enemyHitInfo, setEnemyHitInfo] = useState({ damage: null, key: 0 });
   const [playerNextAttack, setPlayerNextAttack] = useState(BASE_ATTACK_SPEED);
@@ -78,6 +77,7 @@ const BattleTrain = () => {
   const playerTimerRef = useRef<any>();
   const enemyTimerRef = useRef<any>();
   const narrativeEndRef = useRef(null);
+  const match = useRouteMatch<{ id: string, planetImgId: string }>();
 
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
@@ -98,9 +98,9 @@ const BattleTrain = () => {
       setEnemyIntimidation(enemy.description ?? '');
     }
   }
+  const params: any = match.params;
 
   const getEnemy = async () => {
-    const params: any = match.params;
     const monsterId = params.id;
 
     if (monsterId) {
@@ -496,11 +496,6 @@ const BattleTrain = () => {
     };
   }, [playerNextAttack, enemyNextAttack, player, currentEnemy, battleActive]);
 
-  // Automatically scroll to the latest narrative entry
-  useEffect(() => {
-    (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
-  }, [fightNarrative]);
-
   // Initial get enemy
   //
   useIonViewWillEnter(() => {
@@ -535,6 +530,11 @@ const BattleTrain = () => {
   }, [player?.equipment, playerWeapon, currentEnemy, playerDefensiveStats]);
 
 
+  // Automatically scroll to the latest narrative entry
+  useEffect(() => {
+    (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
+  }, [fightNarrative]);
+
   // Calculate health percentage
   const playerHealthPercent = (playerHealth / playerMaxHealth) * 100;
   const enemyHealthPercent = (enemyHealth / enemyMaxHealth) * 100;
@@ -552,7 +552,7 @@ const BattleTrain = () => {
         enemyImgId={currentEnemy?.imgId ?? 0} loading={!currentEnemy} />
 
       <IonContent className="content" style={{
-        '--background': `url('/images/planets/planet-battle-${0}.webp') 0 0/cover no-repeat`,
+        '--background': `url('/images/planets/planet-battle-${params?.planetImgId}.webp') 0 0/cover no-repeat`,
       }}>
         <div className="ion-padding fight-narrative quick-fade-in">
           {fightNarrative.map((line, index) => (

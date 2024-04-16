@@ -96,6 +96,7 @@ const Shop = () => {
                   <IonItem slot="header">
                     <IonLabel>Weapons</IonLabel>
                   </IonItem>
+
                   <div slot="content">
                     <IonList lines='full'>
                       {weaponsData.map((weapon: IEquipment, index: number) => { // Add type annotations for weapon and index
@@ -106,6 +107,7 @@ const Shop = () => {
                     </IonList>
                   </div>
                 </IonAccordion>
+
                 <IonAccordion value="armors">
                   <IonItem slot="header">
                     <IonLabel>Armors</IonLabel>

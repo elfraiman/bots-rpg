@@ -3,7 +3,6 @@ import "./SplashScreen.css"; // Ensure you create this CSS file in your project
 
 
 const SplashScreen = (imgSrc?: any) => {
-    console.log(imgSrc);
     return (
         <IonContent>
             <div className="splash-screen">

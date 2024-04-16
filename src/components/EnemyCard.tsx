@@ -5,9 +5,10 @@ import { calculateMaxHealth } from "../types/stats";
 
 interface IEnemyCardProps {
   enemy: IEnemy;
+  planetImgId: number;
 }
 
-const EnemyCard = ({ enemy }: IEnemyCardProps) => {
+const EnemyCard = ({ enemy, planetImgId }: IEnemyCardProps) => {
   const history = useHistory();
   return (
     <IonCard className="card-fade" style={{ zIndex: 101, margin: 0 }}>
@@ -50,14 +51,14 @@ const EnemyCard = ({ enemy }: IEnemyCardProps) => {
 
         <IonRow>
           <IonButton
-            className="corner-border"
+            className={`corner-border corner-border-${planetImgId} color-${planetImgId}`}
             style={{
               width: '100%', marginTop: 8
             }}
             fill="clear"
             onClick={(e) => {
               e.preventDefault();
-              history.push(`/fight/${enemy._id}`);
+              history.push(`/fight/${enemy._id}/${planetImgId}`);
             }}
           >
             Fight

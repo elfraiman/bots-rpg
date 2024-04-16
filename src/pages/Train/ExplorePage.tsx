@@ -101,7 +101,7 @@ const ExplorePage: React.FC = () => {
         >
           {!planetData || !player ? <></> : (
             <>
-              <div className="ion-padding low-fade corner-border" style={{ marginBottom: 16 }}>
+              <div className={`ion-padding low-fade corner-border corner-border-${planetData.imgId}`} style={{ marginBottom: 16 }}>
                 <h2 style={{ marginTop: 0 }}>You've arrived at {planetData.name}</h2>
                 <p>{planetData.description}</p>
               </div>
@@ -112,7 +112,7 @@ const ExplorePage: React.FC = () => {
 
               {enemies.map((enemy, index) => (
                 <div style={{ marginTop: 16 }} key={index}>
-                  <EnemyCard enemy={enemy} />
+                  <EnemyCard enemy={enemy} planetImgId={planetData?.imgId} />
                 </div>
               ))}
             </>
