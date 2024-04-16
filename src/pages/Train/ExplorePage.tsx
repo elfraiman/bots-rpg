@@ -56,6 +56,11 @@ const ExplorePage: React.FC = () => {
 
       if (quests) {
         const completedQuestIds = new Set(player.quests?.completed.map(q => q.toString()));
+        // The quests that are available are those that the player has not completed
+        // and are part of his location, each location has "Steps" of quests, and we will display the lowest
+        // available step first.
+        // I need to add support for multiple steps if wanted.
+        //
         const questsAvailable = quests.filter(quest => !completedQuestIds.has(quest._id.toString()));
         const lowestQuestStep = Math.min(...questsAvailable.map(quest => quest.questStep));
         setAvailableQuests(questsAvailable.filter(quest => quest.questStep === lowestQuestStep));
@@ -76,12 +81,11 @@ const ExplorePage: React.FC = () => {
   useEffect(() => {
     if (!player || !player?.location) return;
     fetchLocationData(player);
-    localStorage.setItem('shownSplash', 'false');
   }, [player?.location.toString()]);
 
   useIonViewWillEnter(() => {
     const splashShown = JSON.parse(localStorage.getItem('shownSplash') ?? "false");
-
+    console.log(splashShown, 'Splash SHown', localStorage.getItem('shownSplash'))
     if (!splashShown) {
       localStorage.setItem('shownSplash', 'true');
       triggerDisableWithTimer(5000);

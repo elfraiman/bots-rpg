@@ -23,6 +23,10 @@ const GalaxyPage = () => {
     if (!player) return;
     try {
       await getTravel({ destination: planet._id, player, updatePlayerData });
+
+
+      localStorage.setItem('shownSplash', 'false');
+
       // Change the ion primary color to the planet's
       // hex code to make the player feel more
       // as if hes on a different planet

@@ -1,5 +1,5 @@
 .login-bg {
-    --background: url("/images/login-bg.webp") no-repeat center center / cover;
+    --background: url("/images/login.webp") no-repeat center center / cover;
 }
 
 .login-card {

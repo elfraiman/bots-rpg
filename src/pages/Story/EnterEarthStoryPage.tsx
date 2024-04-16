@@ -34,7 +34,7 @@ const EnterEarthStoryPage = () => {
   };
 
   return (
-    <IonPage id="main-content" className={`content  ${pageExiting ? 'page-exit' : ''}`}>
+    <IonPage className={`content  ${pageExiting ? 'page-exit' : ''}`}>
       <IonHeader>
         <IonButton color="warning" fill="clear" style={{
           width: '100%', marginTop: 8

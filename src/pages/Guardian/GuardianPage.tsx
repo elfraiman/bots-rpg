@@ -279,7 +279,6 @@ const GuardianPage: React.FC = () => {
           </div>
         </IonCard>
 
-
         <IonCard className="ion-padding card-fade corner-border">
           <div>
             <IonCardTitle>Attributes</IonCardTitle>
@@ -344,7 +343,8 @@ const GuardianPage: React.FC = () => {
             </IonCardContent>
           </div>
         </IonCard>
-        <IonCard>
+
+        <IonCard style={{ marginTop: 36 }}>
           <IonCardSubtitle className="ion-padding">This placement is temporary</IonCardSubtitle>
           <IonButton style={{ width: '100%' }} onClick={() => logout()}>Logout</IonButton>
         </IonCard>

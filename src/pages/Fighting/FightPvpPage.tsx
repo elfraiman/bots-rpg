@@ -17,6 +17,7 @@ import getPlayers from '../../functions/GetPlayers';
 import { useEffect, useState } from 'react';
 import { IPlayer } from '../../types/types';
 import { trophyOutline } from 'ionicons/icons';
+import NpcCard from '../../components/NpcCard';
 
 
 const FightPvpPage: React.FC = () => {
@@ -46,15 +47,22 @@ const FightPvpPage: React.FC = () => {
 
   return (
     <>
-      <IonPage id="main-content" className="content" >
-        <IonContent>
-          pvp
+      <IonPage className="content" >
+        <IonContent className="ion-padding">
 
-          Fight against other players
+          <NpcCard
+            npcImgId={6}
+            npcName="Kelly Anon"
+            npcRole="Killer"
+            npcText="This is no place for a newbie, are you sure you're ready for this?"
+          />
+
+
+
           Currently not implemented
 
 
-          <IonList >
+          <IonList>
             {playersData.map((player) => (
               <IonItem key={player._id}  >
 
