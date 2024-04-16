@@ -1,4 +1,4 @@
-import { IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonPage, IonRow, IonSpinner, useIonViewWillEnter, useIonViewWillLeave } from "@ionic/react";
+import { IonButton, IonCardSubtitle, IonContent, IonPage, IonSpinner, useIonViewWillEnter, useIonViewWillLeave } from "@ionic/react";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory, useRouteMatch } from "react-router";
@@ -15,7 +15,7 @@ import getGoldReward from "../../functions/GetGoldReward";
 import getItemGradeColor from "../../functions/GetItemGradeColor";
 import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import getXpReward from "../../functions/GetXpReward";
-import { BASE_ATTACK_SPEED, MIN_ATTACK_INTERVAL, calculateAttackSpeed, calculateDamage, calculateHitChance, calculateMaxHealth } from "../../types/stats";
+import { BASE_ATTACK_SPEED, calculateAttackSpeed, calculateDamage, calculateHitChance, calculateMaxHealth } from "../../types/stats";
 import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../../types/types";
 import './BattleTrain.css';
 
@@ -370,10 +370,10 @@ const BattleTrain = () => {
 
   const fightEnd = async (playerWin: boolean, enemy: IEnemy, player: IPlayer) => {
     setLoading(true);
-    let loot: ILootDrop[] = [];
+    let loot: ILootDrop[] = []; // Used for display only
     let goldReward = 0;
     let xpReward = 0;
-    let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory];
+    let updatedInventory: Realm.BSON.ObjectId[] = [...player.inventory]; // used to update the player context inventory
 
     if (playerWin) {
       // Create loot chance logic here
@@ -381,23 +381,29 @@ const BattleTrain = () => {
         // This is the logic to create "basic item" loot from the fight
         //
         try {
-          let amountToDrop = Math.floor(Math.random() * 5) + 1;
+          // Random amount for common loot
+          // we handle any other grade of loot inside the createPlayerOwnedItem call
+          //
           // Step 1: Create or get the already owned item from the player owned items.
           // reference the trash loot from the monster
           //
-          const item = await createPlayerOwnedItem(player, enemy.trashLoot, amountToDrop);
+          const playerOwnedItemResponse = await createPlayerOwnedItem(player, enemy.trashLoot);
           const baseItem = await GetBaseItem(enemy.trashLoot);
           // Check if the player's inventory already includes this playerOwnedItem.
           //
-          const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === item?._id.toString());
+          const itemInInventoryIndex = player.inventory.findIndex(i => i.toString() === playerOwnedItemResponse?.item._id.toString());
 
-
-          if (itemInInventoryIndex < 0 && item) {
-            updatedInventory.push(item._id);
+          // if player doesn't own it, push it to the inventory in state
+          //
+          if (itemInInventoryIndex < 0 && playerOwnedItemResponse) {
+            updatedInventory.push(playerOwnedItemResponse.item._id);
           }
 
           if (baseItem) {
-            loot.push({ item: baseItem, quantity: amountToDrop })
+            // Loot is only used for the battle stats table
+            // so we can tell the player what he has looted
+            //
+            loot.push({ item: baseItem, quantity: playerOwnedItemResponse?.quantity ?? 1 })
           }
 
         } catch (e) {
@@ -414,7 +420,7 @@ const BattleTrain = () => {
     // Update the player with all the new data
     // this will update in context & back-end
     //
-    await updatePlayerData({ ...player, gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
+    await updatePlayerData({ gold: player.gold += goldReward, experience: player.experience += xpReward, inventory: updatedInventory })
 
     // Add average damage and hit rate to the battleStats logging.
     // and set winnerMessage display

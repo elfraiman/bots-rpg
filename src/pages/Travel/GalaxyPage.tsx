@@ -48,32 +48,42 @@ const GalaxyPage = () => {
     }
   }
 
-  useIonViewWillEnter(() => {
-    fetchPlanets();
-  })
-
   const getPlanet = async (name: string) => {
     const planet = await getSinglePlanet(undefined, name);
     return planet;
   }
 
-  useIonViewDidEnter(() => {
-    // Fetch the latest planet info and update player data accordingly
-    const unlockNewPlanet = async () => {
-      if (player?.quests.storyStep === 4) {
-        const planet = await getPlanet('Xyleria');
-        if (!planet) return;
+  const unlockNewPlanet = async (planetName: string) => {
+    if (!player) {
+      console.error("[GalaxyPage]: No player to unlock planet for")
+      return;
+    }
 
-        showStoryModal({ storyStep: 4, player, updatePlayerData });
-        updatePlayerData({
-          ...player,
-          unlockedLocations: [...player.unlockedLocations, planet._id]
-        });
-      }
+    const planet = await getPlanet(planetName);
+    if (!planet) {
+      console.error("[GalaxyPage]: No planet to return")
+      return;
     };
 
-    unlockNewPlanet();
-  }, [player, updatePlayerData]); // Include all functions and state variables the effect uses
+    updatePlayerData({
+      unlockedLocations: [...player.unlockedLocations, planet._id]
+    });
+  };
+
+  useIonViewWillEnter(() => {
+    fetchPlanets();
+  })
+
+
+  useIonViewDidEnter(() => {
+    if (player?.quests.storyStep === 4) {
+      // First planet Xyleria with Aurora
+      //
+      showStoryModal({ storyStep: 4, player, updatePlayerData });
+      unlockNewPlanet('Xyleria');
+    }
+
+  }, [player?.quests.storyStep, updatePlayerData]); // Include all functions and state variables the effect uses
 
 
 

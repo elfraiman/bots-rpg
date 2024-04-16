@@ -88,7 +88,6 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
   const turnInQuest = async () => {
     if (conditionsMet && player?.quests) {
       await updatePlayerData({
-        ...player,
         quests: {
           ...player.quests,
           inProgress: player.quests.inProgress.filter(i => i.toString() !== quest._id.toString()),
@@ -157,7 +156,7 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
           <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/story-npc-${quest.npcImgId}.webp`} sizes="small" />
           <IonCardHeader>
             <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{quest.npcName} <span style={{ color: playerInProgress ? 'var(--ion-color-primary)' : 'var(--ion-color-success)' }}>{playerInProgress ? 'In progress' : 'Available'}</span></IonCardTitle>
-            <IonCardSubtitle>{quest.name}</IonCardSubtitle>
+            <IonCardSubtitle style={{ color: 'var(--ion-color-primary)' }}>{quest.name}</IonCardSubtitle>
 
           </IonCardHeader>
 

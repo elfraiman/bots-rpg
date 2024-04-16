@@ -28,7 +28,7 @@ const StoryModal = ({ storyStep, player, updatePlayerData }: IStoryModalProps) =
         setStory(story);
         // Increase story step by 1 to prepare for the next story
         //
-        updatePlayerData({ ...player, quests: { ...player.quests, storyStep: storyStep + 1 } })
+        updatePlayerData({ quests: { ...player.quests, storyStep: storyStep + 1 } })
       }
 
     }).catch(e => console.error(e)).finally(() => setLoading(false));
@@ -39,7 +39,7 @@ const StoryModal = ({ storyStep, player, updatePlayerData }: IStoryModalProps) =
   }, [storyStep])
 
   return (
-    <IonCard className="corner-border " style={{ padding: 0, margin: 0, minHeight: 695 }}>
+    <IonCard className="corner-border " style={{ padding: 0, margin: 0, minHeight: 595 }}>
       {!loading && story ? (
         <>
           <img src={`/images/npc/story-npc-${story?.npcImgId}.webp`} />

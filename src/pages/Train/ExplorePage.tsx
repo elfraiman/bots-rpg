@@ -99,8 +99,8 @@ const ExplorePage: React.FC = () => {
             </div>
 
             {enemies.map((enemy, index) => (
-              <div style={{ marginTop: 16 }}>
-                <EnemyCard key={index} enemy={enemy} />
+              <div style={{ marginTop: 16 }} key={index}>
+                <EnemyCard enemy={enemy} />
               </div>
             ))}
           </>

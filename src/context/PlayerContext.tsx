@@ -26,14 +26,14 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [player, setPlayer] = useState<IPlayer | null>(null);
 
   const updatePlayerData = async (updates: Partial<IPlayer>) => {
-    if (!app.currentUser?.id) {
+    if (!app.currentUser?.id || !mongodbPlayerCollection) {
       console.error("No current user found");
       return;
     }
 
     try {
       const updatedPlayer = applyPlayerUpdates(player, updates);
-      await mongodbPlayerCollection?.updateOne({ _id: app.currentUser.id }, { $set: updates });
+      await mongodbPlayerCollection.updateOne({ _id: app.currentUser.id }, { $set: updates });
       setPlayer(updatedPlayer);
 
       // Handle side effects after updates
@@ -46,6 +46,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         showStoryModal({ storyStep: 2, player: updatedPlayer, updatePlayerData });
       }
       // First planet Xyleria with Mia
+      //
       if (updatedPlayer.level === 10 && updatedPlayer.quests.storyStep === 3) {
         showStoryModal({ storyStep: 3, player: updatedPlayer, updatePlayerData });
       }

@@ -14,7 +14,6 @@ export const getTravel = async ({ destination, player, updatePlayerData }: ITrav
     try {
         if (destination !== undefined && player) {
             updatePlayerData({
-                ...player,
                 location: destination
             })
             return true;

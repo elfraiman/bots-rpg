@@ -43,7 +43,7 @@ const InitialStoryPage = () => {
         return;
       }
 
-      updatePlayerData({ ...player, name: nickname });
+      updatePlayerData({ name: nickname });
       setShowModal(false); // Close the modal only if nickname is valid
       handleSkip();
     }
@@ -70,7 +70,7 @@ const InitialStoryPage = () => {
       }}>
 
         <IonCard className="corner-border card-fade fade-in" style={{ padding: 0 }}>
-          <img alt={`Elara the scholar`} src={`/images/npc/npc-ship-2.webp`} />
+          <img alt={`Elara the scholar`} src={`/images/npc/story-npc-4.webp`} />
           <IonCardHeader>
             <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>Elara Thorne</IonCardTitle>
             <IonCardSubtitle>Scholar</IonCardSubtitle>

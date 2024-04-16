@@ -1,6 +1,18 @@
 import { IEnemy, IPlayer } from "./types";
 
 
+/**
+* Trash Loot drop quantity. This is the amount of trash loot items that will drop after a battle.
+*/
+export const COMMON_ITEM_DROP_AMOUNT = 4;
+export const UNCOMMON_ITEM_DROP_AMOUNT = 3;
+export const RARE_ITEM_DROP_AMOUNT = 2;
+export const EPIC_ITEM_DROP_AMOUNT = 1;
+export const LEGENDARY_ITEM_DROP_AMOUNT = 1;
+
+
+
+
 export const MIN_ATTACK_INTERVAL = 1600; // Minimum interval in milliseconds (e.g., 500ms = 0.5 seconds)
 export const BASE_ATTACK_SPEED = 3000; // Base attack speed
 export const DEX_MODIFIER = 0.0035; // Amount dex effects attack speed

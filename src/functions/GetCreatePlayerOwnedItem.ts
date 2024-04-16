@@ -4,13 +4,19 @@ import { getMongoClient } from '../mongoClient';
 import { IPlayer, IPlayerItem } from "../types/types";
 import GetBaseItem from './GetBaseItem';
 import modifyOwnedItem from './ModifyOwnedItem';
+import { COMMON_ITEM_DROP_AMOUNT, EPIC_ITEM_DROP_AMOUNT, RARE_ITEM_DROP_AMOUNT, UNCOMMON_ITEM_DROP_AMOUNT } from '../types/stats';
+
+interface IReturnedPlayerItem {
+    item: IPlayerItem;
+    quantity: number;
+}
 
 export const createPlayerOwnedItem = async (
     player: IPlayer,
     itemId: Realm.BSON.ObjectId,
-    quantity?: number,
-): Promise<IPlayerItem | undefined> => {
+): Promise<IReturnedPlayerItem | undefined> => {
     const client = getMongoClient();
+    let quantity: number = 1;
 
     if (!client) {
         console.error("No client found");
@@ -23,6 +29,22 @@ export const createPlayerOwnedItem = async (
         const itemAlreadyOwned = await playerItems.findOne({ baseItemId: itemId, ownerId: player._id });
         const baseItem = await GetBaseItem(itemId);
 
+        // Here we handle logic for the quantity of items dropped for
+        // different rarities. For example, rare items should not drop the same amount
+        // as uncommon, even though they are harder to get.
+        //
+        if (baseItem?.grade === 'common') {
+            quantity = Math.floor(Math.random() * COMMON_ITEM_DROP_AMOUNT) + 1;;
+        } else if (baseItem?.grade === 'uncommon') {
+            quantity = Math.floor(Math.random() * UNCOMMON_ITEM_DROP_AMOUNT) + 1;;
+        } else if (baseItem?.grade === 'rare') {
+            quantity = Math.floor(Math.random() * RARE_ITEM_DROP_AMOUNT) + 1;;
+        } else if (baseItem?.grade === 'epic') {
+            quantity = EPIC_ITEM_DROP_AMOUNT;
+        } else {
+            quantity = 1;
+        }
+
         const displayToast = async () => {
             toast(`+ ${quantity} ${baseItem?.name}`, {
                 style: {
@@ -33,12 +55,15 @@ export const createPlayerOwnedItem = async (
             });
         };
 
+        // if player already owns the item, update it.
+        //
         if (itemAlreadyOwned) {
             await modifyOwnedItem(itemAlreadyOwned._id, quantity);
             await displayToast();
-            return itemAlreadyOwned;
+            return { item: itemAlreadyOwned, quantity: quantity ?? 1 };
         } else {
-            // Create a new unique item in the database
+            // Create a new unique item in the database if he doesn't own it
+            //
             const newItem: IPlayerItem = {
                 _id: new Realm.BSON.ObjectId(),
                 baseItemId: itemId,
@@ -47,7 +72,7 @@ export const createPlayerOwnedItem = async (
             };
             await playerItems.insertOne(newItem);
             await displayToast();
-            return newItem;
+            return { item: newItem, quantity: quantity ?? 1 };
         }
     } catch (err: any) {
         console.error(`Failed to create or modify item ${itemId}:`, err);

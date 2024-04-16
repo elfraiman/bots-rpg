@@ -35,7 +35,6 @@ export const GetCreatePlayerOwnedEquipment = async (
 
         // Return the new equipment including its generated _id
         updatePlayerData({
-            ...player,
             gold: player.gold - equipment.cost,
             equipmentInventory: [...player.equipmentInventory, newEquipment._id]
         });
