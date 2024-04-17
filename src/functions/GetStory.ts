@@ -1,6 +1,5 @@
-import * as Realm from 'realm-web';
-import { IStory } from "../types/types";
 import { getMongoClient } from '../mongoClient';
+import { IStory } from "../types/types";
 
 
 export const GetStory = async (storyStep: number): Promise<IStory | null> => {

@@ -36,106 +36,106 @@ const EquipmentModal = ({ showModal, item, isForSell, checkRequirements, player,
         {item.name}
       </div>
 
-      {loading ? <IonSpinner /> : (
-        <IonGrid style={{ height: '100px', border: `1px solid ${getItemGradeColor(item.grade)} `, margin: "16px 16px 16px 16px" }}>
-          <IonRow className="ion-padding">
-            <IonCol>
-              <IonImg
-                alt={`A ${item.name} with beautiful details`}
-                src={imgString}
-                style={{ width: '100%', border: `1px solid ${getItemGradeColor(item.grade)} ` }} />
 
-            </IonCol>
+      <IonGrid style={{ height: '100px', border: `1px solid ${getItemGradeColor(item.grade)} `, margin: "16px 16px 16px 16px" }}>
+        <IonRow className="ion-padding">
+          <IonCol>
+            <IonImg
+              alt={`A ${item.name} with beautiful details`}
+              src={imgString}
+              style={{ width: '100%', border: `1px solid ${getItemGradeColor(item.grade)} ` }} />
 
-            <IonCol size="7" style={{ marginLeft: 26 }}>
-              <IonRow>
-                <span style={{ color: getItemGradeColor(item.grade), fontSize: 12 }}>
-                  {item?.grade?.toUpperCase()}
+          </IonCol>
+
+          <IonCol size="7" style={{ marginLeft: 26 }}>
+            <IonRow>
+              <span style={{ color: getItemGradeColor(item.grade), fontSize: 12 }}>
+                {item?.grade?.toUpperCase()}
+              </span>
+            </IonRow>
+
+            <IonRow>
+              <div style={{ fontSize: 50, fontWeight: 900 }}>
+                {item.type === 'weapon' ? (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span>{item.stats.minAttack} ~ {item.stats.maxAttack}</span>
+                    <span style={{ fontSize: 14, fontWeight: 400 }}> Speed: {returnTextForAttackSpeed(item.stats.attackSpeed)}</span>
+                  </div>
+                ) : (
+                  <>
+                    DP: {item.stats.defense}<br />
+                    <span style={{ fontSize: 16 }}>Evasion: {item.stats.evasion}</span>
+                  </>
+                )}
+              </div>
+            </IonRow>
+          </IonCol>
+        </IonRow>
+        <IonRow className="ion-padding" style={{ color: 'lightgray' }}>
+          {item.description}
+        </IonRow>
+
+        <IonRow className="ion-padding">
+          <IonCol>
+            {isForSell ? (
+              <>
+                <h2>Cost</h2>
+                <p>{item.cost} <span style={{ color: 'gold' }}>🪙</span></p>
+              </>
+            ) : <></>}
+
+            <h2>Requirements</h2>
+
+            {player ? (
+              <div>
+                <span>
+                  STR:<span style={{ color: player?.str >= item.requirements.str ? 'green' : 'red', marginRight: 8 }}>
+                    {item?.requirements.str}
+                  </span>
                 </span>
-              </IonRow>
 
-              <IonRow>
-                <div style={{ fontSize: 50, fontWeight: 900 }}>
-                  {item.type === 'weapon' ? (
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span>{item.stats.minAttack} ~ {item.stats.maxAttack}</span>
-                      <span style={{ fontSize: 14, fontWeight: 400 }}> Speed: {returnTextForAttackSpeed(item.stats.attackSpeed)}</span>
-                    </div>
-                  ) : (
-                    <>
-                      DP: {item.stats.defense}<br />
-                      <span style={{ fontSize: 16 }}>Evasion: {item.stats.evasion}</span>
-                    </>
-                  )}
-                </div>
-              </IonRow>
-            </IonCol>
-          </IonRow>
-          <IonRow className="ion-padding" style={{ color: 'lightgray' }}>
-            {item.description}
-          </IonRow>
-
-          <IonRow className="ion-padding">
-            <IonCol>
-              {isForSell ? (
-                <>
-                  <h2>Cost</h2>
-                  <p>{item.cost} <span style={{ color: 'gold' }}>🪙</span></p>
-                </>
-              ) : <></>}
-
-              <h2>Requirements</h2>
-
-              {player ? (
-                <div>
-                  <span>
-                    STR:<span style={{ color: player?.str >= item.requirements.str ? 'green' : 'red', marginRight: 8 }}>
-                      {item?.requirements.str}
-                    </span>
+                <span>
+                  DEX: <span style={{ color: player?.dex >= item.requirements.dex ? 'green' : 'red', marginRight: 8 }}>
+                    {item?.requirements.dex}
                   </span>
+                </span>
 
-                  <span>
-                    DEX: <span style={{ color: player?.dex >= item.requirements.dex ? 'green' : 'red', marginRight: 8 }}>
-                      {item?.requirements.dex}
-                    </span>
+
+                <span>
+                  CON: <span style={{ color: player?.con >= item.requirements.con ? 'green' : 'red', marginRight: 8 }}>
+                    {item?.requirements.con}
                   </span>
+                </span>
 
-
-                  <span>
-                    CON: <span style={{ color: player?.con >= item.requirements.con ? 'green' : 'red', marginRight: 8 }}>
-                      {item?.requirements.con}
-                    </span>
+                <span>
+                  INT: <span style={{ color: player?.int >= item.requirements.int ? 'green' : 'red', marginRight: 8 }}>
+                    {item?.requirements.int}
                   </span>
+                </span>
+              </div>
+            ) : <IonSpinner />}
 
-                  <span>
-                    INT: <span style={{ color: player?.int >= item.requirements.int ? 'green' : 'red', marginRight: 8 }}>
-                      {item?.requirements.int}
-                    </span>
-                  </span>
-                </div>
-              ) : <IonSpinner />}
-
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      )}
-
-      <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {isForSell ? (
-          <>
-            <IonButton fill="solid" disabled={!checkRequirements || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
-            <IonButton fill="clear" className="corner-border" onClick={() => setShowModal(false)}>Cancel</IonButton>
-          </>
-        ) : (
-          <>
-            <IonButton fill="solid" disabled={loading || !checkRequirements} onClick={() => equipItem(item._id)}>Equip</IonButton>
-            <div>
-              <IonButton fill="solid" disabled={loading} color="warning" onClick={() => sellItem(item)}>Sell</IonButton>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+      {loading ? <IonSpinner /> : (
+        <div className="ion-padding" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {isForSell ? (
+            <>
+              <IonButton fill="solid" disabled={!checkRequirements || loading} onClick={() => purchaseItem(item as any)}>Purchase</IonButton>
               <IonButton fill="clear" className="corner-border" onClick={() => setShowModal(false)}>Cancel</IonButton>
-            </div>
-          </>
-        )}
-      </div>
+            </>
+          ) : (
+            <>
+              <IonButton fill="solid" disabled={loading || !checkRequirements} onClick={() => equipItem(item._id)}>Equip</IonButton>
+              <div>
+                <IonButton fill="solid" disabled={loading} color="warning" onClick={() => sellItem(item)}>Sell</IonButton>
+                <IonButton fill="clear" className="corner-border" onClick={() => setShowModal(false)}>Cancel</IonButton>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </IonModal>
   )
 }

@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSpinner } from "@ionic/react";
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import toast from "react-hot-toast";
 import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
@@ -57,16 +57,16 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
       throw ("Player doesn't have the Quests object");
     }
   }
-
-  const checkIfValidToComplete = async (type: string, baseItemObjective?: IItem) => {
+  const checkIfValidToComplete = useMemo(() => async (type: string, baseItemObjective?: IItem) => {
     if (!player) return;
-
+    console.log('check valid');
     try {
       if (baseItemObjective && type === 'collect') {
+        setLoading(true)
         const itemPromises = player?.inventory?.map((itemId: Realm.BSON.ObjectId) => GetCombinedItemDetails(itemId, player._id));
         const items = await Promise.all(itemPromises);
         const findSameItem = items.find(item => item?.baseItemId.toString() === baseItemObjective._id.toString());
-
+        setLoading(false);
         if (findSameItem?.quantity && findSameItem?.quantity >= quest.objective.targetAmount) {
           console.log('quest complete');
           setConditionsMet(true);
@@ -83,7 +83,8 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
     } catch (e) {
       throw (e);
     }
-  }
+  }, [objectiveInfo])
+
 
   const turnInQuest = async () => {
     if (conditionsMet && player?.quests) {
@@ -154,34 +155,40 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
 
   return (
     <IonCard style={{ minHeight: 180, margin: 0 }} className='corner-border' >
-      {loading ? <IonSpinner /> : (
-        <>
-          <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/story-npc-${quest.npcImgId}.webp`} sizes="small" />
-          <IonCardHeader>
-            <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{quest.npcName} <span style={{ color: playerInProgress ? 'var(--ion-color-primary)' : 'var(--ion-color-success)' }}>{playerInProgress ? 'In progress' : 'Available'}</span></IonCardTitle>
-            <IonCardSubtitle style={{ color: 'var(--ion-color-primary)' }}>{quest.name}</IonCardSubtitle>
 
-          </IonCardHeader>
+      <>
+        <img alt={`of ${quest.npcName} the quest giver`} src={`/images/npc/story-npc-${quest.npcImgId}.webp`} sizes="small" />
+        <IonCardHeader>
+          <IonCardTitle style={{ display: 'flex', justifyContent: 'space-between' }}>{quest.npcName} <span style={{ color: playerInProgress ? 'var(--ion-color-primary)' : 'var(--ion-color-success)' }}>{playerInProgress ? 'In progress' : 'Available'}</span></IonCardTitle>
+          <IonCardSubtitle style={{ color: 'var(--ion-color-primary)' }}>{quest.name}</IonCardSubtitle>
 
-
-          <IonCardContent className="ion-padding">
-            {quest.description}
-          </IonCardContent>
+        </IonCardHeader>
 
 
-          <IonButtons style={{ paddingTop: 16 }} className="ion-padding">
-            <div style={{ fontSize: 16, fontWeight: 600, width: '100%' }}>
-              <span>{upperCaseFirstLetter(quest?.objective?.type ?? "")} </span>
-              <span style={{ color: conditionsMet ? 'var(--ion-color-success)' : 'var(--ion-color-warning)' }}>{quest.objective?.targetAmount} </span>
-              <span>{objectiveInfo?.name}</span>
-            </div>
+        <IonCardContent className="ion-padding">
+          {quest.description}
+        </IonCardContent>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-              {playerInProgress ? <IonButton fill="clear" className="corner-border" color={conditionsMet ? "success" : "gray"} disabled={!conditionsMet} onClick={() => turnInQuest()}>Complete</IonButton> : <IonButton fill="clear" className="corner-border" color="success" onClick={() => acceptQuest()}>Accept</IonButton>}
-            </div>
-          </IonButtons>
-        </>
-      )}
+
+        <IonButtons style={{ paddingTop: 16 }} className="ion-padding">
+          <div style={{ fontSize: 16, fontWeight: 600, width: '100%' }}>
+            <span>{upperCaseFirstLetter(quest?.objective?.type ?? "")} </span>
+            <span style={{ color: conditionsMet ? 'var(--ion-color-success)' : 'var(--ion-color-warning)' }}>{quest.objective?.targetAmount} </span>
+            <span>{objectiveInfo?.name}</span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+            {playerInProgress ?
+              <IonButton fill="clear" className="corner-border" color={conditionsMet ? "success" : "gray"} disabled={!conditionsMet} onClick={() => turnInQuest()}>
+                {loading ? <IonSpinner /> : ('Complete')}
+              </IonButton> :
+              <IonButton fill="clear" className="corner-border" color="success" onClick={() => acceptQuest()}>
+                {loading ? <IonSpinner /> : ('Accept')}
+              </IonButton>}
+          </div>
+        </IonButtons>
+      </>
+
 
     </IonCard>
   );

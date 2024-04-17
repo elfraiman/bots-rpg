@@ -78,6 +78,7 @@ const BattleTrain = () => {
   const enemyTimerRef = useRef<any>();
   const narrativeEndRef = useRef(null);
   const match = useRouteMatch<{ id: string, planetImgId: string }>();
+  const params: any = match.params;
 
   const [battleStats, setBattleStats] = useState({
     attempts: 0,
@@ -98,7 +99,6 @@ const BattleTrain = () => {
       setEnemyIntimidation(enemy.description ?? '');
     }
   }
-  const params: any = match.params;
 
   const getEnemy = async () => {
     const monsterId = params.id;

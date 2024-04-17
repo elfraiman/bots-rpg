@@ -8,6 +8,7 @@ import NpcCard from '../../components/NpcCard';
 import { showStoryModal } from '../../functions/ShowStoryModal';
 import { usePlayerData } from '../../context/PlayerContext';
 import ShopImage from '/images/shop.webp';
+import PageTitle from '../../components/PageTitle';
 
 interface IArmorsData {
   helmets: IEquipment[],
@@ -83,10 +84,7 @@ const Shop = () => {
             npcText="Hey! Make sure you can equip what you buy. I don't do refunds."
           />
 
-          <div className="ion-padding low-fade corner-border" style={{ marginTop: 16 }}>
-            <h2 style={{ marginTop: 0 }}>Trader</h2>
-            <p>The items that are available for trade will restock based on Alex's plunder.</p>
-          </div>
+          <PageTitle title={'Trader'} subtitle={`The items that are available for trade will restock based on Alex's plunder.`} />
 
           <IonAccordionGroup >
             {!loading ? (

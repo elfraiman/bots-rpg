@@ -1,27 +1,30 @@
-import { IonContent, IonPage, useIonViewWillEnter } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonContent, IonItem, IonPage, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import EnemyCard from '../../components/EnemyCard';
-import { IEnemy, IPlanet, IPlayer, IQuest } from '../../types/types';
+import { IDungeon, IEnemy, IPlanet, IPlayer, IQuest } from '../../types/types';
 
+import DungeonCard from '../../components/DungeonCard';
+import PageTitle from '../../components/PageTitle';
 import QuestCard from '../../components/QuestCard';
 import { useNavigationDisable } from '../../context/DisableNavigationContext';
 import { usePlayerData } from '../../context/PlayerContext';
 import { GetAvailableQuests } from '../../functions/GetAvailableQuests';
+import { getDungeons } from '../../functions/GetDungeons';
 import { getEnemies } from '../../functions/GetEnemies';
 import { getSinglePlanet } from '../../functions/GetPlanet';
+import triggerTheme from '../../functions/TriggerTheme';
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './ExplorePage.css';
 
 const ExplorePage: React.FC = () => {
   const [planetData, setPlanetData] = useState<IPlanet | null>(null);
   const [enemies, setEnemies] = useState<IEnemy[]>([]);
+  const [dungeons, setDungeons] = useState<IDungeon[]>([]);
   const [availableQuests, setAvailableQuests] = useState<IQuest[]>([]);
   const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
   const { player } = usePlayerData();
 
-
   const fetchLocationData = async (player: IPlayer) => {
-
     try {
       // Fetch enemies if location changed doesn't match the already set enemies location
       //
@@ -39,7 +42,12 @@ const ExplorePage: React.FC = () => {
       //
       if (planetData && planetData?._id.toString() !== player.location.toString() || !planetData) {
         const planet = await getSinglePlanet(player.location);
-        if (planet) setPlanetData(planet);
+        if (planet?.hexColor) triggerTheme(planet.hexColor);
+        if (planet) {
+          setPlanetData(planet)
+          const dungeons = await getDungeons(planet._id);
+          if (dungeons) setDungeons(dungeons);
+        };
       }
 
 
@@ -48,7 +56,6 @@ const ExplorePage: React.FC = () => {
     }
 
   };
-
 
   const fetchQuests = async (player: IPlayer) => {
     try {
@@ -59,7 +66,7 @@ const ExplorePage: React.FC = () => {
         // The quests that are available are those that the player has not completed
         // and are part of his location, each location has "Steps" of quests, and we will display the lowest
         // available step first.
-        // I need to add support for multiple steps if wanted.
+        // I need to add support for multiple steps if wanted to allow multiple quests at the same time
         //
         const questsAvailable = quests.filter(quest => !completedQuestIds.has(quest._id.toString()));
         const lowestQuestStep = Math.min(...questsAvailable.map(quest => quest.questStep));
@@ -70,7 +77,7 @@ const ExplorePage: React.FC = () => {
     }
   };
 
-  // We fetch this every time the location changes
+  // I fetch this every time the location changes
   // since quests are location based
   //
   useEffect(() => {
@@ -92,6 +99,7 @@ const ExplorePage: React.FC = () => {
     }
   })
 
+
   return (
     <IonPage className="content">
       {isNavigationDisabled ? (
@@ -105,14 +113,31 @@ const ExplorePage: React.FC = () => {
         >
           {!planetData || !player ? <></> : (
             <>
-              <div className={`ion-padding low-fade corner-border`} style={{ marginBottom: 16 }}>
-                <h2 style={{ marginTop: 0 }}>You've arrived at {planetData.name}</h2>
-                <p>{planetData.description}</p>
-              </div>
+              <PageTitle title={`You've arrived at ${planetData.name}`} subtitle={planetData.description} />
 
               {availableQuests?.map((q: IQuest, index) => (
                 <QuestCard quest={q} key={index} />
               ))}
+
+              {dungeons ? (
+                <IonAccordionGroup>
+                  <IonAccordion value="dungeon">
+                    <IonItem slot="header">
+                      <IonItem>Dungeons</IonItem>
+                    </IonItem>
+                    {dungeons?.map((dungeon, index) => (
+                      <div className="ion-padding" slot="content" key={index} style={{
+                        'background': `url('/images/planets/dungeons/dungeon-card-${dungeon.imgId}.webp') 0 0/cover no-repeat`,
+                        height: '100%'
+                      }}>
+                        <DungeonCard dungeon={dungeon} />
+                      </div>
+                    ))}
+
+                  </IonAccordion>
+                </IonAccordionGroup>
+              ) : <></>}
+
 
               {enemies.map((enemy, index) => (
                 <div style={{ marginTop: 16 }} key={index}>

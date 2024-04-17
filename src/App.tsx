@@ -47,6 +47,7 @@ import PvpIcon from '/images/icons/pvp-icon.webp'
 import ShipIcon from '/images/icons/ship-icon.webp';
 import TrophyIcon from '/images/icons/trophy-icon.webp';
 import PlanetIcon from '/images/icons/planet-icon.webp';
+import DungeonPage from './pages/Dungeon/DungeonPage';
 
 setupIonicReact({
   rippleEffect: false,
@@ -115,6 +116,7 @@ const App: React.FC = () => {
                         <Route path="/guardian" render={() => <GuardianPage />} exact={true} />
                         <Route path="/planet" render={() => <ExplorePage />} exact={true} />
                         <Route path="/fight/:id/:planetImgId" render={() => <BattleTrain />} exact={true} />
+                        <Route path="/dungeon/:id/" render={() => <DungeonPage />} exact={true} />
                         <Route path="/trader" render={() => <Shop />} exact={true} />
                         <Route path="/galaxy" render={() => <GalaxyPage />} exact={true} />
                         <Route path="/pvp" render={() => <FightPvpPage />} exact={true} />

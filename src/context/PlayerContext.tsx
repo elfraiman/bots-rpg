@@ -65,6 +65,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
           setPlayer(playerResult);
         } else {
           console.error("No player data found for current user");
+          app.currentUser?.logOut();
         }
       } catch (err) {
         console.error("Failed to fetch player data:", err);

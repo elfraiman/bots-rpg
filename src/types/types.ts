@@ -211,6 +211,17 @@ export type IPlayerOwnedWeapon = {
   ownerId: string;
 }
 
+export type IDungeon = {
+  _id: Realm.BSON.ObjectId;
+  description: string;
+  endLoot: Array<Realm.BSON.ObjectId>;
+  enemies: Array<Realm.BSON.ObjectId>;
+  imgId: number;
+  location: Realm.BSON.ObjectId;
+  name: string;
+  step: number;
+};
+
 
 export type IArmor_requirements = {
   con: number;
@@ -219,25 +230,14 @@ export type IArmor_requirements = {
   str: number;
 };
 
-
 export type IPlanet = {
   _id: Realm.BSON.ObjectId;
   description: string;
+  hexColor: string;
   imgId: number;
   name: string;
-  hexColor?: string;
 };
 
-export const IPlanetSchema = {
-  name: 'IPlanet',
-  properties: {
-    _id: 'objectId',
-    description: 'string',
-    imgId: 'int',
-    name: 'string',
-  },
-  primaryKey: '_id',
-};
 
 export type IStory = {
   _id: Realm.BSON.ObjectId;

@@ -11,6 +11,8 @@ import { showStoryModal } from "../../functions/ShowStoryModal";
 import { IPlanet } from "../../types/types";
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './GalaxyPage.css';
+import triggerTheme from "../../functions/TriggerTheme";
+import PageTitle from "../../components/PageTitle";
 
 
 const GalaxyPage = () => {
@@ -24,15 +26,14 @@ const GalaxyPage = () => {
     try {
       await getTravel({ destination: planet._id, player, updatePlayerData });
 
-
+      // New planet so we show landing splash again
+      //
       localStorage.setItem('shownSplash', 'false');
 
-      // Change the ion primary color to the planet's
-      // hex code to make the player feel more
-      // as if hes on a different planet
-      //
-      const htmlEl = document.querySelector('html');
-      htmlEl?.style.setProperty('--ion-color-primary', planet.hexColor ?? "#f7ae5b");
+      if (planet.hexColor) {
+        triggerTheme(planet?.hexColor);
+      }
+
       triggerDisableWithTimer(5000);
     } catch (e) {
       console.error(e);
@@ -114,12 +115,7 @@ const GalaxyPage = () => {
               npcText="Just let me know where we are headed and I'll make sure we get there."
             />
 
-
-            <div className="ion-padding low-fade corner-border" style={{ marginTop: 16 }}>
-              <h2 style={{ marginTop: 0 }}>Galaxy panel</h2>
-              <p>Here's a list of planets we know and can land on.</p>
-            </div>
-
+            <PageTitle title='Galaxy panel' subtitle="Here's a list of planets we know and can land on." />
             <div className="card-fade">
               <h5 style={{ margin: 0, marginTop: 16 }} className="ion-padding">Planets</h5>
             </div>

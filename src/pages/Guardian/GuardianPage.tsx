@@ -175,7 +175,7 @@ const GuardianPage: React.FC = () => {
   const logout = async () => {
     const user = app.currentUser;
     if (user) {
-      await app.removeUser(user);
+      await app.currentUser?.logOut();
       window.location.reload();
     }
   }

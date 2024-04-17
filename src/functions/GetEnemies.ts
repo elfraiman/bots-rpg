@@ -59,3 +59,26 @@ export const getSingleEnemy = async ({ monsterId }: IGetEnemiesProps): Promise<I
     console.error("Failed to fetch enemies data:", err);
   }
 }
+
+
+export const getDungeonEnemies = async (dungeonId: string): Promise<IEnemy[] | undefined> => {
+  const client = getMongoClient();
+
+  if (!client) {
+    console.error("No client found");
+    return;
+  }
+
+  const enemiesCollection = client.db("bots_rpg").collection<IEnemy>("enemies");
+
+  try {
+    // Use find() for dungeonId queries to get all matching documents
+    const enemiesResult = await enemiesCollection.find({ dungeonId });
+
+    console.log("Querying with dungeonId:", dungeonId);
+
+    return enemiesResult;
+  } catch (err) {
+    console.error("Failed to fetch enemies data:", err);
+  }
+}

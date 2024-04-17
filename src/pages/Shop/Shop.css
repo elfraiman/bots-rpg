@@ -8,5 +8,5 @@
 }
 
 .shop-bg {
-    --background: url("/images/shop.webp") no-repeat center center / cover;
+    --background: url("/images/shop.webp") 0 0 / cover no-repeat;
 }
