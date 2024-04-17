@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import * as Realm from 'realm-web';
 import { PlayerContext } from '../context/PlayerContext';
 import { GetCreatePlayerOwnedEquipment } from "../functions/GetCreatePlayerOwnedEquipment";
-import getItemGradeColor from "../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../functions/GetItemGradeColor";
 import { getPlayerOwnedEquipment } from "../functions/GetPlayerOwnedEquipment";
 import { SellPlayerEquipment } from "../functions/GetSellPlayerEquipment";
 import { IEquipment, IPlayer } from "../types/types";

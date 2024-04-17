@@ -12,7 +12,7 @@ import { GetCombinedEquipmentStatsDetails } from "../../functions/GetCombinedEqu
 import { createPlayerOwnedItem } from "../../functions/GetCreatePlayerOwnedItem";
 import { getSingleEnemy } from "../../functions/GetEnemies";
 import getGoldReward from "../../functions/GetGoldReward";
-import getItemGradeColor from "../../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../../functions/GetItemGradeColor";
 import { GetSpawnHiddenEnemies } from "../../functions/GetSpawnHiddenEnemies";
 import getXpReward from "../../functions/GetXpReward";
 import { BASE_ATTACK_SPEED, calculateAttackSpeed, calculateDamage, calculateHitChance, calculateMaxHealth } from "../../types/stats";

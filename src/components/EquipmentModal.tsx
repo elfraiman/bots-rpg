@@ -1,5 +1,5 @@
 import { IonButton, IonCol, IonContent, IonGrid, IonImg, IonModal, IonRow, IonSpinner } from "@ionic/react";
-import getItemGradeColor from "../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../functions/GetItemGradeColor";
 import './EquipmentModal.css';
 import { IPlayer } from "../types/types";
 

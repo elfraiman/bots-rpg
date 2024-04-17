@@ -3,10 +3,18 @@
 
 
 
+export const getEnemyTypeColor = (enemyType: string) => {
+    switch (enemyType) {
+        case 'standard':
+            return '#e8e8e8';
+        case 'elite':
+            return '#A335EE';
+        case 'boss':
+            return '#FF8000';
+    }
+}
 
-
-const getItemGradeColor = (itemGrade: string) => {
-
+export const getItemGradeColor = (itemGrade: string) => {
     switch (itemGrade) {
         case 'common':
             return '#e8e8e8';
@@ -19,7 +27,4 @@ const getItemGradeColor = (itemGrade: string) => {
         case 'legendary':
             return '#FF8000';
     }
-
 }
-
-export default getItemGradeColor;
