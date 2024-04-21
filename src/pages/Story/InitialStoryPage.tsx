@@ -1,7 +1,7 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonImg, IonInput, IonItem, IonLabel, IonModal, IonPage, IonText, IonTitle, IonToolbar } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { usePlayerData } from "../../context/PlayerContext";
+import { usePlayerProvider } from "../../context/PlayerContext";
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
 import { checkNameIsValid } from "../../functions/GetPlayers";
 import useTypewriter from "../../hooks/UseTypewritter";
@@ -10,7 +10,7 @@ import './story.css';
 
 const InitialStoryPage = () => {
   const history = useHistory();
-  const { player, updatePlayerData } = usePlayerData();
+  const { player, updatePlayerData } = usePlayerProvider();
   const { setIsNavigationDisabled } = useNavigationDisable();
   const [showModal, setShowModal] = useState(false);
   const [nickname, setNickname] = useState('');

@@ -6,7 +6,7 @@ import { IEquipment } from '../../types/types';
 import './Shop.css';
 import NpcCard from '../../components/NpcCard';
 import { showStoryModal } from '../../functions/ShowStoryModal';
-import { usePlayerData } from '../../context/PlayerContext';
+import { usePlayerProvider } from '../../context/PlayerContext';
 import ShopImage from '/images/shop.webp';
 import PageTitle from '../../components/PageTitle';
 
@@ -16,7 +16,7 @@ interface IArmorsData {
   armors: IEquipment[]
 }
 const Shop = () => {
-  const { player, updatePlayerData } = usePlayerData();
+  const { player, updatePlayerData } = usePlayerProvider();
   const [weaponsData, setWeaponsData] = useState<IEquipment[]>([]);
   const [armorsData, setArmorsData] = useState<IArmorsData>({
     helmets: [],

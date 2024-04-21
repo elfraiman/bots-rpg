@@ -14,9 +14,18 @@ interface IBattleInfoHeaderProps {
 const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPercent, playerHealthPercent, enemyImgId }: IBattleInfoHeaderProps) => {
 
   return (
-    <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', width: '100%', maxHeight: '200px', position: 'relative' }}>
-      <div style={{ width: '50%', position: 'relative', minHeight: 200 }}>
-        <img src="/images/player-placeholder.webp" className="player-image quick-fade-in" />
+    <div className="fade-in" style={{
+      textAlign: 'center',
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%',
+      position: 'fixed',
+      top: 100,
+      left: 0,
+      zIndex: 100,
+    }}>
+      <div style={{ width: '50%', position: 'relative', minHeight: 180 }}>
+        <img src="/images/player-placeholder.webp" className="player-image" />
         {loading ? <IonSpinner /> : (
           <>
             <div className="fade-right-overlay"></div>
@@ -38,7 +47,7 @@ const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPer
 
       <div style={{ width: '50%', position: 'relative', minHeight: 200 }}>
 
-        <img src={loading ? `/images/placeholder.webp` : `/images/enemies/enemy-${enemyImgId}.webp`} className="enemy-image quick-fade-in" style={{ height: '100%' }} />
+        <img src={`/images/enemies/enemy-${enemyImgId}.webp`} className="enemy-image" style={{ height: '100%' }} />
         {loading ? <IonSpinner /> : (
           <>
             <div className="fade-left-overlay"></div>

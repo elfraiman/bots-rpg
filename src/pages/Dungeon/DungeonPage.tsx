@@ -1,21 +1,19 @@
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonChip, IonCol, IonContent, IonPage, IonRow, IonText, IonTitle, useIonViewWillEnter } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonChip, IonCol, IonContent, IonPage, IonRow, IonText, useIonViewWillEnter } from "@ionic/react";
 import { useState } from "react";
-import { useRouteMatch } from "react-router";
-import { IDungeon, IEnemy } from "../../types/types";
-import { getDungeon } from "../../functions/GetDungeons";
+import { useHistory, useRouteMatch } from "react-router";
 import PageTitle from "../../components/PageTitle";
+import { getDungeon } from "../../functions/GetDungeons";
 import { getEnemies } from "../../functions/GetEnemies";
-import EnemyCard from "../../components/EnemyCard";
-import { getEnemyTypeColor } from "../../functions/GetItemGradeColor";
+import { getEnemyTypeColor } from "../../functions/GetColor";
+import { IDungeon, IEnemy } from "../../types/types";
 
 
 const DungeonPage = () => {
   const match = useRouteMatch<{ id: string }>();
   const params: any = match.params;
   const [dungenData, setDungeonData] = useState<IDungeon | null>(null);
-  const [enemies, setEnemies] = useState<any>([]);
-
-
+  const [enemies, setEnemies] = useState<IEnemy[]>([]);
+  const history = useHistory();
 
   const fetchDungeonData = async () => {
     try {
@@ -36,13 +34,11 @@ const DungeonPage = () => {
         }).filter(enemy => enemy); // Explicitly filter out undefined or null entries
 
 
-        setEnemies(filteredEnemies);
+        setEnemies(filteredEnemies as IEnemy[]);
       }
     } catch (e) {
       console.error('Error fetching dungeon or enemies', e);
     }
-
-
   }
 
   useIonViewWillEnter(() => {
@@ -51,26 +47,25 @@ const DungeonPage = () => {
     fetchDungeonData();
   }, [])
 
+
   return (
     <IonPage className="content">
       <IonContent className="ion-padding" style={{
         '--background': `url('/images/planets/dungeons/dungeon-ground-${dungenData?.imgId}.webp') 0 0 / cover no-repeat`,
       }}>
-
         {dungenData && (
           <>
             <PageTitle title={dungenData.name} subtitle={dungenData.description} />
-
-
             <IonCard style={{ margin: 0 }} className="low-fade">
               <IonCardContent>
                 {enemies.map((enemy: IEnemy, index: number) => (
-                  <div key={index} style={{
+                  <div className="corner-border" key={index} style={{
                     'background': `url('/images/enemies/dungeon-enemy-${enemy?.imgId}.webp') 0 0 / cover no-repeat`,
                     backgroundPosition: 'center',
-                    height: 60
+                    height: 68,
+                    marginTop: 16
                   }}>
-                    <IonRow>
+                    <IonRow onClick={() => history.push(`/fight/${enemy._id}/0`)}>
                       <IonCol>
                         <IonText style={{ color: getEnemyTypeColor(enemy.type) }}>
                           {enemy.name}

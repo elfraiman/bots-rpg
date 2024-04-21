@@ -1,7 +1,7 @@
 import { IonButton, IonCol, IonGrid, IonImg, IonRow, IonSpinner } from "@ionic/react";
 import { useContext, useState } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
-import { getItemGradeColor } from "../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../functions/GetColor";
 import { sellItem } from "../functions/SaleItem";
 import { IPlayerOwnedItem } from "../types/types";
 import GeneralItemModal from "./GeneralItemModal";

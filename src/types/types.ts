@@ -9,7 +9,7 @@ export type IEnemy = {
   con: number;
   description: string;
   dex: number;
-  equipment?: IEnemy_equipment;
+  equipment: IEnemy_equipment;
   helmetLoot: Array<Realm.BSON.ObjectId>;
   hidden?: boolean;
   imgId: number;
@@ -21,6 +21,7 @@ export type IEnemy = {
   trashLoot?: Realm.BSON.ObjectId;
   type: string;
   weaponLoot: Array<Realm.BSON.ObjectId>;
+  dungeonEnemy: boolean;
 };
 export type IItem = {
   _id: Realm.BSON.ObjectId;
@@ -31,8 +32,6 @@ export type IItem = {
   name: string;
   type?: string;
 };
-
-
 
 export type IPlayerOwnedItem = {
   _id: Realm.BSON.ObjectId;
@@ -66,18 +65,6 @@ export type IPlayerEquipment_modifications = {
   enhancementLevel?: number;
 };
 
-export const IItemSchema = {
-  name: 'IItem',
-  properties: {
-    _id: 'objectId?',
-    category: 'string?',
-    cost: 'int?',
-    description: 'string?',
-    imgId: 'int?',
-    name: 'string?',
-  },
-  primaryKey: '_id',
-};
 
 export type IEnemy_equipment = {
   weapon: IEnemy_equipment_weapon;

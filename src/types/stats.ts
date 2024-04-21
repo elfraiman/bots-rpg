@@ -1,4 +1,5 @@
-import { IEnemy, IPlayer } from "./types";
+import { GetCombinedEquipmentStatsDetails } from "../functions/GetCombinedEquipmentStatsDetails";
+import { IEnemy, IPlayer, IPlayerOwnedArmor, IPlayerOwnedWeapon } from "./types";
 
 
 export const BASE_EQUIPMENT_SALE_PRICE = 0.4; // 40% of the original cost
@@ -163,6 +164,40 @@ export const calculateMaxHealth = (character: IPlayer | IEnemy) => {
 
 
 
-export const calculateTotalDefensiveStats = () => {
 
+
+export interface IPlayerEquipmentStats {
+  weapon: IPlayerOwnedWeapon;
+  defensive: {
+    evasion: number;
+    defense: number;
+  };
+}
+/**
+ * Calculate and return the defensive and weapon stats of the player
+ */
+export const playerEquipmentStats = async (player: IPlayer): Promise<IPlayerEquipmentStats | undefined> => {
+  if (!player) return;
+  let totalDefense = 0;
+  let totalEvasion = 0;
+
+  if (player.equipment && player.equipment.weapon) {
+    if (player.equipment) {
+      type EquipmentType = 'armor' | 'helmet' | 'boots';
+      const equipmentTypes: EquipmentType[] = ['armor', 'helmet', 'boots'];
+      for (const type of equipmentTypes) {
+        if (player.equipment[type]) {
+          const details = await GetCombinedEquipmentStatsDetails(player._id, player.equipment[type] as any) as IPlayerOwnedArmor;
+          if (details && details.stats) {
+            totalDefense += details.stats.defense || 0;
+            totalEvasion += details.stats.evasion || 0;
+          }
+        }
+      }
+    }
+
+    const weaponDetails = (player.equipment.weapon ? await GetCombinedEquipmentStatsDetails(player._id, player.equipment.weapon) : null) as IPlayerOwnedWeapon;
+    let details = { weapon: weaponDetails, defensive: { evasion: totalEvasion, defense: totalDefense } };
+    return details;
+  };
 }

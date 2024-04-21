@@ -1,5 +1,5 @@
 import { IonCardSubtitle, IonCol, IonContent, IonImg, IonPopover, IonRow, IonText, IonThumbnail } from "@ionic/react";
-import { getItemGradeColor } from "../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../functions/GetColor";
 import { IPlayerOwnedArmor, IPlayerOwnedWeapon } from "../types/types";
 
 interface IEquipmentPopoverProps {

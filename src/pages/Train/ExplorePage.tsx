@@ -7,7 +7,7 @@ import DungeonCard from '../../components/DungeonCard';
 import PageTitle from '../../components/PageTitle';
 import QuestCard from '../../components/QuestCard';
 import { useNavigationDisable } from '../../context/DisableNavigationContext';
-import { usePlayerData } from '../../context/PlayerContext';
+import { usePlayerProvider } from '../../context/PlayerContext';
 import { GetAvailableQuests } from '../../functions/GetAvailableQuests';
 import { getDungeons } from '../../functions/GetDungeons';
 import { getEnemies } from '../../functions/GetEnemies';
@@ -15,6 +15,7 @@ import { getSinglePlanet } from '../../functions/GetPlanet';
 import triggerTheme from '../../functions/TriggerTheme';
 import SplashScreen from "../SplashScreen/SplashScreen";
 import './ExplorePage.css';
+import { useBattleProvider } from '../../context/BattleContext';
 
 const ExplorePage: React.FC = () => {
   const [planetData, setPlanetData] = useState<IPlanet | null>(null);
@@ -22,7 +23,7 @@ const ExplorePage: React.FC = () => {
   const [dungeons, setDungeons] = useState<IDungeon[]>([]);
   const [availableQuests, setAvailableQuests] = useState<IQuest[]>([]);
   const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
-  const { player } = usePlayerData();
+  const { player } = usePlayerProvider();
 
   const fetchLocationData = async (player: IPlayer) => {
     try {
@@ -91,8 +92,10 @@ const ExplorePage: React.FC = () => {
   }, [player?.location.toString()]);
 
   useIonViewWillEnter(() => {
+
+    // Handles showing splash screen on new planet
+    //
     const splashShown = JSON.parse(localStorage.getItem('shownSplash') ?? "false");
-    console.log(splashShown, 'Splash SHown', localStorage.getItem('shownSplash'))
     if (!splashShown) {
       localStorage.setItem('shownSplash', 'true');
       triggerDisableWithTimer(5000);
@@ -120,7 +123,7 @@ const ExplorePage: React.FC = () => {
               ))}
 
               {dungeons ? (
-                <IonAccordionGroup>
+                <IonAccordionGroup style={{ marginTop: 16 }} className="corner-border">
                   <IonAccordion value="dungeon">
                     <IonItem slot="header">
                       <IonItem>Dungeons</IonItem>
@@ -128,16 +131,14 @@ const ExplorePage: React.FC = () => {
                     {dungeons?.map((dungeon, index) => (
                       <div className="ion-padding" slot="content" key={index} style={{
                         'background': `url('/images/planets/dungeons/dungeon-card-${dungeon.imgId}.webp') 0 0/cover no-repeat`,
-                        height: '100%'
+                        height: '100%',
                       }}>
                         <DungeonCard dungeon={dungeon} />
                       </div>
                     ))}
-
                   </IonAccordion>
                 </IonAccordionGroup>
               ) : <></>}
-
 
               {enemies.map((enemy, index) => (
                 <div style={{ marginTop: 16 }} key={index}>

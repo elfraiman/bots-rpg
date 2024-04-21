@@ -182,7 +182,7 @@ const QuestCard = ({ quest }: IQuestCardProps) => {
               <IonButton fill="clear" className="corner-border" color={conditionsMet ? "success" : "gray"} disabled={!conditionsMet} onClick={() => turnInQuest()}>
                 {loading ? <IonSpinner /> : ('Complete')}
               </IonButton> :
-              <IonButton fill="clear" className="corner-border" color="success" onClick={() => acceptQuest()}>
+              <IonButton fill="clear" className="corner-border" color="primary" onClick={() => acceptQuest()}>
                 {loading ? <IonSpinner /> : ('Accept')}
               </IonButton>}
           </div>

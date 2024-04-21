@@ -49,6 +49,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         },
       );
       console.error("Failed to update player data:", err);
+      throw err;
     }
   };
 
@@ -114,4 +115,4 @@ function applyPlayerUpdates(player: IPlayer | null, updates: Partial<IPlayer>): 
   return { ...player, ...updates };
 }
 
-export const usePlayerData = () => useContext(PlayerContext);
+export const usePlayerProvider = () => useContext(PlayerContext);

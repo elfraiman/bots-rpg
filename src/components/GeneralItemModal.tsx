@@ -1,6 +1,6 @@
 import { IonButton, IonCol, IonGrid, IonImg, IonModal, IonRange, IonRow, IonSpinner, useIonToast } from "@ionic/react";
 import { useState } from "react";
-import { getItemGradeColor } from "../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../functions/GetColor";
 import { IPlayerOwnedItem } from "../types/types";
 
 interface IEquipmentModalProps {

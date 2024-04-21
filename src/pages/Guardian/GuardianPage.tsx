@@ -25,7 +25,7 @@ import * as Realm from 'realm-web';
 import EquipmentCard from '../../components/EquipmentCard';
 import EquipmentPopover from '../../components/EquipmentPopover';
 import GeneralItemCard from '../../components/GeneralItemCard';
-import { usePlayerData } from '../../context/PlayerContext';
+import { usePlayerProvider } from '../../context/PlayerContext';
 import { GetCombinedEquipmentStatsDetails } from '../../functions/GetCombinedEquipmentStatsDetails';
 import { GetCombinedItemDetails } from '../../functions/GetCombinedItemDetails';
 import { IEquipment, IPlayer, IPlayerOwnedItem } from '../../types/types';
@@ -41,7 +41,7 @@ const app = Realm.App.getApp('application-0-vgvqx');
 
 
 const GuardianPage: React.FC = () => {
-  const { player, updatePlayerData } = usePlayerData(); // Assuming updatePlayerStats is a method provided by your context
+  const { player, updatePlayerData } = usePlayerProvider(); // Assuming updatePlayerStats is a method provided by your context
   const [playerHasPoints, setPlayerHasPoints] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [attributeLoading, setAttributeLoading] = useState(false);

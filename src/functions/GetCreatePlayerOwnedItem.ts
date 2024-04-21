@@ -5,7 +5,7 @@ import { IPlayer, IPlayerItem } from "../types/types";
 import GetBaseItem from './GetBaseItem';
 import modifyOwnedItem from './ModifyOwnedItem';
 import { COMMON_ITEM_DROP_AMOUNT, EPIC_ITEM_DROP_AMOUNT, RARE_ITEM_DROP_AMOUNT, UNCOMMON_ITEM_DROP_AMOUNT } from '../types/stats';
-import { getItemGradeColor } from './GetItemGradeColor';
+import { getItemGradeColor } from './GetColor';
 
 interface IReturnedPlayerItem {
     item: IPlayerItem;

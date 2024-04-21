@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as Realm from 'realm-web';
 import NpcCard from "../../components/NpcCard";
 import { useNavigationDisable } from "../../context/DisableNavigationContext";
-import { usePlayerData } from "../../context/PlayerContext";
+import { usePlayerProvider } from "../../context/PlayerContext";
 import { getSinglePlanet } from "../../functions/GetPlanet";
 import { getPlanets } from "../../functions/GetPlanets";
 import { getTravel } from "../../functions/GetTravel";
@@ -17,7 +17,7 @@ import PageTitle from "../../components/PageTitle";
 
 const GalaxyPage = () => {
   const [planets, setPlanets] = useState<IPlanet[]>([]);
-  const { player, updatePlayerData } = usePlayerData();
+  const { player, updatePlayerData } = usePlayerProvider();
   const { isNavigationDisabled, triggerDisableWithTimer } = useNavigationDisable();
 
 

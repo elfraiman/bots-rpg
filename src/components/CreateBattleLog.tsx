@@ -1,6 +1,6 @@
 import { IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol } from "@ionic/react";
 import { ReactElement } from "react";
-import { getItemGradeColor } from "../functions/GetItemGradeColor";
+import { getItemGradeColor } from "../functions/GetColor";
 import { IPlayer, IEnemy } from "../types/types";
 
 export interface IBattleLogMessageProps {

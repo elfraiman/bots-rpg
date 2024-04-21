@@ -26,7 +26,7 @@ import '@ionic/react/css/text-transformation.css';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Toaster } from 'react-hot-toast';
 import { useNavigationDisable } from './context/DisableNavigationContext';
-import { usePlayerData } from './context/PlayerContext';
+import { usePlayerProvider } from './context/PlayerContext';
 import BattleTrain from './pages/BattleTrain/BattleTrain';
 import FightPvpPage from './pages/Fighting/FightPvpPage';
 import GuardianPage from './pages/Guardian/GuardianPage';
@@ -75,7 +75,7 @@ const App: React.FC = () => {
   // whenever the current user changes (e.g. logs in or logs out).
   const [user, setUser] = React.useState<Realm.User | null>(app.currentUser);
   const { isNavigationDisabled } = useNavigationDisable(); // Use the custom hook
-  const { player } = usePlayerData();
+  const { player } = usePlayerProvider();
 
   React.useEffect(() => {
     if (app.currentUser) {
@@ -96,7 +96,6 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
-
       <IonReactRouter>
         <Toaster
           position="top-right"
