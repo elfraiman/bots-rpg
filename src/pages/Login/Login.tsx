@@ -44,7 +44,7 @@ const LoginPage = () => {
                 window.location.reload();
             } catch (error: any) {
                 console.error("Error registering new user:", error);
-                setAlertMessage(error.error)
+                setAlertMessage(error)
                 setShowAlert(true);
             }
         } else {
@@ -54,10 +54,8 @@ const LoginPage = () => {
                 triggerDisableWithTimer(5000)
                 setTimeout(() => {
                     history.replace('/guardian');
-
                     window.location.reload();
                 }, 5000)
-
 
             } catch (error: any) {
                 console.error("Error logging in:", error);

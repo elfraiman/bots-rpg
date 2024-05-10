@@ -1,6 +1,6 @@
 .player-image,
 .enemy-image {
-  width: 100%;
+  min-width: 100%;
   display: block; /* Ensures the image is properly handled as a block element */
 }
 
@@ -92,7 +92,7 @@
     opacity: 0.8;
   }
   100% {
-    transform: translateY(-10px);
+    transform: translateY(-30px);
     opacity: 1;
   }
 }
@@ -105,7 +105,7 @@
   transform: translateX(-50%);
   font-size: 46px;
   font-weight: 800;
-  animation: scrollUp 2s ease-out forwards;
+  animation: scrollUp 1s ease-out forwards;
   z-index: 5;
 }
 

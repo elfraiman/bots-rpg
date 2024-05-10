@@ -1,0 +1,20 @@
+.dungeon-enemy-cards {
+  position: relative; /* Sets the reference for absolutely positioned children */
+  height: 200px; /* Ensure this is enough to accommodate your largest card */
+  margin-top: 10px;
+}
+
+.dungeon-enemy-card {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.dungeon-enemy-card:hover {
+  transform: scale(1.2); /* Optional: Scale up on hover */
+  z-index: 10; /* Ensure the hovered card comes to the front */
+}

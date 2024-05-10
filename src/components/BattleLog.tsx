@@ -1,15 +1,22 @@
-import { IonCardSubtitle, IonContent, IonList, useIonViewDidLeave, useIonViewWillEnter, useIonViewWillLeave } from '@ionic/react';
+import { IonCardSubtitle, IonContent, IonList, useIonViewWillEnter, useIonViewWillLeave } from '@ionic/react';
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { useBattleProvider } from '../context/BattleContext';
 import { getEnemyTypeColor, getItemGradeColor } from '../functions/GetColor';
-import { IEnemy, IEnemy_equipment_weapon, IEquipment, IItem, IPlayer } from '../types/types';
+import { IEnemy, IEnemy_equipment_weapon, IPlayer } from '../types/types';
 import BattleInfoHeader from './BattleInfoHeader';
 import './BattleLog.css';
 import createBattleLogMessage from './CreateBattleLog';
 
+
+export interface IHitInfo {
+  damage: number;
+  key: number;
+}
+
 // Example of an inline style for demonstration
+//
 const style = {
-  fightNarrative: { color: '#99cc00', marginBottom: 10 },
+  fightNarrative: { color: '#99cc00', marginBottom: 10, marginTop: 10 },
   weaponName: { fontStyle: 'italic' },
   playerDamage: { color: 'white' },
   enemyDamage: { fontWeight: 100, color: 'grey' },
@@ -27,8 +34,8 @@ const BattleLog = () => {
   const { battleState, battleActive } = useBattleProvider();
   const narrativeEndRef = useRef(null);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
-  const [playerHitInfo, setPlayerHitInfo] = useState({ damage: null, key: 0 });
-  const [enemyHitInfo, setEnemyHitInfo] = useState({ damage: null, key: 0 });
+  const [playerHitInfo, setPlayerHitInfo] = useState<IHitInfo[]>([]);
+  const [enemyHitInfo, setEnemyHitInfo] = useState<IHitInfo[]>([]);
 
   // Returns some text to describe the enemy's health status
   //
@@ -68,23 +75,21 @@ const BattleLog = () => {
     }
   }
 
-  const handleHitMarker = (damage: any, isPlayer: boolean) => {
-    const hitInfo = { damage, key: Date.now() };
-    if (isPlayer) {
-      setPlayerHitInfo(hitInfo);
+
+  const handleHitMarker = (damage: number, isPlayerAttack: boolean) => {
+    const hitInfo: IHitInfo = { damage, key: Date.now() };
+    if (isPlayerAttack) {
+      setEnemyHitInfo(prev => [...prev, hitInfo]);
+      setTimeout(() => {
+        setEnemyHitInfo(prev => prev.filter(info => info.key !== hitInfo.key));
+      }, 2000);
     } else {
-      setEnemyHitInfo(hitInfo);
+      setPlayerHitInfo(prev => [...prev, hitInfo]);
+      setTimeout(() => {
+        setPlayerHitInfo(prev => prev.filter(info => info.key !== hitInfo.key));
+      }, 2000);
     }
-
-    setTimeout(() => {
-      if (isPlayer) {
-        setPlayerHitInfo({ damage: null, key: 0 });
-      } else {
-        setEnemyHitInfo({ damage: null, key: 0 });
-      }
-    }, 2000); // reset after 2 seconds to allow for animation completion
   };
-
 
   const generateEndFightBattleStats = (playerWin: boolean, enemy: IEnemy, player: IPlayer, xpReward: number, goldReward: number) => {
 
@@ -99,15 +104,18 @@ const BattleLog = () => {
     const battleStatsLogMessage = createBattleLogMessage({ enemy, player, playerWin, stats: { ...battleState.playerBattleLog, xpReward, goldReward, loot: [], averageDamage, hitRate } })
 
     setFightNarrative(prev => [...prev, battleStatsLogMessage]);
+    (narrativeEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
   }
 
   // Create attack line
   //
   useEffect(() => {
-    if (!battleState.attackLog.damage || !battleActive) return;
+    if (!battleState.attackLog.damage || !battleActive || !battleState.player.entity) return;
+
     const isPlayerAttack = battleState.attackLog.isPlayerAttack;
     const attacker = battleState.attackLog.isPlayerAttack ? battleState.player.entity : battleState.enemy.entity;
     const defender = battleState.attackLog.isPlayerAttack ? battleState.enemy.entity : battleState.player.entity;
+
     const hitMessage = (
       <div style={style.fightNarrative}>
         <span className={`${isPlayerAttack ? 'player-name' : 'enemy-name'}`}>
@@ -137,12 +145,14 @@ const BattleLog = () => {
     setFightNarrative([...fightNarrative, hitMessage]);
   }, [battleState.attackLog])
 
-
+  // Check for end fight to make log
+  //
   useEffect(() => {
-    if (battleState.player.health <= 0 || battleState.enemy.health <= 0 && !battleActive) {
+    if (battleState.attackLog.battleEnd && !battleActive) {
       generateEndFightBattleStats(battleState.player.health > 0, battleState.enemy.entity, battleState.player.entity, battleState.playerBattleLog.xpReward, battleState.playerBattleLog.goldReward);
     }
   }, [battleActive])
+
 
   // Automatically scroll to the latest narrative entry
   useEffect(() => {
@@ -155,17 +165,17 @@ const BattleLog = () => {
 
   useIonViewWillEnter(() => {
     setFightNarrative([])
-  })
+  });
 
   useIonViewWillLeave(() => {
     setFightNarrative([]);
-    setPlayerHitInfo({ damage: null, key: 0 });
-    setEnemyHitInfo({ damage: null, key: 0 });
-  })
+    setPlayerHitInfo([]);
+    setEnemyHitInfo([]);
+  });
 
   return (
-    <IonContent className="content" style={{
-      '--background': `url('/images/planets/planet-battle-1.webp') 0 0/cover no-repeat`,
+    <div className="content" style={{
+      'background': `url('/images/planets/planet-battle-1.webp') 0 0/cover no-repeat`,
     }}>
       <BattleInfoHeader
         enemyHealthPercent={enemyHealthPercent ?? 100}
@@ -175,7 +185,7 @@ const BattleLog = () => {
         enemyImgId={battleState.enemy.entity?.imgId ?? 0} loading={!battleState}
       />
 
-      <div style={{ marginTop: 216, marginBottom: 36 }}>
+      <div style={{ marginTop: 60, marginBottom: 36 }}>
         <IonList className="low-fade" style={{ padding: 16 }}>
           {battleState.enemy.entity.hidden ? (
             <div>
@@ -197,17 +207,18 @@ const BattleLog = () => {
             </div>
           ) : <></>}
 
+          <div style={{ height: 300, overflowY: 'auto' }}>
+            {fightNarrative.map((line, index) => (
+              <span key={index}>{line}</span>
+            ))}
+            {/* Invisible element at the end of your narratives */}
 
-          {fightNarrative.map((line, index) => (
-            <span key={index}>{line}</span>
-          ))}
-
-          {/* Invisible element at the end of your narratives */}
-          <div ref={narrativeEndRef} />
+            <div ref={narrativeEndRef} />
+          </div>
         </IonList>
       </div>
 
-    </IonContent>
+    </div>
   )
 }
 

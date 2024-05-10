@@ -1,19 +1,39 @@
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonChip, IonCol, IonContent, IonPage, IonRow, IonText, useIonViewWillEnter } from "@ionic/react";
-import { useState } from "react";
+import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonContent, IonPage, IonText, useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import PageTitle from "../../components/PageTitle";
-import { getDungeon } from "../../functions/GetDungeons";
-import { getEnemies } from "../../functions/GetEnemies";
+import { useDungeonEnemyListProvider } from "../../context/DungeonEnemyListContext";
 import { getEnemyTypeColor } from "../../functions/GetColor";
+import { getDungeon } from "../../functions/GetDungeons";
+import { getEnemies, getSingleEnemy } from "../../functions/GetEnemies";
 import { IDungeon, IEnemy } from "../../types/types";
-
+import './DungeonPage.css';
+import BattleLog from "../../components/BattleLog";
+import { useBattleProvider } from "../../context/BattleContext";
 
 const DungeonPage = () => {
   const match = useRouteMatch<{ id: string }>();
   const params: any = match.params;
-  const [dungenData, setDungeonData] = useState<IDungeon | null>(null);
-  const [enemies, setEnemies] = useState<IEnemy[]>([]);
-  const history = useHistory();
+  const [dungeonData, setDungeonData] = useState<IDungeon | null>(null);
+  const { setEnemyList, removeEnemy, enemyList } = useDungeonEnemyListProvider();
+  const { setEnemy, setBattleActive, battleActive, doubleAttack } = useBattleProvider();
+  const [dungeonActivated, setDungeonActivated] = useState(false);
+
+  const getEnemy = async (enemyId: any) => {
+    const stringId = enemyId.toString();
+    if (stringId) {
+      const enemyData = await getSingleEnemy({ monsterId: stringId });
+
+      if (enemyData) {
+        setEnemy(enemyData);
+        setDungeonActivated(true);
+      }
+    }
+  }
+
+  useIonViewDidLeave(() => {
+    setBattleActive(false);
+  });
 
   const fetchDungeonData = async () => {
     try {
@@ -33,17 +53,22 @@ const DungeonPage = () => {
           return enemyMap.get(enemyIdStr);
         }).filter(enemy => enemy); // Explicitly filter out undefined or null entries
 
-
-        setEnemies(filteredEnemies as IEnemy[]);
+        setEnemyList(filteredEnemies as IEnemy[]);
       }
     } catch (e) {
       console.error('Error fetching dungeon or enemies', e);
     }
   }
 
+  const calculateCardPosition = (index: number, total: number) => {
+    const overlap = 105; // Amount each card should overlap the previous one
+    const startPosition = 0; // Start position offset for the first card
+    return startPosition + (index * (150 - overlap)); // Adjust '150' based on your card width
+  };
+
+
   useIonViewWillEnter(() => {
     console.log("Welcome to the dungeon");
-    console.log(params.id)
     fetchDungeonData();
   }, [])
 
@@ -51,39 +76,54 @@ const DungeonPage = () => {
   return (
     <IonPage className="content">
       <IonContent className="ion-padding" style={{
-        '--background': `url('/images/planets/dungeons/dungeon-ground-${dungenData?.imgId}.webp') 0 0 / cover no-repeat`,
+        '--background': `url('/images/planets/dungeons/dungeon-ground-${dungeonData?.imgId}.webp') 0 0 / cover no-repeat`,
       }}>
-        {dungenData && (
+        {dungeonData && (
           <>
-            <PageTitle title={dungenData.name} subtitle={dungenData.description} />
+            <PageTitle title={dungeonData.name} subtitle={dungeonData.description} />
             <IonCard style={{ margin: 0 }} className="low-fade">
-              <IonCardContent>
-                {enemies.map((enemy: IEnemy, index: number) => (
-                  <div className="corner-border" key={index} style={{
-                    'background': `url('/images/enemies/dungeon-enemy-${enemy?.imgId}.webp') 0 0 / cover no-repeat`,
-                    backgroundPosition: 'center',
-                    height: 68,
-                    marginTop: 16
-                  }}>
-                    <IonRow onClick={() => history.push(`/fight/${enemy._id}/0`)}>
-                      <IonCol>
-                        <IonText style={{ color: getEnemyTypeColor(enemy.type) }}>
-                          {enemy.name}
-                        </IonText>
-                        <IonCardSubtitle>Level: {enemy.level}</IonCardSubtitle>
-                      </IonCol>
-                      <IonCol style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                        <IonChip>{index + 1}</IonChip>
-                      </IonCol>
-                    </IonRow>
-                  </div>
-                ))}
-              </IonCardContent>
 
-              <IonButton>Fight</IonButton>
+              <IonCardContent>
+                <IonCardSubtitle style={{ color: 'gold' }}>
+                  This dungeon has a chance to drop rare loot.
+                </IonCardSubtitle>
+                <IonCardSubtitle style={{ color: 'gold' }}>
+                  Enemies in this dungeon:
+                </IonCardSubtitle>
+
+                <div className="dungeon-enemy-cards">
+                  {enemyList.map((enemy, index) => (
+                    <div
+                      key={index}
+                      className="dungeon-enemy-card"
+                      style={{
+                        backgroundImage: `url('/images/enemies/dungeon-enemy-${enemy?.imgId}.webp')`,
+                        left: `${calculateCardPosition(index, enemyList.length)}px` // Positioning each card
+                      }}
+                      onClick={() => getEnemy(enemy._id)}
+                    >
+                      <IonText style={{ color: getEnemyTypeColor(enemy.type), padding: '10px' }}>
+                        {enemy.name}
+                        <IonCardSubtitle style={{ display: 'block' }}>Level: {enemy.level}</IonCardSubtitle>
+                      </IonText>
+                    </div>
+                  ))}
+                </div>
+              </IonCardContent>
             </IonCard>
+
+
+            {dungeonActivated ? (
+              <IonCard style={{ margin: 0, padding: 0 }}>
+                <IonCardContent style={{ margin: 0, padding: 0 }}>
+                  <BattleLog />
+                </IonCardContent>
+              </IonCard>
+            ) : <></>}
+
           </>
         )}
+
       </IonContent>
     </IonPage>
   )

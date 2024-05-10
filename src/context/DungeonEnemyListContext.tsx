@@ -27,7 +27,8 @@ export const DungeonEnemyListProvider = ({ children }: { children: ReactNode }) 
 
 
   const removeEnemy = (enemy: IEnemy) => {
-
+    const newEnemyList = enemyList.filter(e => e._id !== enemy._id);
+    setEnemyList(newEnemyList);
   }
 
   const addEnemy = (enemy: IEnemy) => {

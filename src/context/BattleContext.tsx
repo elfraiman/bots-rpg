@@ -11,6 +11,7 @@ import getXpReward from '../functions/GetXpReward';
 import * as Realm from 'realm-web';
 import { chanceToSpawnHiddenEnemies } from '../functions/ChanceToSpawnHiddenEnemies';
 import { useNavigationDisable } from './DisableNavigationContext';
+import { useDungeonEnemyListProvider } from './DungeonEnemyListContext';
 
 
 interface IPlayerDefensiveStats {
@@ -35,7 +36,8 @@ interface ILootDrop {
 interface IBattleContext {
   setBattleActive: React.Dispatch<React.SetStateAction<boolean>>;
   battleActive: boolean;
-  setEnemy: React.Dispatch<React.SetStateAction<IEnemy | IPlayer>>;
+  setEnemy: React.Dispatch<React.SetStateAction<IEnemy | undefined>>;
+  doubleAttack: () => void;
   battleState: {
     player: {
       entity: IPlayer;
@@ -68,6 +70,7 @@ interface IBattleContext {
     attackLog: {
       isPlayerAttack: boolean;
       damage: number;
+      battleEnd: boolean;
     }
   };
   // Add any function to change this state if needed
@@ -76,6 +79,7 @@ interface IBattleContext {
 const defaultContext: IBattleContext = {
   setBattleActive: () => false,
   setEnemy: () => { },
+  doubleAttack: () => { },
   battleActive: false,
   battleState: {
     player: {
@@ -111,7 +115,8 @@ const defaultContext: IBattleContext = {
     },
     attackLog: {
       isPlayerAttack: false,
-      damage: 0
+      damage: 0,
+      battleEnd: false
     }
   },
 }
@@ -125,6 +130,7 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
   const enemyTimerRef = useRef<any>();
   const { player, updatePlayerData } = usePlayer();
   const [battleActive, setBattleActive] = useState<boolean>(false);
+  const { removeEnemy, enemyList } = useDungeonEnemyListProvider();
   const [enemy, setEnemy] = useState<IEnemy>();
   const [battleState, setBattleState] = useState({
     player: {
@@ -160,10 +166,34 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
     },
     attackLog: {
       isPlayerAttack: false,
-      damage: 0
+      damage: 0,
+      battleEnd: false
     },
   });
+  const [coolDown, setCoolDown] = useState<boolean>(false);
+
   const { setIsNavigationDisabled } = useNavigationDisable();
+
+
+  //* Player Active Skills */
+  const doubleAttack = () => {
+    attack(true);
+    setTimeout(() => {
+      attack(true);
+    }, 800)
+  };
+
+
+
+
+
+
+
+
+
+
+
+
 
   const endBattle = async (playerWin: boolean) => {
     if (!player || !enemy) return;
@@ -204,10 +234,12 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
             loot.push({ item: baseItem, quantity: playerOwnedItemResponse?.quantity ?? 1 })
           }
 
+
         } catch (e) {
           console.error(e);
         };
       }
+
 
       goldReward = getGoldReward({ enemy: enemy, playerLevel: player.level });
       xpReward = getXpReward({ enemyLevel: enemy.level, enemyType: enemy.type as "standard" | "elite" | "boss", playerLevel: player.level })
@@ -218,6 +250,8 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
     // Update the player with all the new data
     // this will update in context & back-end
     //
+
+
     await updatePlayerData({
       gold: player.gold += goldReward,
       experience: player.experience += xpReward,
@@ -232,6 +266,10 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
           xpReward,
           goldReward,
           loot
+        },
+        attackLog: {
+          ...prevState.attackLog,
+          battleEnd: true
         }
       }))
       toast.success(`+ ${goldReward} 🪙`,
@@ -260,7 +298,10 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const spawnHiddenEnemy = async () => {
-    if (!enemy || !player) return;
+    // if we are currently fighting a dungeon enemy we don't want to
+    // spawn hidden enemies.
+    //
+    if (!enemy || !player || enemy.dungeonEnemy) return;
 
     // Try to spawn hidden enemies (Elites, Bosses) based on their spawn chance
     // and the players planet location
@@ -283,8 +324,7 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-
-  const attack = (isPlayerAttack: boolean) => {
+  const attack = (isPlayerAttack: boolean, damage?: number) => {
     if (!player || !enemy || battleState.player.health <= 0 || battleState.enemy.health <= 0) {
       return;
     }
@@ -336,6 +376,7 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
             health: newEnemyHealth
           },
           attackLog: {
+            ...prevState.attackLog,
             isPlayerAttack: true,
             damage: damageDealt
           }
@@ -346,10 +387,10 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
           ...prevState,
           player: {
             ...prevState.player,
-            entity: {} as IPlayer, // Add the missing 'entity' property
             health: newPlayerHealth
           },
           attackLog: {
+            ...prevState.attackLog,
             isPlayerAttack: false,
             damage: damageDealt
           }
@@ -440,9 +481,10 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
         xpReward: 0,
         goldReward: 0,
       },
-      attackLog: { // Add the missing 'attackLog' property
+      attackLog: {
         isPlayerAttack: false,
-        damage: 0
+        damage: 0,
+        battleEnd: false
       }
     })
   }
@@ -458,14 +500,12 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
       ...prevState,
       enemy: {
         ...prevState.enemy,
-        entity: targetEnemy,
+        entity: { ...targetEnemy },
         weapon: enemyWeapon,
         maxHealth: enemyHealth,
         health: enemyHealth
       }
     }));
-
-    setupPlayer();
   };
 
   const setupPlayer = async () => {
@@ -473,12 +513,12 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
     const details = await playerEquipmentStats(player);
     const playerHealth = calculateMaxHealth(player);
 
-    if (details) {
+    if (details && player) {
       setBattleState(prevState => ({
         ...prevState,
         player: {
           ...prevState.player,
-          entity: player,
+          entity: { ...player },
           weapon: details.weapon,
           defensiveStats: details.defensive,
           maxHealth: playerHealth,
@@ -491,7 +531,7 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (!player || !enemy || !battleActive || !battleState.player.weapon.stats || !battleState.enemy.weapon.stats) return;
+    if (!player || !enemy || !battleState.player.entity || !battleActive || !battleState.player.weapon.stats || !battleState.enemy.weapon.stats) return;
 
     const playerState = battleState.player;
     const enemyState = battleState.enemy;
@@ -543,6 +583,7 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
     if (playerState.health <= 0 || enemyState.health <= 0) {
       clearTimeout(playerTimer);
       clearTimeout(enemyTimer);
+
       if (playerState.health <= 0) {
         endBattle(false);
       } else {
@@ -561,7 +602,6 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
   ]);
 
   useEffect(() => {
-    console.log(battleState)
     if (enemy && player) {
       setupNpcEnemy();
       setupPlayer();
@@ -573,16 +613,18 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
   }, [enemy])
 
   useEffect(() => {
-    if (player && enemy && battleState.player.entity && !battleState.enemy.entity.hidden) {
+    if (player && enemy && battleState.player.entity.name && !battleState.enemy.entity.hidden) {
+      console.log(battleState.player, ' battleState.player')
+
       setTimeout(() => {
-        // setBattleActive(true);
+        setBattleActive(true);
         setIsNavigationDisabled(true);
       }, 1000);
     }
-  }, [battleState.player.weapon])
+  }, [battleState.player.entity])
 
   return (
-    <BattleContext.Provider value={{ setBattleActive, setEnemy, battleState, battleActive }}>
+    <BattleContext.Provider value={{ setBattleActive, setEnemy, battleState, battleActive, doubleAttack }}>
       {children}
     </BattleContext.Provider>
   );
