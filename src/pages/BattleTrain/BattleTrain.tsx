@@ -39,23 +39,14 @@ const BattleTrain = () => {
 
 
   return (
-    <IonPage className="content">
-      {
-        //* Battle header enemy vs player *//
-      }
-
-      <IonContent className="content" style={{
+    <IonPage className="content" >
+      <IonContent style={{
         '--background': `url('/images/planets/planet-battle-${params?.planetImgId}.webp') 0 0/cover no-repeat`,
       }}>
 
-        <IonFab>
-          <IonFabButton onClick={() => doubleAttack()}>
-            <IonIcon icon={add}></IonIcon>
-          </IonFabButton>
-        </IonFab>
 
-        <div style={{ position: 'relative' }}>
-          <BattleLog />
+        <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+          <BattleLog pushHeader={true} />
         </div>
 
 

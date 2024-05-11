@@ -9,10 +9,11 @@ interface IBattleInfoHeaderProps {
   playerHealthPercent: number;
   enemyImgId: number;
   loading: boolean;
+  pushHeader?: boolean;
 }
 
 
-const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPercent, playerHealthPercent, enemyImgId }: IBattleInfoHeaderProps) => {
+const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPercent, playerHealthPercent, enemyImgId, pushHeader }: IBattleInfoHeaderProps) => {
   return (
     <div className="fade-in" style={{
       textAlign: 'center',
@@ -20,8 +21,8 @@ const BattleInfoHeader = ({ loading, enemyHitInfo, playerHitInfo, enemyHealthPer
       justifyContent: 'space-between',
       width: '100%',
       position: 'fixed',
-      top: 0,
       left: 0,
+      top: pushHeader ? 106 : 0,
       zIndex: 100,
     }}>
       <div style={{ width: '50%', position: 'relative', height: 160, overflow: 'hidden' }}>

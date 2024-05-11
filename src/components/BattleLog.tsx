@@ -30,7 +30,11 @@ const style = {
   playerHealth: { color: 'black', backgroundColor: '#4c4c4c' }
 };
 
-const BattleLog = () => {
+interface IBattleLogProps {
+  pushHeader?: boolean;
+}
+
+const BattleLog = ({ pushHeader }: IBattleLogProps) => {
   const { battleState, battleActive } = useBattleProvider();
   const narrativeEndRef = useRef(null);
   const [fightNarrative, setFightNarrative] = useState<ReactElement[]>([]);
@@ -174,7 +178,7 @@ const BattleLog = () => {
   });
 
   return (
-    <div className="content" style={{
+    <div style={{
       'background': `url('/images/planets/planet-battle-1.webp') 0 0/cover no-repeat`,
     }}>
       <BattleInfoHeader
@@ -182,6 +186,7 @@ const BattleLog = () => {
         playerHealthPercent={playerHealthPercent ?? 100}
         enemyHitInfo={enemyHitInfo}
         playerHitInfo={playerHitInfo}
+        pushHeader={pushHeader}
         enemyImgId={battleState?.enemy?.entity?.imgId} loading={!battleState}
       />
 
@@ -207,7 +212,7 @@ const BattleLog = () => {
             </div>
           ) : <></>}
 
-          <div style={{ height: 300, overflowY: 'auto' }}>
+          <div style={{ height: !pushHeader ? 250 : '100%', overflowY: 'auto', marginTop: pushHeader ? 160 : 80 }}>
             {fightNarrative.map((line, index) => (
               <span key={index}>{line}</span>
             ))}

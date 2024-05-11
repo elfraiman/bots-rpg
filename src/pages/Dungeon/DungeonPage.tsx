@@ -155,9 +155,9 @@ const DungeonPage = () => {
 
 
             {dungeonActivated ? (
-              <IonCard style={{ margin: 0, padding: 0 }}>
+              <IonCard style={{ margin: 0, marginTop: 16, padding: 0 }} className="low-fade">
                 <IonCardContent style={{ margin: 0, padding: 0 }}>
-                  <BattleLog />
+                  <BattleLog pushHeader={false} />
                 </IonCardContent>
               </IonCard>
             ) : <></>}
