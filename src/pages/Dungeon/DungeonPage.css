@@ -12,9 +12,10 @@
   background-position: center;
   transition: transform 0.3s ease;
   cursor: pointer;
+  overflow: hidden; /* Ensures the pseudo-element does not escape the bounds of the card */
 }
 
 .dungeon-enemy-card:hover {
-  transform: scale(1.2); /* Optional: Scale up on hover */
-  z-index: 10; /* Ensure the hovered card comes to the front */
+  transform: scale(1.2);
+  z-index: 10;
 }

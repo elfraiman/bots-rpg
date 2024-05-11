@@ -83,6 +83,10 @@ const DungeonPage = () => {
     fetchDungeonData();
   }, [])
 
+
+  // Every time a battle ends, check if the player is still alive and if there are more enemies to fight.
+  // If there are more enemies, get the next one. If not, set the dungeon as complete.
+  //
   useEffect(() => {
     if (battleState.attackLog.battleEnd && !battleActive && battleState.player.health > 0 && dungeonActivated) {
       removeEnemy();
@@ -107,7 +111,7 @@ const DungeonPage = () => {
           <>
             <PageTitle title={dungeonData.name} subtitle={dungeonData.description} />
             {!dungeonComplete ? (
-              <IonCard style={{ margin: 0 }} className="low-fade">
+              <IonCard style={{ margin: 0 }} className="card-fade">
 
                 <IonCardContent>
                   <IonCardSubtitle style={{ color: 'gold' }}>
@@ -127,10 +131,10 @@ const DungeonPage = () => {
                           left: `${calculateCardPosition(index, enemyList.length)}px` // Positioning each card
                         }}
                       >
-                        <IonText style={{ color: getEnemyTypeColor(enemy.type), padding: '10px' }}>
-                          {enemy.name}
-                          <IonCardSubtitle style={{ display: 'block' }}>Level: {enemy.level}</IonCardSubtitle>
-                        </IonText>
+                        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: 6, color: getEnemyTypeColor(enemy.type) }}>
+                          <span>{enemy.name}</span>
+                          <span style={{ display: 'block', color: 'yellow' }}>Level: {enemy.level}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
