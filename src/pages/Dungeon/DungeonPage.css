@@ -1,6 +1,6 @@
 .dungeon-enemy-cards {
   position: relative; /* Sets the reference for absolutely positioned children */
-  height: 200px; /* Ensure this is enough to accommodate your largest card */
+  height: 160px; /* Ensure this is enough to accommodate your largest card */
   margin-top: 10px;
 }
 

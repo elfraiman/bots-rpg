@@ -182,7 +182,7 @@ const BattleLog = () => {
         playerHealthPercent={playerHealthPercent ?? 100}
         enemyHitInfo={enemyHitInfo}
         playerHitInfo={playerHitInfo}
-        enemyImgId={battleState.enemy.entity?.imgId ?? 0} loading={!battleState}
+        enemyImgId={battleState?.enemy?.entity?.imgId} loading={!battleState}
       />
 
       <div style={{ marginTop: 60, marginBottom: 36 }}>

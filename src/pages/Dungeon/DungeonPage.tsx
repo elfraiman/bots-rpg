@@ -10,14 +10,17 @@ import { IDungeon, IEnemy } from "../../types/types";
 import './DungeonPage.css';
 import BattleLog from "../../components/BattleLog";
 import { useBattleProvider } from "../../context/BattleContext";
+import { useNavigationDisable } from "../../context/DisableNavigationContext";
 
 const DungeonPage = () => {
   const match = useRouteMatch<{ id: string }>();
   const params: any = match.params;
   const [dungeonData, setDungeonData] = useState<IDungeon | null>(null);
   const { setEnemyList, removeEnemy, enemyList } = useDungeonEnemyListProvider();
-  const { setEnemy, setBattleActive, battleActive, doubleAttack } = useBattleProvider();
+  const { setEnemy, setBattleActive, battleState, battleActive } = useBattleProvider();
   const [dungeonActivated, setDungeonActivated] = useState(false);
+  const [dungeonComplete, setDungeonComplete] = useState(false);
+  const { setIsNavigationDisabled } = useNavigationDisable();
 
   const getEnemy = async (enemyId: any) => {
     const stringId = enemyId.toString();
@@ -28,6 +31,13 @@ const DungeonPage = () => {
         setEnemy(enemyData);
         setDungeonActivated(true);
       }
+    }
+  }
+
+  const startDungeon = () => {
+    if (!dungeonActivated) {
+      getEnemy(enemyList[0]?._id);
+      setIsNavigationDisabled(true)
     }
   }
 
@@ -44,6 +54,7 @@ const DungeonPage = () => {
         // Fetch all enemies for the location of the dungeon.
         const enemyList = await getEnemies({ location: dungeon?._id });
         if (!enemyList) return;
+
         // Create a map for quick access to enemies by their _id, converted to string.
         const enemyMap = new Map(enemyList.map(enemy => [enemy._id.toString(), enemy]));
 
@@ -72,6 +83,20 @@ const DungeonPage = () => {
     fetchDungeonData();
   }, [])
 
+  useEffect(() => {
+    if (battleState.attackLog.battleEnd && !battleActive && battleState.player.health > 0 && dungeonActivated) {
+      removeEnemy();
+      if (enemyList.length > 0) {
+        getEnemy(enemyList[0]?._id);
+      } else {
+        setIsNavigationDisabled(false);
+        setDungeonActivated(false);
+        setDungeonComplete(true);
+      }
+
+    }
+  }, [battleState.attackLog.battleEnd])
+
 
   return (
     <IonPage className="content">
@@ -81,36 +106,48 @@ const DungeonPage = () => {
         {dungeonData && (
           <>
             <PageTitle title={dungeonData.name} subtitle={dungeonData.description} />
-            <IonCard style={{ margin: 0 }} className="low-fade">
+            {!dungeonComplete ? (
+              <IonCard style={{ margin: 0 }} className="low-fade">
 
-              <IonCardContent>
-                <IonCardSubtitle style={{ color: 'gold' }}>
-                  This dungeon has a chance to drop rare loot.
-                </IonCardSubtitle>
-                <IonCardSubtitle style={{ color: 'gold' }}>
-                  Enemies in this dungeon:
-                </IonCardSubtitle>
+                <IonCardContent>
+                  <IonCardSubtitle style={{ color: 'gold' }}>
+                    This dungeon has a chance to drop rare loot.
+                  </IonCardSubtitle>
+                  <IonCardSubtitle style={{ color: 'gold' }}>
+                    Enemies in this dungeon:
+                  </IonCardSubtitle>
 
-                <div className="dungeon-enemy-cards">
-                  {enemyList.map((enemy, index) => (
-                    <div
-                      key={index}
-                      className="dungeon-enemy-card"
-                      style={{
-                        backgroundImage: `url('/images/enemies/dungeon-enemy-${enemy?.imgId}.webp')`,
-                        left: `${calculateCardPosition(index, enemyList.length)}px` // Positioning each card
-                      }}
-                      onClick={() => getEnemy(enemy._id)}
-                    >
-                      <IonText style={{ color: getEnemyTypeColor(enemy.type), padding: '10px' }}>
-                        {enemy.name}
-                        <IonCardSubtitle style={{ display: 'block' }}>Level: {enemy.level}</IonCardSubtitle>
-                      </IonText>
-                    </div>
-                  ))}
-                </div>
-              </IonCardContent>
-            </IonCard>
+                  <div className="dungeon-enemy-cards">
+                    {enemyList.map((enemy, index) => (
+                      <div
+                        key={index}
+                        className="dungeon-enemy-card"
+                        style={{
+                          backgroundImage: `url('/images/enemies/enemy-${enemy?.imgId}.webp')`,
+                          left: `${calculateCardPosition(index, enemyList.length)}px` // Positioning each card
+                        }}
+                      >
+                        <IonText style={{ color: getEnemyTypeColor(enemy.type), padding: '10px' }}>
+                          {enemy.name}
+                          <IonCardSubtitle style={{ display: 'block' }}>Level: {enemy.level}</IonCardSubtitle>
+                        </IonText>
+                      </div>
+                    ))}
+                  </div>
+
+                  <IonButton
+                    expand="block"
+                    onClick={() => startDungeon()}
+                    disabled={dungeonActivated}>
+                    Start
+                  </IonButton>
+                </IonCardContent>
+              </IonCard>
+            ) : (
+              <IonCard>
+                Winner!
+              </IonCard>
+            )}
 
 
             {dungeonActivated ? (

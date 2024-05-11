@@ -250,8 +250,6 @@ export const BattleProvider = ({ children }: { children: ReactNode }) => {
     // Update the player with all the new data
     // this will update in context & back-end
     //
-
-
     await updatePlayerData({
       gold: player.gold += goldReward,
       experience: player.experience += xpReward,

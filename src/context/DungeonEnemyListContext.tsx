@@ -5,7 +5,7 @@ import { IEnemy } from '../types/types';
 // Define the shape of the context
 interface IDungeonEnemyListContextValue {
   enemyList: IEnemy[];
-  removeEnemy: (enemy: IEnemy) => void;
+  removeEnemy: () => void;
   addEnemy: (enemy: IEnemy) => void;
   setEnemyList: React.Dispatch<React.SetStateAction<IEnemy[]>>;
   // Add any function to change this state if needed
@@ -13,7 +13,7 @@ interface IDungeonEnemyListContextValue {
 
 const defaultContext: IDungeonEnemyListContextValue = {
   enemyList: [],
-  removeEnemy: (enemy: IEnemy) => { },
+  removeEnemy: () => { },
   addEnemy: (enemy: IEnemy) => { },
   setEnemyList: () => []
 }
@@ -26,14 +26,16 @@ export const DungeonEnemyListProvider = ({ children }: { children: ReactNode }) 
   const [enemyList, setEnemyList] = useState<IEnemy[]>([]);
 
 
-  const removeEnemy = (enemy: IEnemy) => {
-    const newEnemyList = enemyList.filter(e => e._id !== enemy._id);
-    setEnemyList(newEnemyList);
+  const removeEnemy = () => {
+    // Create a new array that excludes the first enemy
+    setEnemyList(prevEnemyList => prevEnemyList.slice(1));
   }
 
   const addEnemy = (enemy: IEnemy) => {
-
+    // Adds a new enemy to the list
+    setEnemyList(prevEnemyList => [...prevEnemyList, enemy]);
   }
+
 
   return (
     <DungeonEnemyListContext.Provider value={{ enemyList, removeEnemy, addEnemy, setEnemyList }}>
